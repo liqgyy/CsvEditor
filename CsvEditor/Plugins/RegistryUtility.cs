@@ -41,7 +41,7 @@ public class RegistryUtility
 	public static void SetRegisterFileExtendWithThisApp(string fileExtend, string progID, string progDescription, string playDescription)
 	{
 		// 创建ProgID
-		RegistryKey classesRootKey = Registry.ClassesRoot;
+		RegistryKey classesRootKey = null;
 		RegistryKey progIDKey = null;
 		RegistryKey defaultIconKey = null;
 		RegistryKey shellKey = null;
@@ -50,6 +50,7 @@ public class RegistryUtility
 		RegistryKey playKey = null;
 		try
 		{
+			classesRootKey = RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry64);
 			if (classesRootKey.OpenSubKey(progID) == null)
 			{
 				progIDKey = classesRootKey.CreateSubKey(progID);
@@ -82,12 +83,12 @@ public class RegistryUtility
 		}
 		finally
 		{
-			CloseRegistryKey(progIDKey);
 			CloseRegistryKey(defaultIconKey);
 			CloseRegistryKey(shellKey);
 			CloseRegistryKey(openKey);
 			CloseRegistryKey(commandKey);
 			CloseRegistryKey(playKey);
+			CloseRegistryKey(progIDKey);
 		}
 
 		// 修改对应文件类型的默认的关联程序
@@ -112,8 +113,8 @@ public class RegistryUtility
 		}
 		finally
 		{
-			CloseRegistryKey(classesRootKey);
 			CloseRegistryKey(fileExtendKey);
+			CloseRegistryKey(classesRootKey);
 		}
 	}
 
@@ -128,10 +129,12 @@ public class RegistryUtility
 	/// </summary>
 	private void FirstRunInitialize()
     {
+		RegistryKey localMachine = null;
 		RegistryKey software = null;
 		try
 		{
-			software = Registry.LocalMachine.CreateSubKey(GlobalData.REGISTRY_KEY_SOFTWARE, true);
+			localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+			software = localMachine.CreateSubKey(GlobalData.REGISTRY_KEY_SOFTWARE, true);
 			if (GlobalData.REGISTRY_FORCE_INITIALIZE || software.GetValue(GlobalData.REGISTRY_KEY_INITIALIZED) == null)
 			{
 				SetRegisterFileExtendWithThisApp(".csv", "CsvEditor.CSV", "CsvEditor的csv文件", "在CsvEditor中打开");
@@ -145,6 +148,7 @@ public class RegistryUtility
 		finally
 		{
 			CloseRegistryKey(software);
+			CloseRegistryKey(localMachine);
 		}
 	}
 

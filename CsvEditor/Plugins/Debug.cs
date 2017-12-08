@@ -9,10 +9,10 @@ public class Debug
 	/// 显示异常消息的MessageBox
 	/// %%TODO Debug Release 有不同的处理
 	/// </summary>
-	/// <param name="caption">标题</param>
+	/// <param name="text">内容</param>
 	/// <param name="ex">异常</param>
-	public static void ShowExceptionMessageBox(string caption, Exception ex)
+	public static void ShowExceptionMessageBox(string text, Exception ex)
 	{
-		MessageBox.Show(ex.ToString(), caption);
+		MessageBox.Show(text + "\n" + ex.ToString(), "Throw Exception!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
 }

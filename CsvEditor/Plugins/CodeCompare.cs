@@ -118,14 +118,45 @@ public class CodeCompare
 		return true;
 	}
 
+	static void PrintKeys(RegistryKey rkey)
+	{
+
+		// Retrieve all the subkeys for the specified key. 
+		String[] names = rkey.GetSubKeyNames();
+
+		int icount = 0;
+
+		Console.WriteLine("Subkeys of " + rkey.Name);
+		Console.WriteLine("-----------------------------------------------");
+
+		// Print the contents of the array to the console. 
+		foreach (String s in names)
+		{
+			Console.WriteLine(s);
+
+			// The following code puts a limit on the number 
+			// of keys displayed.  Comment it out to print the 
+			// complete list. 
+			icount++;
+			if (icount >= 10)
+				break;
+		}
+	}
+
+	/// <summary>
+	// CodeCompare注册表里只有帮助文件的地址, 利用帮助文件的地址寻找CodeCompare.exe的地址
+	/// </summary>
+	/// <returns>初始化是否成功</returns>
 	private bool Initialize()
 	{
-		// CodeCompare注册表里只有帮助文件的地址, 利用帮助文件的地址寻找CodeCompare.exe的地址
+		RegistryKey localMachineKey = null;
 		RegistryKey software = null;
 		try
 		{
-			software = Registry.LocalMachine.CreateSubKey(GlobalData.REGISTRY_KEY_CODECOMPARE, true);
-			exeFilePath = ((string)software.GetValue("HelpFile")).Replace("CodeCompare.chm", "CodeCompare.exe");
+			localMachineKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+			software = localMachineKey.OpenSubKey(GlobalData.REGISTRY_KEY_CODECOMPARE, false);
+			string helpFile = (string)software.GetValue("HelpFile");
+			exeFilePath = helpFile.Replace("CodeCompare.chm", "CodeCompare.exe");
 		}
 		catch (Exception ex)
 		{
@@ -135,6 +166,7 @@ public class CodeCompare
 		finally
 		{
 			RegistryUtility.CloseRegistryKey(software);
+			RegistryUtility.CloseRegistryKey(localMachineKey);
 		}
 		return true;
 	}

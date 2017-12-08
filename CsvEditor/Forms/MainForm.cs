@@ -98,8 +98,8 @@ namespace CsvEditor
 			{
 				return;
 			}
-			m_SaveToSourceFileToolStripMenuItem.Enabled = m_SelCsvForm.NeedSaveSourceFile || m_SelCsvForm.DataChanged;
 			m_SaveToCopyFileToolStripMenuItem.Enabled = m_SelCsvForm.DataChanged;
+			m_SaveToSourceFileToolStripMenuItem.Enabled = m_SelCsvForm.NeedSaveSourceFile && !m_SelCsvForm.DataChanged;
 			m_SaveToFileToolStripMenuItem.Enabled = true;
 		}
 
@@ -191,7 +191,7 @@ namespace CsvEditor
 				for(int csvFormIdx = 0; csvFormIdx < m_OpenedCsvFormList.Count; csvFormIdx++)
 				{
 					CsvForm openedCsvForm = m_OpenedCsvFormList[csvFormIdx];
-					if (openedCsvForm != null && openedCsvForm.SourceFileFullPath == fileFullPath)
+					if (openedCsvForm != null && openedCsvForm.SourceFileFullName == fileFullPath)
 					{
 						isOpened = true;
 						break;
