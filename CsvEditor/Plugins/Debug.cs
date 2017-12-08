@@ -13,6 +13,7 @@ public class Debug
 	/// <param name="ex">异常</param>
 	public static void ShowExceptionMessageBox(string text, Exception ex)
 	{
+		Console.WriteLine(ex.ToString());
 		MessageBox.Show(text + "\n" + ex.ToString(), "Throw Exception!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
 }

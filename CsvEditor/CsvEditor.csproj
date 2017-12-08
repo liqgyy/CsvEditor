@@ -116,5 +116,8 @@
   <ItemGroup>
     <None Include="Resources\CsvEditor.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -31,9 +31,8 @@
 			this.components = new System.ComponentModel.Container();
 			this.m_DataGridView = new System.Windows.Forms.DataGridView();
 			this.m_GridContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.在上方插入行ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.在下方插入行ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.删除选中行ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.m_InsertUpRowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.m_InsertDownRowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.m_DataGridView)).BeginInit();
 			this.m_GridContextMenuStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -47,39 +46,35 @@
 			this.m_DataGridView.ContextMenuStrip = this.m_GridContextMenuStrip;
 			this.m_DataGridView.Location = new System.Drawing.Point(-1, -1);
 			this.m_DataGridView.Name = "m_DataGridView";
-			this.m_DataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.ColumnHeaderSelect;
 			this.m_DataGridView.Size = new System.Drawing.Size(946, 603);
 			this.m_DataGridView.TabIndex = 0;
 			this.m_DataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnDataGridView_CellEndEdit);
 			this.m_DataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.OnDataGridView_CellMouseDown);
+			this.m_DataGridView.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.OnDataGridView_ColumnHeaderMouseClick);
+			this.m_DataGridView.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.OnDataGridView_RowHeaderMouseClick);
 			// 
 			// m_GridContextMenuStrip
 			// 
 			this.m_GridContextMenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.m_GridContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.在上方插入行ToolStripMenuItem,
-            this.在下方插入行ToolStripMenuItem,
-            this.删除选中行ToolStripMenuItem});
+            this.m_InsertUpRowToolStripMenuItem,
+            this.m_InsertDownRowToolStripMenuItem});
 			this.m_GridContextMenuStrip.Name = "m_GridContextMenuStrip";
-			this.m_GridContextMenuStrip.Size = new System.Drawing.Size(149, 70);
+			this.m_GridContextMenuStrip.Size = new System.Drawing.Size(149, 48);
 			// 
-			// 在上方插入行ToolStripMenuItem
+			// m_InsertUpRowToolStripMenuItem
 			// 
-			this.在上方插入行ToolStripMenuItem.Name = "在上方插入行ToolStripMenuItem";
-			this.在上方插入行ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-			this.在上方插入行ToolStripMenuItem.Text = "在上方插入行";
+			this.m_InsertUpRowToolStripMenuItem.Name = "m_InsertUpRowToolStripMenuItem";
+			this.m_InsertUpRowToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.m_InsertUpRowToolStripMenuItem.Text = "在上方插入行";
+			this.m_InsertUpRowToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnInsertRowToolStripMenuItem_MouseDown);
 			// 
-			// 在下方插入行ToolStripMenuItem
+			// m_InsertDownRowToolStripMenuItem
 			// 
-			this.在下方插入行ToolStripMenuItem.Name = "在下方插入行ToolStripMenuItem";
-			this.在下方插入行ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-			this.在下方插入行ToolStripMenuItem.Text = "在下方插入行";
-			// 
-			// 删除选中行ToolStripMenuItem
-			// 
-			this.删除选中行ToolStripMenuItem.Name = "删除选中行ToolStripMenuItem";
-			this.删除选中行ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-			this.删除选中行ToolStripMenuItem.Text = "删除选中行";
+			this.m_InsertDownRowToolStripMenuItem.Name = "m_InsertDownRowToolStripMenuItem";
+			this.m_InsertDownRowToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.m_InsertDownRowToolStripMenuItem.Text = "在下方插入行";
+			this.m_InsertDownRowToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnInsertRowToolStripMenuItem_MouseDown);
 			// 
 			// CsvForm
 			// 
@@ -97,11 +92,9 @@
 		}
 
         #endregion
-
-        private System.Windows.Forms.DataGridView m_DataGridView;
         private System.Windows.Forms.ContextMenuStrip m_GridContextMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem 在上方插入行ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 在下方插入行ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 删除选中行ToolStripMenuItem;
-    }
+        private System.Windows.Forms.ToolStripMenuItem m_InsertUpRowToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem m_InsertDownRowToolStripMenuItem;
+		private System.Windows.Forms.DataGridView m_DataGridView;
+	}
 }

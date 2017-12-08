@@ -205,12 +205,6 @@ namespace CsvEditor
 			// csv->DataTable
 			try
 			{
-				
-
-				//for (int rowIdx = 0; rowIdx < rowCount; rowIdx++)
-				//{
-				//	colCount = colCount < csvTable[rowIdx].Length ? csvTable[rowIdx].Length : colCount;
-				//}
 				MainDataTable = new DataTable();
 				int rowCount = csvTable.GetLength(0);
 				int colCount = -1;
@@ -229,20 +223,9 @@ namespace CsvEditor
 					}
 					MainDataTable.Rows.Add(newRowData);
 				}
+
 				m_DataGridView.DataSource = MainDataTable;
-
-				for (int colIdx = 0; colIdx < m_DataGridView.Columns.Count; colIdx++)
-				{
-					// 列数不能超过26
-					m_DataGridView.Columns[colIdx].HeaderText = ConvertUtility.NumberToAZString(colIdx);
-					m_DataGridView.Columns[colIdx].SortMode = DataGridViewColumnSortMode.Programmatic;
-				}
-
-				// 更新行号
-				for (int rowIdx = 0; rowIdx < m_DataGridView.Rows.Count; rowIdx++)
-				{
-					m_DataGridView.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
-				}
+				UpdateGridHeader();
 			}
 			catch (Exception ex)
 			{
@@ -250,6 +233,21 @@ namespace CsvEditor
 				return false;
 			}
 			return true;
+		}
+
+		private void UpdateGridHeader()
+		{
+			for (int colIdx = 0; colIdx < m_DataGridView.Columns.Count; colIdx++)
+			{
+				// 列数不能超过26
+				m_DataGridView.Columns[colIdx].HeaderText = ConvertUtility.NumberToAZString(colIdx);
+				m_DataGridView.Columns[colIdx].SortMode = DataGridViewColumnSortMode.Programmatic;
+			}
+			// 更新行号
+			for (int rowIdx = 0; rowIdx < m_DataGridView.Rows.Count; rowIdx++)
+			{
+				m_DataGridView.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
+			}
 		}
 
 		/// <summary>
@@ -303,19 +301,83 @@ namespace CsvEditor
 
         private void OnDataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+			// 在右键菜单弹出前触发, 在这里初始化右键菜单
+			if (e.Button == MouseButtons.Right)
             {
-                //if (e.ColumnIndex >= 0 && e.RowIndex >= 0)
-                //{
+				m_InsertDownRowToolStripMenuItem.Enabled = false;
+				m_InsertUpRowToolStripMenuItem.Enabled = false;
 
-                //}
-                // Add this
-                //m_DataGridView.CurrentCell = m_DataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                // Can leave these here - doesn't hurt
-                //m_DataGridView.Rows[e.RowIndex].Selected = true;
-                //m_DataGridView.Focus();
-            }
+				// TODO 右键菜单里的操作只针对单行、单列 未来可能支持多行、多列操作
+				// 点击行标题
+				if (e.ColumnIndex < 0)
+				{
+					m_InsertDownRowToolStripMenuItem.Enabled = true;
+					m_InsertUpRowToolStripMenuItem.Enabled = true;
+
+					m_DataGridView.ClearSelection();
+
+					m_DataGridView.Rows[e.RowIndex].Selected = true;
+					m_DataGridView.Focus();
+				}
+				// 点击列标题
+				else if (e.RowIndex < 0)
+				{
+
+				}
+				else
+				{
+
+				}
+			}
         }
+
+		private void OnDataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+		{
+			m_DataGridView.SelectionMode = DataGridViewSelectionMode.ColumnHeaderSelect;
+		}
+
+		private void OnDataGridView_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+		{
+			m_DataGridView.SelectionMode = DataGridViewSelectionMode.RowHeaderSelect;
+		}
+
+		private void OnInsertRowToolStripMenuItem_MouseDown(object sender, MouseEventArgs e)
+		{
+			if (!Initialized)
+			{
+				return;
+			}
+
+			int offset = int.MaxValue;
+			ToolStripMenuItem item = (ToolStripMenuItem)sender;
+			if (item == m_InsertDownRowToolStripMenuItem)
+			{
+				offset = 1;
+			}
+			else if(item == m_InsertUpRowToolStripMenuItem)
+			{
+				offset = 0;
+			}
+			if (offset == int.MaxValue)
+			{
+				return;
+			}
+			if (m_DataGridView.SelectedRows.Count < 1)
+			{
+				return;
+			}
+
+			int index = m_DataGridView.SelectedRows[0].Index + offset;
+			DataRow newRowData = MainDataTable.NewRow();
+			MainDataTable.Rows.InsertAt(newRowData, index);
+
+			m_DataGridView.ClearSelection();
+			m_DataGridView.Rows[index].Selected = true;
+			m_DataGridView.Focus();
+
+			DataChanged = true;
+			UpdateGridHeader();
+		}
 		#endregion UIEvent
 	}
 }
