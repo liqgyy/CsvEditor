@@ -265,6 +265,23 @@ namespace CsvEditor
 			}
 		}
 
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			if (keyData != Keys.Enter)
+			{
+				return base.ProcessCmdKey(ref msg, keyData);
+			}
+			if (!m_DataGridView.IsCurrentCellInEditMode)  
+			{
+				return base.ProcessCmdKey(ref msg, keyData);
+			}
+
+			TextBox textBox = m_DataGridView.EditingControl as TextBox;
+			int nStart = textBox.SelectionStart;
+			m_DataGridView.CurrentCell.Value = textBox.Text.Insert(nStart, "\r\n");
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
 		#region UIEvent
 		private void OnCsvForm_Load(object sender, EventArgs e)
 		{
@@ -301,6 +318,18 @@ namespace CsvEditor
 
         private void OnDataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
+			if (e.ColumnIndex < 0 && e.RowIndex < 0)
+			{
+				return;
+			}
+			else if (e.ColumnIndex < 0)
+			{
+				m_DataGridView.SelectionMode = DataGridViewSelectionMode.RowHeaderSelect;
+			}
+			else if (e.RowIndex < 0)
+			{
+				m_DataGridView.SelectionMode = DataGridViewSelectionMode.ColumnHeaderSelect;
+			}
 			// 在右键菜单弹出前触发, 在这里初始化右键菜单
 			if (e.Button == MouseButtons.Right)
             {
@@ -317,7 +346,6 @@ namespace CsvEditor
 				// 点击行标题
 				else if (e.ColumnIndex < 0)
 				{
-					m_DataGridView.SelectionMode = DataGridViewSelectionMode.RowHeaderSelect;
 					m_InsertDownRowToolStripMenuItem.Enabled = true;
 					m_InsertUpRowToolStripMenuItem.Enabled = true;
 
@@ -337,7 +365,6 @@ namespace CsvEditor
 				// 点击列标题
 				else if (e.RowIndex < 0)
 				{
-					m_DataGridView.SelectionMode = DataGridViewSelectionMode.ColumnHeaderSelect;
 					m_DataGridView.ClearSelection();
 					m_DataGridView.Columns[e.ColumnIndex].Selected = true;
 					m_DataGridView.Focus();
@@ -357,16 +384,6 @@ namespace CsvEditor
 				}
 			}
         }
-
-		private void OnDataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-		{
-			m_DataGridView.SelectionMode = DataGridViewSelectionMode.ColumnHeaderSelect;
-		}
-
-		private void OnDataGridView_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-		{
-			m_DataGridView.SelectionMode = DataGridViewSelectionMode.RowHeaderSelect;
-		}
 
 		private void OnInsertRowToolStripMenuItem_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -402,7 +419,7 @@ namespace CsvEditor
 			m_DataGridView.Rows[index].Selected = true;
 			m_DataGridView.Focus();
 
-			DataChanged = true;
+			OnDataGridViewData_Change();
 			UpdateGridHeader();
 		}
 
@@ -426,6 +443,7 @@ namespace CsvEditor
 			{
 				m_DataGridView.SelectedColumns[colIdx].Frozen = frozen;
 			}
+			UpdateGridHeader();
 		}
 		#endregion UIEvent
 	}

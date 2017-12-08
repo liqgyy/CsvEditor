@@ -29,7 +29,8 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.m_DataGridView = new System.Windows.Forms.DataGridView();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+			this.m_DataGridView = new CsvDataGridView();
 			this.m_GridContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.m_InsertUpRowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_InsertDownRowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,14 +47,15 @@
 			this.m_DataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
 			this.m_DataGridView.ContextMenuStrip = this.m_GridContextMenuStrip;
 			this.m_DataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.m_DataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
 			this.m_DataGridView.Location = new System.Drawing.Point(0, 0);
 			this.m_DataGridView.Name = "m_DataGridView";
+			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+			this.m_DataGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
 			this.m_DataGridView.Size = new System.Drawing.Size(944, 601);
 			this.m_DataGridView.TabIndex = 0;
 			this.m_DataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnDataGridView_CellEndEdit);
 			this.m_DataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.OnDataGridView_CellMouseDown);
-			this.m_DataGridView.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.OnDataGridView_ColumnHeaderMouseClick);
-			this.m_DataGridView.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.OnDataGridView_RowHeaderMouseClick);
 			// 
 			// m_GridContextMenuStrip
 			// 
@@ -119,7 +121,7 @@
         private System.Windows.Forms.ContextMenuStrip m_GridContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem m_InsertUpRowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem m_InsertDownRowToolStripMenuItem;
-		private System.Windows.Forms.DataGridView m_DataGridView;
+		private CsvDataGridView m_DataGridView;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem m_FrozenToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem m_UnFrozenToolStripMenuItem;
