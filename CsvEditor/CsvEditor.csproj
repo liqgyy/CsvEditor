@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Datas\GlobalData.cs" />
     <Compile Include="Plugins\CodeCompare.cs" />
+    <Compile Include="Plugins\ConvertUtility.cs" />
     <Compile Include="Plugins\Csv\CsvExport.cs" />
     <Compile Include="Plugins\Csv\CsvParser.cs" />
     <Compile Include="Plugins\Csv\CsvParser2.cs" />

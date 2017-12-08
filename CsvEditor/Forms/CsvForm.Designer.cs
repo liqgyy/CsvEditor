@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.m_DataGridView = new System.Windows.Forms.DataGridView();
 			this.m_GridContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.在上方插入行ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,8 +47,7 @@
 			this.m_DataGridView.ContextMenuStrip = this.m_GridContextMenuStrip;
 			this.m_DataGridView.Location = new System.Drawing.Point(-1, -1);
 			this.m_DataGridView.Name = "m_DataGridView";
-			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-			this.m_DataGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
+			this.m_DataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.ColumnHeaderSelect;
 			this.m_DataGridView.Size = new System.Drawing.Size(946, 603);
 			this.m_DataGridView.TabIndex = 0;
 			this.m_DataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnDataGridView_CellEndEdit);

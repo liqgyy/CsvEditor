@@ -205,29 +205,44 @@ namespace CsvEditor
 			// csv->DataTable
 			try
 			{
-				int rowCount = csvTable.GetLength(0);
-				int colCount = 0;
+				
 
-				for (int rowIdx = 0; rowIdx < rowCount; rowIdx++)
-				{
-					colCount = colCount < csvTable[rowIdx].Length ? csvTable[rowIdx].Length : colCount;
-				}
+				//for (int rowIdx = 0; rowIdx < rowCount; rowIdx++)
+				//{
+				//	colCount = colCount < csvTable[rowIdx].Length ? csvTable[rowIdx].Length : colCount;
+				//}
 				MainDataTable = new DataTable();
-				for (int colIdx = 0; colIdx < colCount; colIdx++)
-				{
-					MainDataTable.Columns.Add(colIdx < csvTable[0].Length ? csvTable[0][colIdx] : colIdx.ToString(), typeof(string));
-				}
+				int rowCount = csvTable.GetLength(0);
+				int colCount = -1;
 				for (int rowIdx = 0; rowIdx < rowCount; rowIdx++)
 				{
 					DataRow newRowData = MainDataTable.NewRow();
 					string[] csvRow = csvTable[rowIdx];
 					for (int colIdx = 0; colIdx < csvRow.Length; colIdx++)
 					{
+						if (colIdx > colCount)
+						{
+							MainDataTable.Columns.Add(colIdx.ToString(), typeof(string));							
+							colCount = colIdx;
+						}
 						newRowData[colIdx] = csvRow[colIdx];
 					}
 					MainDataTable.Rows.Add(newRowData);
 				}
 				m_DataGridView.DataSource = MainDataTable;
+
+				for (int colIdx = 0; colIdx < m_DataGridView.Columns.Count; colIdx++)
+				{
+					// 列数不能超过26
+					m_DataGridView.Columns[colIdx].HeaderText = ConvertUtility.NumberToAZString(colIdx);
+					m_DataGridView.Columns[colIdx].SortMode = DataGridViewColumnSortMode.Programmatic;
+				}
+
+				// 更新行号
+				for (int rowIdx = 0; rowIdx < m_DataGridView.Rows.Count; rowIdx++)
+				{
+					m_DataGridView.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
+				}
 			}
 			catch (Exception ex)
 			{
