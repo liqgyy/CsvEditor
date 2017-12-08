@@ -131,11 +131,11 @@ public class RegistryUtility
 		RegistryKey software = null;
 		try
 		{
-			software = Registry.LocalMachine.CreateSubKey(GlobalData.RegistryKeySoftware, true);
-			if (GlobalData.RegistryForceInitialize || software.GetValue(GlobalData.RegistryKeyInitialized) == null)
+			software = Registry.LocalMachine.CreateSubKey(GlobalData.REGISTRY_KEY_SOFTWARE, true);
+			if (GlobalData.REGISTRY_FORCE_INITIALIZE || software.GetValue(GlobalData.REGISTRY_KEY_INITIALIZED) == null)
 			{
 				SetRegisterFileExtendWithThisApp(".csv", "CsvEditor.CSV", "CsvEditor的csv文件", "在CsvEditor中打开");
-				software.SetValue(GlobalData.RegistryKeyInitialized, 1);
+				software.SetValue(GlobalData.REGISTRY_KEY_INITIALIZED, 1);
 			}
 		}
 		catch (Exception ex)

@@ -68,7 +68,14 @@ namespace CsvEditor
             {
                 DataChanged = false;
                 NeedSaveSourceFile = false;
-				CopySourceFile();
+				try
+				{
+					CopySourceFile();
+				}
+				catch (Exception ex)
+				{
+					Debug.ShowExceptionMessageBox("拷贝文件副本失败: " + SourceFileFullPath, ex);
+				}
 			}
 			UpdateFormText();
 		}

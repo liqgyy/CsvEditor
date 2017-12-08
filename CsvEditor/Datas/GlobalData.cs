@@ -1,11 +1,11 @@
 ﻿public class GlobalData
 {
-	public const string RegistryKeySoftware = "SOFTWARE\\CsvEditor";
-	public const string RegistryKeyInitialized = "Initialized";
+	public const string REGISTRY_KEY_SOFTWARE = "SOFTWARE\\CsvEditor";
+	public const string REGISTRY_KEY_INITIALIZED = "Initialized";
 	/// <summary>
 	/// 为true时强制初始化
 	/// </summary>
-	public const bool RegistryForceInitialize = true;
+	public const bool REGISTRY_FORCE_INITIALIZE = true;
 
-	public const string RegistryKeyCodeCompare = "SOFTWARE\\Devart\\Code Compare";
+	public const string REGISTRY_KEY_CODECOMPARE = "SOFTWARE\\Devart\\Code Compare";
 }
