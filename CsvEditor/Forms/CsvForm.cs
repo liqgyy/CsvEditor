@@ -306,23 +306,50 @@ namespace CsvEditor
             {
 				m_InsertDownRowToolStripMenuItem.Enabled = false;
 				m_InsertUpRowToolStripMenuItem.Enabled = false;
+				m_FrozenToolStripMenuItem.Enabled = false;
+				m_UnFrozenToolStripMenuItem.Enabled = false;
 
 				// TODO 右键菜单里的操作只针对单行、单列 未来可能支持多行、多列操作
-				// 点击行标题
-				if (e.ColumnIndex < 0)
+				if (e.ColumnIndex < 0 && e.RowIndex < 0)
 				{
+					return;
+				}
+				// 点击行标题
+				else if (e.ColumnIndex < 0)
+				{
+					m_DataGridView.SelectionMode = DataGridViewSelectionMode.RowHeaderSelect;
 					m_InsertDownRowToolStripMenuItem.Enabled = true;
 					m_InsertUpRowToolStripMenuItem.Enabled = true;
 
 					m_DataGridView.ClearSelection();
-
 					m_DataGridView.Rows[e.RowIndex].Selected = true;
 					m_DataGridView.Focus();
+
+					if(m_DataGridView.Rows[e.RowIndex].Frozen)
+					{
+						m_UnFrozenToolStripMenuItem.Enabled = true;
+					}
+					else
+					{
+						m_FrozenToolStripMenuItem.Enabled = true;
+					}
 				}
 				// 点击列标题
 				else if (e.RowIndex < 0)
 				{
+					m_DataGridView.SelectionMode = DataGridViewSelectionMode.ColumnHeaderSelect;
+					m_DataGridView.ClearSelection();
+					m_DataGridView.Columns[e.ColumnIndex].Selected = true;
+					m_DataGridView.Focus();
 
+					if (m_DataGridView.Columns[e.ColumnIndex].Frozen)
+					{
+						m_UnFrozenToolStripMenuItem.Enabled = true;
+					}
+					else
+					{
+						m_FrozenToolStripMenuItem.Enabled = true;
+					}
 				}
 				else
 				{
@@ -348,7 +375,7 @@ namespace CsvEditor
 				return;
 			}
 
-			int offset = int.MaxValue;
+			int offset = 0;
 			ToolStripMenuItem item = (ToolStripMenuItem)sender;
 			if (item == m_InsertDownRowToolStripMenuItem)
 			{
@@ -358,7 +385,7 @@ namespace CsvEditor
 			{
 				offset = 0;
 			}
-			if (offset == int.MaxValue)
+			else
 			{
 				return;
 			}
@@ -377,6 +404,28 @@ namespace CsvEditor
 
 			DataChanged = true;
 			UpdateGridHeader();
+		}
+
+		private void OnFrozenToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			bool frozen = true;
+			ToolStripMenuItem item = (ToolStripMenuItem)sender;
+			if (item == m_FrozenToolStripMenuItem)
+			{
+				frozen = true;
+			}
+			else if (item == m_UnFrozenToolStripMenuItem)
+			{
+				frozen = false;
+			}
+			for(int rowIdx = 0; rowIdx < m_DataGridView.SelectedRows.Count; rowIdx++)
+			{
+				m_DataGridView.SelectedRows[rowIdx].Frozen = frozen;
+			}
+			for (int colIdx = 0; colIdx < m_DataGridView.SelectedColumns.Count; colIdx++)
+			{
+				m_DataGridView.SelectedColumns[colIdx].Frozen = frozen;
+			}
 		}
 		#endregion UIEvent
 	}
