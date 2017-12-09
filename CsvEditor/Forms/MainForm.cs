@@ -18,7 +18,7 @@ public partial class MainForm : Form
     /// <summary>
     /// 当前Csv窗口，只能通过SetSelCsvForm赋值
     /// </summary>
-    private CsvForm m_SelCsvForm;
+    public CsvForm SelCsvForm { get; private set; }
 
     private GotoForm m_GotoForm;
 
@@ -31,14 +31,13 @@ public partial class MainForm : Form
         CodeCompare codeCompare = CodeCompare.Instance;
     }
 
-    public bool GotoCsvGridDataViewCell(int row, int col)
+    public bool SelCsvFormInitialized()
     {
-        if (!SelCsvFormInitialized())
+        if (SelCsvForm == null)
         {
-            MessageBox.Show("当前没有打开Csv文件", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return false;
         }
-        return m_SelCsvForm.GotoGridDataViewCell(row, col);
+        return SelCsvForm.Initialized;
     }
 
     public void UpdateAllToolStripMenu()
@@ -90,18 +89,9 @@ public partial class MainForm : Form
         SetSelCsvForm(newCsvForm);
     }
 
-    private bool SelCsvFormInitialized()
-    {
-        if (m_SelCsvForm == null)
-        {
-            return false;
-        }
-        return m_SelCsvForm.Initialized;
-    }
-
     private void SetSelCsvForm(CsvForm csvForm)
     {
-        m_SelCsvForm = csvForm;
+        SelCsvForm = csvForm;
         UpdateAllToolStripMenu();
     }
 
@@ -115,28 +105,28 @@ public partial class MainForm : Form
         {
             return;
         }
-        m_SaveToCopyFileToolStripMenuItem.Enabled = m_SelCsvForm.DataChanged;
-        m_SaveToSourceFileToolStripMenuItem.Enabled = m_SelCsvForm.NeedSaveSourceFile && !m_SelCsvForm.DataChanged;
+        m_SaveToCopyFileToolStripMenuItem.Enabled = SelCsvForm.DataChanged;
+        m_SaveToSourceFileToolStripMenuItem.Enabled = SelCsvForm.NeedSaveSourceFile && !SelCsvForm.DataChanged;
         m_SaveToFileToolStripMenuItem.Enabled = true;
     }
 
     private void UpdateFileRevertToolStripMenu()
     {
         m_RevertFileToolStripMenuItem.Enabled = false;
-        if (!SelCsvFormInitialized() || (string.IsNullOrEmpty(m_SelCsvForm.SourceCopyFileName) && m_SelCsvForm.CopyFileNameList.Count == 0))
+        if (!SelCsvFormInitialized() || (string.IsNullOrEmpty(SelCsvForm.SourceCopyFileName) && SelCsvForm.CopyFileNameList.Count == 0))
         {
             return;
         }
         m_RevertFileToolStripMenuItem.Enabled = true;
         m_RevertFileToolStripMenuItem.DropDownItems.Clear();
-        for (int copyFileIdx = 0; copyFileIdx < m_SelCsvForm.CopyFileNameList.Count; copyFileIdx++)
+        for (int copyFileIdx = 0; copyFileIdx < SelCsvForm.CopyFileNameList.Count; copyFileIdx++)
         {
-            string copyFileName = m_SelCsvForm.CopyFileNameList[copyFileIdx];
+            string copyFileName = SelCsvForm.CopyFileNameList[copyFileIdx];
             AddMenumItemToRevertFileToolStripMenu(copyFileName);
         }
-        if (!string.IsNullOrEmpty(m_SelCsvForm.SourceCopyFileName))
+        if (!string.IsNullOrEmpty(SelCsvForm.SourceCopyFileName))
         {
-            AddMenumItemToRevertFileToolStripMenu(m_SelCsvForm.SourceCopyFileName);
+            AddMenumItemToRevertFileToolStripMenu(SelCsvForm.SourceCopyFileName);
         }
     }
 
@@ -165,7 +155,7 @@ public partial class MainForm : Form
         m_GotoEditToolStripMenuItem.Enabled = true;
         m_SearchEditStripMenuItem.Enabled = true;
 
-        DataGridView dataGridView = m_SelCsvForm.MainDataGridView;
+        DataGridView dataGridView = SelCsvForm.MainDataGridView;
         if (dataGridView == null)
         {
             return;
@@ -235,7 +225,7 @@ public partial class MainForm : Form
             return;
         }
         ToolStripMenuItem item = (ToolStripMenuItem)sender;
-        m_SelCsvForm.RevertToCopyFile(item.Text);
+        SelCsvForm.RevertToCopyFile(item.Text);
     }
 
     private void OnEditToolStripMenuItem_Click(object sender, EventArgs e)
@@ -285,11 +275,11 @@ public partial class MainForm : Form
         ToolStripMenuItem item = (ToolStripMenuItem)sender;
         if (item == m_SaveToSourceFileToolStripMenuItem)
         {
-            m_SelCsvForm.SaveToSourceFile();
+            SelCsvForm.SaveToSourceFile();
         }
         else if (item == m_SaveToCopyFileToolStripMenuItem)
         {
-            m_SelCsvForm.SaveToCopyFile();
+            SelCsvForm.SaveToCopyFile();
         }
         else if (item == m_SaveToFileToolStripMenuItem)
         {
@@ -301,7 +291,7 @@ public partial class MainForm : Form
             {
                 return;
             }
-            m_SelCsvForm.SaveToPath(m_SaveCsvFileDialog.FileName);
+            SelCsvForm.SaveToPath(m_SaveCsvFileDialog.FileName);
         }
         UpdateAllToolStripMenu();
     }

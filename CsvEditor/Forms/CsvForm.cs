@@ -158,25 +158,6 @@ public partial class CsvForm : Form
     }
 
     /// <summary>
-    /// 跳转到某一个单元格
-    /// </summary>
-    /// <param name="row">行  范围1~RowCount</param>
-    /// <param name="col">列  范围1~ColumnCount</param>
-    /// <returns></returns>
-    public bool GotoGridDataViewCell(int row, int col)
-    {
-        if(col < 1 || col > m_DataGridView.ColumnCount || row < 1 || row > m_DataGridView.RowCount)
-        {
-            string msgText = string.Format("输入的col或row超出范围.\n接受的范围:\n0 < col <= {0}\n0 < row <= {1}",
-                m_DataGridView.ColumnCount , m_DataGridView.RowCount);
-            MessageBox.Show(msgText, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return false;
-        }
-        m_DataGridView.CurrentCell = m_DataGridView.Rows[row - 1].Cells[col - 1];
-        return true;
-    }
-
-    /// <summary>
     /// 拷贝源文件文件副本
     /// </summary>
     /// <returns>副本文件名</returns>

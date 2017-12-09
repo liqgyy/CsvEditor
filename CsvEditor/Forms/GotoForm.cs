@@ -13,6 +13,11 @@ public partial class GotoForm : Form
         m_ColTextBox.Text = ms_ColTextBoxText;
     }
 
+    /// <summary>
+    /// 跳转到某一个单元格
+    /// </summary>
+    /// <param name="row">行  范围1~RowCount</param>
+    /// <param name="col">列  范围1~ColumnCount</param>
     private void Goto()
     {
         int row, col;
@@ -24,7 +29,24 @@ public partial class GotoForm : Form
         {
             col = ConvertUtility.LetterToNumber(m_ColTextBox.Text);
         }
-        MainForm.Instance.GotoCsvGridDataViewCell(row, col);
+
+        if (!MainForm.Instance.SelCsvFormInitialized())
+        {
+            MessageBox.Show("当前没有打开Csv文件", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        DataGridView dataGridView = MainForm.Instance.SelCsvForm.MainDataGridView;
+
+        if (col < 1 || col > dataGridView.ColumnCount || row < 1 || row > dataGridView.RowCount)
+        {
+            string msgText = string.Format("输入的col或row超出范围.\n接受的范围:\n0 < col <= {0}\n0 < row <= {1}",
+                dataGridView.ColumnCount, dataGridView.RowCount);
+            MessageBox.Show(msgText, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+        dataGridView.CurrentCell = dataGridView.Rows[row - 1].Cells[col - 1];
+        return;
     }
 
     #region UIEvent
