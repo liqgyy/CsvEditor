@@ -21,14 +21,18 @@ public partial class MainForm : Form
     public CsvForm SelCsvForm { get; private set; }
 
     private GotoForm m_GotoForm;
+    private SearchForm m_SearchForm;
 
     public MainForm()
     {
         Instance = this;
         InitializeComponent();
 
+        Setting setting = Setting.Instance;
         RegistryUtility registryUtility = RegistryUtility.Instance;
         CodeCompare codeCompare = CodeCompare.Instance;
+
+        SkinUtility.SetSkin();
     }
 
     public bool SelCsvFormInitialized()
@@ -310,7 +314,20 @@ public partial class MainForm : Form
 
     private void OnSearchEditStripMenuItem_Click(object sender, EventArgs e)
     {
+        if (m_SearchForm == null || m_SearchForm.IsDisposed)
+        {
+            m_SearchForm = new SearchForm();
+        }
+        if (!m_SearchForm.Visible)
+        {
+            m_SearchForm.Show();
+        }
+    }
 
+    private void OnSettingToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        SettingForm settingForm = new SettingForm();
+        settingForm.ShowDialog();
     }
     #endregion // END UIEvent
 }

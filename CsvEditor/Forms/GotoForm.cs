@@ -3,6 +3,8 @@ using System.Windows.Forms;
 
 public partial class GotoForm : Form
 {
+    public bool Initialized = false;
+
     private static string ms_RowTextBoxText = "";
     private static string ms_ColTextBoxText = "";
 
@@ -11,6 +13,7 @@ public partial class GotoForm : Form
         InitializeComponent();
         m_RowTextBox.Text = ms_RowTextBoxText;
         m_ColTextBox.Text = ms_ColTextBoxText;
+        Initialized = true;
     }
 
     /// <summary>
@@ -94,8 +97,12 @@ public partial class GotoForm : Form
         }
     }
 
-    private void TextBox_TextChanged(object sender, EventArgs e)
+    private void OnValueChanged(object sender, EventArgs e)
     {
+        if (!Initialized)
+        {
+            return;
+        }
         ms_RowTextBoxText = m_RowTextBox.Text;
         ms_ColTextBoxText = m_ColTextBox.Text;
     }

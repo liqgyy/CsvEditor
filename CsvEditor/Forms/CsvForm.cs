@@ -318,7 +318,6 @@ public partial class CsvForm : Form
     {
         if (e.ColumnIndex < 0 && e.RowIndex < 0)
         {
-            return;
         }
         else if (e.ColumnIndex < 0)
         {
@@ -349,7 +348,6 @@ public partial class CsvForm : Form
 
                 m_DataGridView.ClearSelection();
                 m_DataGridView.Rows[e.RowIndex].Selected = true;
-                m_DataGridView.Focus();
 
                 if (m_DataGridView.Rows[e.RowIndex].Frozen)
                 {
@@ -365,7 +363,6 @@ public partial class CsvForm : Form
             {
                 m_DataGridView.ClearSelection();
                 m_DataGridView.Columns[e.ColumnIndex].Selected = true;
-                m_DataGridView.Focus();
 
                 if (m_DataGridView.Columns[e.ColumnIndex].Frozen)
                 {
@@ -415,7 +412,6 @@ public partial class CsvForm : Form
 
         m_DataGridView.ClearSelection();
         m_DataGridView.Rows[index].Selected = true;
-        m_DataGridView.Focus();
 
         OnDataGridViewData_Change();
         UpdateGridHeader();
