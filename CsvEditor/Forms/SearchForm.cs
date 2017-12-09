@@ -8,13 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CsvEditor.Forms
+public partial class SearchForm : Form
 {
-	public partial class SearchForm : Form
-	{
-		public SearchForm()
-		{
-			InitializeComponent();
-		}
-	}
+    public SearchForm()
+    {
+        InitializeComponent();
+    }
 }

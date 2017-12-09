@@ -52,6 +52,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Datas\GlobalData.cs" />
+    <Compile Include="Forms\GotoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\GotoForm.Designer.cs">
+      <DependentUpon>GotoForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plugins\CodeCompare.cs" />
     <Compile Include="Plugins\ConvertUtility.cs" />
     <Compile Include="Plugins\Csv\CsvExport.cs" />
@@ -85,6 +91,9 @@
     </Compile>
     <EmbeddedResource Include="Forms\CsvForm.resx">
       <DependentUpon>CsvForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\GotoForm.resx">
+      <DependentUpon>GotoForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
