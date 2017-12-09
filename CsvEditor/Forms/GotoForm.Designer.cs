@@ -63,6 +63,7 @@
             this.m_RowTextBox.Text = "0";
             this.m_RowTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.m_RowTextBox.WordWrap = false;
+            this.m_RowTextBox.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             this.m_RowTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.OnTextBox_KeyPress);
             // 
             // m_ColTextBox
@@ -75,6 +76,7 @@
             this.m_ColTextBox.Text = "0";
             this.m_ColTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.m_ColTextBox.WordWrap = false;
+            this.m_ColTextBox.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             this.m_ColTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.OnTextBox_KeyPress);
             // 
             // m_GotoButton

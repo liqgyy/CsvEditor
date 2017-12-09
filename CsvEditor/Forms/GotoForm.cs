@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 public partial class GotoForm : Form
 {
+    private static string ms_RowTextBoxText = "";
+    private static string ms_ColTextBoxText = "";
+
     public GotoForm()
     {
         InitializeComponent();
+        m_RowTextBox.Text = ms_RowTextBoxText;
+        m_ColTextBox.Text = ms_ColTextBoxText;
     }
 
     private void Goto()
@@ -72,6 +70,12 @@ public partial class GotoForm : Form
                 e.Handled = true;
             }
         }
+    }
+
+    private void TextBox_TextChanged(object sender, EventArgs e)
+    {
+        ms_RowTextBoxText = m_RowTextBox.Text;
+        ms_ColTextBoxText = m_ColTextBox.Text;
     }
     #endregion UIEvent
 }
