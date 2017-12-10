@@ -1,36 +1,10 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 public class RegistryUtility
 {
-	/// <summary>
-	/// TODO 初始化放到Setting里. RegistryUtility改为静态类
-	/// </summary>
-	public static RegistryUtility Instance
-    {
-        get
-        {
-            if (m_Instance == null)
-            {
-                m_Instance = new RegistryUtility();
-            }
-            return m_Instance;
-        }
-    }
-
-    private static RegistryUtility m_Instance;
-
-    public RegistryUtility()
-    {
-		FirstRunInitialize();		
-    }
-
 	/// <summary>
 	/// 设置文件关联本程序
 	/// </summary>
@@ -122,34 +96,6 @@ public class RegistryUtility
 	{
 		if (key != null)
 			key.Close();
-	}
-
-	/// <summary>
-	/// 程序首次运行的时候，初始化注册表
-	/// </summary>
-	private void FirstRunInitialize()
-    {
-		RegistryKey localMachine = null;
-		RegistryKey software = null;
-		try
-		{
-			localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
-			software = localMachine.CreateSubKey(GlobalData.REGISTRY_KEY_SOFTWARE, true);
-			if (GlobalData.REGISTRY_FORCE_INITIALIZE || software.GetValue(GlobalData.REGISTRY_KEY_INITIALIZED) == null)
-			{
-				SetRegisterFileExtendWithThisApp(".csv", "CsvEditor.CSV", "CsvEditor的csv文件", "在CsvEditor中打开");
-				software.SetValue(GlobalData.REGISTRY_KEY_INITIALIZED, 1);
-			}
-		}
-		catch (Exception ex)
-		{
-			Debug.ShowExceptionMessageBox("注册表工具初始化失败", ex);
-		}
-		finally
-		{
-			CloseRegistryKey(software);
-			CloseRegistryKey(localMachine);
-		}
 	}
 
 	#region DllImport

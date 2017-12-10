@@ -29,7 +29,6 @@ public partial class MainForm : Form
         InitializeComponent();
 
         Setting setting = Setting.Instance;
-        RegistryUtility registryUtility = RegistryUtility.Instance;
         CodeCompare codeCompare = CodeCompare.Instance;
 
         SkinUtility.SetSkin();
@@ -161,16 +160,12 @@ public partial class MainForm : Form
         m_GotoEditToolStripMenuItem.Enabled = true;
         m_SearchEditStripMenuItem.Enabled = true;
 
-        DataGridView dataGridView = SelCsvForm.MainDataGridView;
-        if (dataGridView.SelectedCells.Count > 0)
-        {
-            m_CopyEditToolStripMenuItem.Enabled = true;
-            m_CutEditToolStripMenuItem.Enabled = true;
-            m_PasteEditToolStripMenuItem.Enabled = true;
-        }
+        m_CopyEditToolStripMenuItem.Enabled = SelCsvForm.Editor.CanCopy();
+        m_CutEditToolStripMenuItem.Enabled = SelCsvForm.Editor.CanCut();
+        m_PasteEditToolStripMenuItem.Enabled = SelCsvForm.Editor.CanPaste();
 
-        m_UndoEditToolStripMenuItem.Enabled = SelCsvForm.RedoUndo.CanUndo();
-        m_RedoEditToolStripMenuItem.Enabled = SelCsvForm.RedoUndo.CanRedo();
+        m_UndoEditToolStripMenuItem.Enabled = SelCsvForm.Editor.CanUndo();
+        m_RedoEditToolStripMenuItem.Enabled = SelCsvForm.Editor.CanRedo();
     }
     #endregion // End Update ToolStripMenu
 
@@ -192,10 +187,14 @@ public partial class MainForm : Form
 
     private void OnOpenFileToolStripMenuItem_Click(object sender, EventArgs e)
     {
+        SkinEngine.SkinDialogs = false;
         if (m_OpenCsvFileDialog.ShowDialog() != DialogResult.OK)
         {
+            SkinEngine.SkinDialogs = true;
             return;
         }
+        SkinEngine.SkinDialogs = true;
+
         if (m_OpenCsvFileDialog.FileNames.Length == 0)
         {
             return;
@@ -243,23 +242,23 @@ public partial class MainForm : Form
         ToolStripMenuItem item = (ToolStripMenuItem)sender;
         if (item == m_UndoEditToolStripMenuItem)
         {
-            SelCsvForm.EditUndo();
+            SelCsvForm.Editor.Undo();
         }
         else if (item == m_RedoEditToolStripMenuItem)
         {
-            SelCsvForm.EditRedo();
+            SelCsvForm.Editor.Redo();
         }
         else if(item == m_CopyEditToolStripMenuItem)
         {
-            SelCsvForm.EditCopy();
+            SelCsvForm.Editor.Copy();
         }
         else if (item == m_CutEditToolStripMenuItem)
         {
-            SelCsvForm.EditCut();
+            SelCsvForm.Editor.Cut();
         }
         else if (item == m_PasteEditToolStripMenuItem)
         {
-            SelCsvForm.EditPaste();
+            SelCsvForm.Editor.Paste();
         }
     }
 
@@ -304,10 +303,13 @@ public partial class MainForm : Form
         }
         else if (item == m_SaveToFileToolStripMenuItem)
         {
+            SkinEngine.SkinDialogs = false;
             if (m_SaveCsvFileDialog.ShowDialog() != DialogResult.OK)
             {
+                SkinEngine.SkinDialogs = true;
                 return;
             }
+            SkinEngine.SkinDialogs = true;
             if (m_SaveCsvFileDialog.FileNames.Length == 0)
             {
                 return;
@@ -347,4 +349,3 @@ public partial class MainForm : Form
         settingForm.ShowDialog();
     }
     #endregion // END UIEvent
-}

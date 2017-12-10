@@ -40,6 +40,9 @@ partial class MainForm
             this.m_GotoEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.m_SearchEditStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.m_UndoEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.m_RedoEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.m_CutEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.m_CopyEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.m_PasteEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,9 +52,6 @@ partial class MainForm
             this.m_SaveCsvFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.m_MainTabControl = new System.Windows.Forms.TabControl();
             this.SkinEngine = new Sunisoft.IrisSkin.SkinEngine();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.m_RedoEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.m_UndoEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.m_MenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -163,6 +163,27 @@ partial class MainForm
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(210, 6);
             // 
+            // m_UndoEditToolStripMenuItem
+            // 
+            this.m_UndoEditToolStripMenuItem.Name = "m_UndoEditToolStripMenuItem";
+            this.m_UndoEditToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+            this.m_UndoEditToolStripMenuItem.Size = new System.Drawing.Size(213, 26);
+            this.m_UndoEditToolStripMenuItem.Text = "撤销";
+            this.m_UndoEditToolStripMenuItem.Click += new System.EventHandler(this.OnEditToolStripMenuItem_Click);
+            // 
+            // m_RedoEditToolStripMenuItem
+            // 
+            this.m_RedoEditToolStripMenuItem.Name = "m_RedoEditToolStripMenuItem";
+            this.m_RedoEditToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+            this.m_RedoEditToolStripMenuItem.Size = new System.Drawing.Size(213, 26);
+            this.m_RedoEditToolStripMenuItem.Text = "重做";
+            this.m_RedoEditToolStripMenuItem.Click += new System.EventHandler(this.OnEditToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(210, 6);
+            // 
             // m_CutEditToolStripMenuItem
             // 
             this.m_CutEditToolStripMenuItem.Name = "m_CutEditToolStripMenuItem";
@@ -216,15 +237,13 @@ partial class MainForm
             // m_MainTabControl
             // 
             this.m_MainTabControl.AllowDrop = true;
-            this.m_MainTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.m_MainTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.m_MainTabControl.Location = new System.Drawing.Point(0, 28);
             this.m_MainTabControl.Margin = new System.Windows.Forms.Padding(0);
             this.m_MainTabControl.Name = "m_MainTabControl";
             this.m_MainTabControl.Padding = new System.Drawing.Point(10, 3);
             this.m_MainTabControl.SelectedIndex = 0;
-            this.m_MainTabControl.Size = new System.Drawing.Size(1023, 498);
+            this.m_MainTabControl.Size = new System.Drawing.Size(1023, 497);
             this.m_MainTabControl.TabIndex = 0;
             this.m_MainTabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.OnMainTabControl_Selected);
             this.m_MainTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnMainTabControl_MouseClick);
@@ -236,29 +255,7 @@ partial class MainForm
             this.SkinEngine.DisabledMenuFontColor = System.Drawing.SystemColors.GrayText;
             this.SkinEngine.InactiveCaptionColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.SkinEngine.SerialNumber = "";
-            this.SkinEngine.SkinDialogs = false;
             this.SkinEngine.SkinFile = null;
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(210, 6);
-            // 
-            // m_RedoEditToolStripMenuItem
-            // 
-            this.m_RedoEditToolStripMenuItem.Name = "m_RedoEditToolStripMenuItem";
-            this.m_RedoEditToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-            this.m_RedoEditToolStripMenuItem.Size = new System.Drawing.Size(213, 26);
-            this.m_RedoEditToolStripMenuItem.Text = "重做";
-            this.m_RedoEditToolStripMenuItem.Click += new System.EventHandler(this.OnEditToolStripMenuItem_Click);
-            // 
-            // m_UndoEditToolStripMenuItem
-            // 
-            this.m_UndoEditToolStripMenuItem.Name = "m_UndoEditToolStripMenuItem";
-            this.m_UndoEditToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-            this.m_UndoEditToolStripMenuItem.Size = new System.Drawing.Size(213, 26);
-            this.m_UndoEditToolStripMenuItem.Text = "撤销";
-            this.m_UndoEditToolStripMenuItem.Click += new System.EventHandler(this.OnEditToolStripMenuItem_Click);
             // 
             // MainForm
             // 

@@ -4,7 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
-using static DataGridViewRedoUndo;
+using static CsvEdit;
 
 public partial class CsvForm : Form
 {
@@ -23,7 +23,7 @@ public partial class CsvForm : Form
     /// </summary>
     public List<string> CopyFileNameList { get; private set; }
 
-    public DataGridViewRedoUndo RedoUndo;
+    public CsvEdit Editor;
 
     public bool Initialized = false;
 
@@ -31,9 +31,8 @@ public partial class CsvForm : Form
     public bool DataChanged = false;
 
     public DataGridView MainDataGridView { get { return m_DataGridView; } }
-
-    private DataTable m_MainDataTable;
-    private DataTable m_CopyDataTable;
+    public DataTable MainDataTable;
+    public DataTable CopyDataTable;
 
     /// <summary>
     /// 源文件 文件名 如: a.csv
@@ -52,41 +51,20 @@ public partial class CsvForm : Form
         CopyFileNameList = new List<string>();
         SourceFileFullName = fileFullPath;
 
-        RedoUndo = new DataGridViewRedoUndo(m_DataGridView);
+        Editor = new CsvEdit(this);
     }
 
-    #region Edit
-    public void EditUndo()
+    public void BeforeChangeCellValue()
     {
         m_DataGridView.CellValueChanged -= OnDataGridView_CellValueChanged;
-        RedoUndo.Undo();
-        m_CopyDataTable = m_MainDataTable.Copy();
+
+    }
+
+    public void AfterChangeCellValue()
+    {
+        CopyDataTable = MainDataTable.Copy();
         m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
     }
-
-    public void EditRedo()
-    {
-        m_DataGridView.CellValueChanged -= OnDataGridView_CellValueChanged;
-        RedoUndo.Redo();
-        m_CopyDataTable = m_MainDataTable.Copy();
-        m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
-    }
-
-    public void EditCopy()
-    {
-
-    }
-
-    public void EditCut()
-    {
-
-    }
-
-    public void EditPaste()
-    {
-
-    }
-    #endregion // End Edit
 
     public bool TryClose()
     {
@@ -112,25 +90,27 @@ public partial class CsvForm : Form
         if (MessageBox.Show("是否打开文件比较工具", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
         {
             // TODD 利用GetChanges 做简单的版本比较工具
-            //DataTable cdt = m_MainDataTable.GetChanges();
-            //if (cdt != null)
-            //{
-            //    for (int i = 0; i < cdt.Rows.Count; i++)
-            //    {
-            //        if (cdt.Rows[i].RowState == DataRowState.Deleted)
-            //        {
-            //            Console.WriteLine("删除的行索引{0}，原来数值是{1}", i, cdt.Rows[i][0, DataRowVersion.Original]);
-            //        }
-            //        else if (cdt.Rows[i].RowState == DataRowState.Modified)
-            //        {
-            //            Console.WriteLine("修改的行索引{0}，原来数值是{1}，现在的新数值{2}", i, cdt.Rows[i][0, DataRowVersion.Original], cdt.Rows[i][0, DataRowVersion.Current]);
-            //        }
-            //        else if (cdt.Rows[i].RowState == DataRowState.Added)
-            //        {
-            //            Console.WriteLine("新添加行索引{0}，数值是{1}", i, cdt.Rows[i][0, DataRowVersion.Current]);
-            //        }
-            //    }
-            //}
+            {
+                //DataTable cdt = m_MainDataTable.GetChanges();
+                //if (cdt != null)
+                //{
+                //    for (int i = 0; i < cdt.Rows.Count; i++)
+                //    {
+                //        if (cdt.Rows[i].RowState == DataRowState.Deleted)
+                //        {
+                //            Console.WriteLine("删除的行索引{0}，原来数值是{1}", i, cdt.Rows[i][0, DataRowVersion.Original]);
+                //        }
+                //        else if (cdt.Rows[i].RowState == DataRowState.Modified)
+                //        {
+                //            Console.WriteLine("修改的行索引{0}，原来数值是{1}，现在的新数值{2}", i, cdt.Rows[i][0, DataRowVersion.Original], cdt.Rows[i][0, DataRowVersion.Current]);
+                //        }
+                //        else if (cdt.Rows[i].RowState == DataRowState.Added)
+                //        {
+                //            Console.WriteLine("新添加行索引{0}，数值是{1}", i, cdt.Rows[i][0, DataRowVersion.Current]);
+                //        }
+                //    }
+                //}
+            }
             CodeCompare.Instance.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName, "源文件", "副本");
             BeyondCompare.Instance.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName);
             return;
@@ -168,11 +148,11 @@ public partial class CsvForm : Form
         CsvExport myExport = new CsvExport(",", false);
         try
         {
-            for (int rowIdx = 0; rowIdx < m_MainDataTable.Rows.Count; rowIdx++)
+            for (int rowIdx = 0; rowIdx < MainDataTable.Rows.Count; rowIdx++)
             {
                 myExport.AddRow();
-                DataRow dataRow = m_MainDataTable.Rows[rowIdx];
-                for (int colIdx = 0; colIdx < m_MainDataTable.Columns.Count; colIdx++)
+                DataRow dataRow = MainDataTable.Rows[rowIdx];
+                for (int colIdx = 0; colIdx < MainDataTable.Columns.Count; colIdx++)
                 {
                     myExport[colIdx.ToString()] = dataRow[colIdx];
                 }
@@ -258,32 +238,31 @@ public partial class CsvForm : Form
         // csv->DataTable
         try
         {
-            m_MainDataTable = new DataTable();
+            MainDataTable = new DataTable();
             int rowCount = csvTable.GetLength(0);
             int colCount = -1;
             for (int rowIdx = 0; rowIdx < rowCount; rowIdx++)
             {
-                DataRow newRowData = m_MainDataTable.NewRow();
+                DataRow newRowData = MainDataTable.NewRow();
                 string[] csvRow = csvTable[rowIdx];
                 for (int colIdx = 0; colIdx < csvRow.Length; colIdx++)
                 {
                     if (colIdx > colCount)
                     {
-                        m_MainDataTable.Columns.Add(colIdx.ToString(), typeof(string));
+                        MainDataTable.Columns.Add(colIdx.ToString(), typeof(string));
                         colCount = colIdx;
                     }
                     newRowData[colIdx] = csvRow[colIdx];
                 }
-                m_MainDataTable.Rows.Add(newRowData);
+                MainDataTable.Rows.Add(newRowData);
             }
 
-            m_DataGridView.DataSource = m_MainDataTable;
-            m_CopyDataTable = m_MainDataTable.Copy();
-            m_MainDataTable.AcceptChanges();
-            RedoUndo.SetDataTable(m_MainDataTable);
+            m_DataGridView.DataSource = MainDataTable;
+            CopyDataTable = MainDataTable.Copy();
+            MainDataTable.AcceptChanges();
             UpdateGridHeader();
             m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
-            RedoUndo.DoSomething += OnRedoUndo_DoSomethingChange;
+            Editor.DoSomething += OnRedoUndo_DoSomethingChange;
         }
         catch (Exception ex)
         {
@@ -378,11 +357,11 @@ public partial class CsvForm : Form
     /// </summary>
     private void OnRedoUndo_DoSomethingChange(object sender, DoSomethingEventArgs e)
     {
-        if (e.MyDoType == DataGridViewRedoUndo.DoType.CellValueChange)
+        if (e.MyDoType == CsvEdit.DoType.CellsValueChange)
         {
             OnDataGridViewData_Change();
         }
-        else if(e.MyDoType == DataGridViewRedoUndo.DoType.AddRow)
+        else if(e.MyDoType == CsvEdit.DoType.AddRow)
         {
             OnDataGridViewData_Change();
             UpdateGridHeader();
@@ -500,13 +479,13 @@ public partial class CsvForm : Form
         }
 
         int index = m_DataGridView.SelectedRows[0].Index + offset;
-        DataRow newRowData = m_MainDataTable.NewRow();
-        m_MainDataTable.Rows.InsertAt(newRowData, index);
+        DataRow newRowData = MainDataTable.NewRow();
+        MainDataTable.Rows.InsertAt(newRowData, index);
 
         m_DataGridView.ClearSelection();
         m_DataGridView.Rows[index].Selected = true;
-        m_CopyDataTable = m_MainDataTable.Copy();
-        RedoUndo.DoAddRow(index);
+        CopyDataTable = MainDataTable.Copy();
+        Editor.DidAddRow(index);
 
         OnDataGridViewData_Change();
         UpdateGridHeader();
@@ -518,8 +497,8 @@ public partial class CsvForm : Form
     /// </summary>
     private void OnDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
     {
-        RedoUndo.DoCellValueChange(e.ColumnIndex, e.RowIndex, m_CopyDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString(), m_MainDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString());
-        m_CopyDataTable = m_MainDataTable.Copy();
+        Editor.DidCellValueChange(e.ColumnIndex, e.RowIndex, CopyDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString(), MainDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString());
+        CopyDataTable = MainDataTable.Copy();
         OnDataGridViewData_Change();
     }
 

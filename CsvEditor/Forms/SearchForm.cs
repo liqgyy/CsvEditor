@@ -1,6 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
+using static CsvEdit;
 
+/// <summary>
+/// 搜索窗口
+/// UNDONE 选定范围的查找替换实现难度高，优先级低，先不做
+/// </summary>
 public partial class SearchForm : Form
 {
     public bool Initialized = false;
@@ -135,6 +141,7 @@ public partial class SearchForm : Form
         DataGridViewCell cell = Searching(dataGridView, startRow, startCol);
         if (cell != null)
         {
+            dataGridView.ClearSelection();
             dataGridView.CurrentCell = cell;
         }
     }
@@ -152,7 +159,14 @@ public partial class SearchForm : Form
         // 当前单元格
         if (dataGridView.CurrentCell != null && Matching((string)dataGridView.CurrentCell.Value))
         {
-            dataGridView.CurrentCell.Value = Replacing((string)dataGridView.CurrentCell.Value);
+            string oldValue = (string)dataGridView.CurrentCell.Value;
+            string newValue = Replacing(oldValue);
+            MainForm.Instance.SelCsvForm.Editor.DidCellValueChange(dataGridView.CurrentCell.ColumnIndex,
+               dataGridView.CurrentCell.RowIndex,
+               oldValue,
+               newValue);
+
+            dataGridView.CurrentCell.Value = newValue;
             return;
         }
 
@@ -167,7 +181,12 @@ public partial class SearchForm : Form
         DataGridViewCell cell = Searching(dataGridView, startRow, startCol);
         if (cell != null)
         {
-            cell.Value = Replacing((string)cell.Value);
+            string oldValue = (string)cell.Value;
+            string newValue = Replacing(oldValue);
+            MainForm.Instance.SelCsvForm.Editor.DidCellValueChange(cell.ColumnIndex, cell.RowIndex, oldValue, newValue);
+
+            cell.Value = Replacing(oldValue);
+            dataGridView.ClearSelection();
             dataGridView.CurrentCell = cell;
         }
     }
@@ -182,12 +201,21 @@ public partial class SearchForm : Form
 
         DataGridView dataGridView = MainForm.Instance.SelCsvForm.MainDataGridView;
 
+        List<CellValueChangeItem> ChangeList = new List<CellValueChangeItem>();
         DataGridViewCell cell = Searching(dataGridView, 0, 0);
         while(cell != null)
         {
-            cell.Value = Replacing((string)cell.Value);
+            CellValueChangeItem changeItem = new CellValueChangeItem();
+            changeItem.OldValue = (string)cell.Value;
+            changeItem.NewValue = Replacing(changeItem.OldValue);
+            changeItem.Row = cell.RowIndex;
+            changeItem.Column = cell.ColumnIndex;
+            ChangeList.Add(changeItem);
+
+            cell.Value = changeItem.NewValue;
             cell = Searching(dataGridView, cell.RowIndex, cell.ColumnIndex);
         }
+        MainForm.Instance.SelCsvForm.Editor.DidCellsValueChange(ChangeList);
     }
 
     private void OnValueChanged(object sender, EventArgs e)

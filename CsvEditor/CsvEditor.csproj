@@ -109,7 +109,7 @@
     <Compile Include="Forms\SearchForm.Designer.cs">
       <DependentUpon>SearchForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Plugins\DataGridViewRedoUndo.cs" />
+    <Compile Include="Plugins\CsvEdit.cs" />
     <Compile Include="Plugins\Debug.cs" />
     <Compile Include="Plugins\RegistryUtility.cs" />
     <Compile Include="Plugins\SkinUtility.cs" />

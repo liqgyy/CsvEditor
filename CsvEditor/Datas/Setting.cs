@@ -2,7 +2,6 @@
 using System.IO;
 using System.Windows.Forms;
 
-// TODO 优化读取设置文件失败时的逻辑
 [Serializable]
 public class Setting
 {
@@ -28,6 +27,8 @@ public class Setting
     {
         UseSkin = false;
         CurrentSkin = GlobalData.SKIN_DEFAULT_SSK;
+
+        RegistryUtility.SetRegisterFileExtendWithThisApp(".csv", "CsvEditor.CSV", "CsvEditor的csv文件", "在CsvEditor中打开");
     }
 
     /// <summary>
