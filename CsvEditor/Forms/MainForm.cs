@@ -148,6 +148,8 @@ public partial class MainForm : Form
     {
         m_GotoEditToolStripMenuItem.Enabled = false;
         m_SearchEditStripMenuItem.Enabled = false;
+        m_UndoEditToolStripMenuItem.Enabled = false;
+        m_RedoEditToolStripMenuItem.Enabled = false;
         m_CopyEditToolStripMenuItem.Enabled = false;
         m_CutEditToolStripMenuItem.Enabled = false;
         m_PasteEditToolStripMenuItem.Enabled = false;
@@ -160,16 +162,15 @@ public partial class MainForm : Form
         m_SearchEditStripMenuItem.Enabled = true;
 
         DataGridView dataGridView = SelCsvForm.MainDataGridView;
-        if (dataGridView == null)
-        {
-            return;
-        }
         if (dataGridView.SelectedCells.Count > 0)
         {
             m_CopyEditToolStripMenuItem.Enabled = true;
             m_CutEditToolStripMenuItem.Enabled = true;
             m_PasteEditToolStripMenuItem.Enabled = true;
         }
+
+        m_UndoEditToolStripMenuItem.Enabled = SelCsvForm.RedoUndo.CanUndo();
+        m_RedoEditToolStripMenuItem.Enabled = SelCsvForm.RedoUndo.CanRedo();
     }
     #endregion // End Update ToolStripMenu
 
@@ -234,15 +235,31 @@ public partial class MainForm : Form
 
     private void OnEditToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        ToolStripMenuItem item = (ToolStripMenuItem)sender;
-        if (item == m_CopyEditToolStripMenuItem)
+        if (!SelCsvFormInitialized())
         {
+            return;
+        }
+
+        ToolStripMenuItem item = (ToolStripMenuItem)sender;
+        if (item == m_UndoEditToolStripMenuItem)
+        {
+            SelCsvForm.EditUndo();
+        }
+        else if (item == m_RedoEditToolStripMenuItem)
+        {
+            SelCsvForm.EditRedo();
+        }
+        else if(item == m_CopyEditToolStripMenuItem)
+        {
+            SelCsvForm.EditCopy();
         }
         else if (item == m_CutEditToolStripMenuItem)
         {
+            SelCsvForm.EditCut();
         }
         else if (item == m_PasteEditToolStripMenuItem)
         {
+            SelCsvForm.EditPaste();
         }
     }
 

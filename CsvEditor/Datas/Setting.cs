@@ -37,7 +37,7 @@ public class Setting
     {
         try
         {
-            BinaryFormatterUtility.Write(ms_SaveFileFullName, Instance);
+            SerializeUtility.WriteFile(ms_SaveFileFullName, Instance);
         }
         catch (Exception ex)
         {
@@ -58,7 +58,7 @@ public class Setting
 
         try
         {
-            ms_Instance = (Setting)BinaryFormatterUtility.Read(ms_SaveFileFullName);
+            ms_Instance = (Setting)SerializeUtility.ReadFile(ms_SaveFileFullName);
         }
         catch (Exception ex)
         {
@@ -77,7 +77,7 @@ public class Setting
             {
                 File.Delete(ms_SaveFileFullName);
             }
-            ms_Instance = (Setting)BinaryFormatterUtility.Read(ms_SaveFileFullName);
+            ms_Instance = (Setting)SerializeUtility.ReadFile(ms_SaveFileFullName);
         }
         catch (Exception ex)
         {

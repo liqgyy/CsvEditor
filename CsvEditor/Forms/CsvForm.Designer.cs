@@ -34,7 +34,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.m_FrozenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.m_UnFrozenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.m_DataGridView = new CsvDataGridView();
+            this.m_DataGridView = new System.Windows.Forms.DataGridView();
             this.m_GridContextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.m_DataGridView)).BeginInit();
             this.SuspendLayout();
@@ -98,7 +98,6 @@
             this.m_DataGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.m_DataGridView.Size = new System.Drawing.Size(1259, 751);
             this.m_DataGridView.TabIndex = 0;
-            this.m_DataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnDataGridView_CellEndEdit);
             this.m_DataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.OnDataGridView_CellMouseDown);
             // 
             // CsvForm
@@ -122,7 +121,7 @@
     private System.Windows.Forms.ContextMenuStrip m_GridContextMenuStrip;
     private System.Windows.Forms.ToolStripMenuItem m_InsertUpRowToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem m_InsertDownRowToolStripMenuItem;
-    private CsvDataGridView m_DataGridView;
+    private System.Windows.Forms.DataGridView m_DataGridView;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     private System.Windows.Forms.ToolStripMenuItem m_FrozenToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem m_UnFrozenToolStripMenuItem;

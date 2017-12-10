@@ -108,14 +108,12 @@
     <Compile Include="Forms\SearchForm.Designer.cs">
       <DependentUpon>SearchForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Plugins\DataGridViewRedoUndo.cs" />
     <Compile Include="Plugins\Debug.cs" />
     <Compile Include="Plugins\RegistryUtility.cs" />
     <Compile Include="Plugins\SkinUtility.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\CsvDataGridView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <EmbeddedResource Include="Forms\CsvForm.resx">
       <DependentUpon>CsvForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -49,6 +49,9 @@ partial class MainForm
             this.m_SaveCsvFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.m_MainTabControl = new System.Windows.Forms.TabControl();
             this.SkinEngine = new Sunisoft.IrisSkin.SkinEngine();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.m_RedoEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.m_UndoEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.m_MenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -127,6 +130,9 @@ partial class MainForm
             this.m_GotoEditToolStripMenuItem,
             this.m_SearchEditStripMenuItem,
             this.toolStripSeparator2,
+            this.m_UndoEditToolStripMenuItem,
+            this.m_RedoEditToolStripMenuItem,
+            this.toolStripSeparator4,
             this.m_CutEditToolStripMenuItem,
             this.m_CopyEditToolStripMenuItem,
             this.m_PasteEditToolStripMenuItem,
@@ -233,6 +239,27 @@ partial class MainForm
             this.SkinEngine.SkinDialogs = false;
             this.SkinEngine.SkinFile = null;
             // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(210, 6);
+            // 
+            // m_RedoEditToolStripMenuItem
+            // 
+            this.m_RedoEditToolStripMenuItem.Name = "m_RedoEditToolStripMenuItem";
+            this.m_RedoEditToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+            this.m_RedoEditToolStripMenuItem.Size = new System.Drawing.Size(213, 26);
+            this.m_RedoEditToolStripMenuItem.Text = "重做";
+            this.m_RedoEditToolStripMenuItem.Click += new System.EventHandler(this.OnEditToolStripMenuItem_Click);
+            // 
+            // m_UndoEditToolStripMenuItem
+            // 
+            this.m_UndoEditToolStripMenuItem.Name = "m_UndoEditToolStripMenuItem";
+            this.m_UndoEditToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+            this.m_UndoEditToolStripMenuItem.Size = new System.Drawing.Size(213, 26);
+            this.m_UndoEditToolStripMenuItem.Text = "撤销";
+            this.m_UndoEditToolStripMenuItem.Click += new System.EventHandler(this.OnEditToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -274,4 +301,7 @@ partial class MainForm
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
     private System.Windows.Forms.ToolStripMenuItem m_SettingToolStripMenuItem;
     public Sunisoft.IrisSkin.SkinEngine SkinEngine;
+    private System.Windows.Forms.ToolStripMenuItem m_UndoEditToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem m_RedoEditToolStripMenuItem;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 }

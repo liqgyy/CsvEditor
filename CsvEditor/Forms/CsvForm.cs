@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using static DataGridViewRedoUndo;
 
 public partial class CsvForm : Form
 {
@@ -16,7 +12,6 @@ public partial class CsvForm : Form
     /// 源文件 完整路径 如: C://a.csv
     /// </summary>
     public string SourceFileFullName;
-
 
     /// <summary>
     /// 源文件的副本 文件名
@@ -28,13 +23,17 @@ public partial class CsvForm : Form
     /// </summary>
     public List<string> CopyFileNameList { get; private set; }
 
+    public DataGridViewRedoUndo RedoUndo;
+
     public bool Initialized = false;
 
     public bool NeedSaveSourceFile = false;
     public bool DataChanged = false;
 
     public DataGridView MainDataGridView { get { return m_DataGridView; } }
-    private DataTable MainDataTable;
+
+    private DataTable m_MainDataTable;
+    private DataTable m_CopyDataTable;
 
     /// <summary>
     /// 源文件 文件名 如: a.csv
@@ -52,7 +51,42 @@ public partial class CsvForm : Form
 
         CopyFileNameList = new List<string>();
         SourceFileFullName = fileFullPath;
+
+        RedoUndo = new DataGridViewRedoUndo(m_DataGridView);
     }
+
+    #region Edit
+    public void EditUndo()
+    {
+        m_DataGridView.CellValueChanged -= OnDataGridView_CellValueChanged;
+        RedoUndo.Undo();
+        m_CopyDataTable = m_MainDataTable.Copy();
+        m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
+    }
+
+    public void EditRedo()
+    {
+        m_DataGridView.CellValueChanged -= OnDataGridView_CellValueChanged;
+        RedoUndo.Redo();
+        m_CopyDataTable = m_MainDataTable.Copy();
+        m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
+    }
+
+    public void EditCopy()
+    {
+
+    }
+
+    public void EditCut()
+    {
+
+    }
+
+    public void EditPaste()
+    {
+
+    }
+    #endregion // End Edit
 
     public bool TryClose()
     {
@@ -77,6 +111,26 @@ public partial class CsvForm : Form
         // 保存到源文件前询问是否打开CodeCompare
         if (MessageBox.Show("是否打开文件比较工具", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
         {
+            // TODD 利用GetChanges 做简单的版本比较工具
+            //DataTable cdt = m_MainDataTable.GetChanges();
+            //if (cdt != null)
+            //{
+            //    for (int i = 0; i < cdt.Rows.Count; i++)
+            //    {
+            //        if (cdt.Rows[i].RowState == DataRowState.Deleted)
+            //        {
+            //            Console.WriteLine("删除的行索引{0}，原来数值是{1}", i, cdt.Rows[i][0, DataRowVersion.Original]);
+            //        }
+            //        else if (cdt.Rows[i].RowState == DataRowState.Modified)
+            //        {
+            //            Console.WriteLine("修改的行索引{0}，原来数值是{1}，现在的新数值{2}", i, cdt.Rows[i][0, DataRowVersion.Original], cdt.Rows[i][0, DataRowVersion.Current]);
+            //        }
+            //        else if (cdt.Rows[i].RowState == DataRowState.Added)
+            //        {
+            //            Console.WriteLine("新添加行索引{0}，数值是{1}", i, cdt.Rows[i][0, DataRowVersion.Current]);
+            //        }
+            //    }
+            //}
             CodeCompare.Instance.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName, "源文件", "副本");
             return;
         }
@@ -113,11 +167,11 @@ public partial class CsvForm : Form
         CsvExport myExport = new CsvExport(",", false);
         try
         {
-            for (int rowIdx = 0; rowIdx < MainDataTable.Rows.Count; rowIdx++)
+            for (int rowIdx = 0; rowIdx < m_MainDataTable.Rows.Count; rowIdx++)
             {
                 myExport.AddRow();
-                DataRow dataRow = MainDataTable.Rows[rowIdx];
-                for (int colIdx = 0; colIdx < MainDataTable.Columns.Count; colIdx++)
+                DataRow dataRow = m_MainDataTable.Rows[rowIdx];
+                for (int colIdx = 0; colIdx < m_MainDataTable.Columns.Count; colIdx++)
                 {
                     myExport[colIdx.ToString()] = dataRow[colIdx];
                 }
@@ -203,27 +257,32 @@ public partial class CsvForm : Form
         // csv->DataTable
         try
         {
-            MainDataTable = new DataTable();
+            m_MainDataTable = new DataTable();
             int rowCount = csvTable.GetLength(0);
             int colCount = -1;
             for (int rowIdx = 0; rowIdx < rowCount; rowIdx++)
             {
-                DataRow newRowData = MainDataTable.NewRow();
+                DataRow newRowData = m_MainDataTable.NewRow();
                 string[] csvRow = csvTable[rowIdx];
                 for (int colIdx = 0; colIdx < csvRow.Length; colIdx++)
                 {
                     if (colIdx > colCount)
                     {
-                        MainDataTable.Columns.Add(colIdx.ToString(), typeof(string));
+                        m_MainDataTable.Columns.Add(colIdx.ToString(), typeof(string));
                         colCount = colIdx;
                     }
                     newRowData[colIdx] = csvRow[colIdx];
                 }
-                MainDataTable.Rows.Add(newRowData);
+                m_MainDataTable.Rows.Add(newRowData);
             }
 
-            m_DataGridView.DataSource = MainDataTable;
+            m_DataGridView.DataSource = m_MainDataTable;
+            m_CopyDataTable = m_MainDataTable.Copy();
+            m_MainDataTable.AcceptChanges();
+            RedoUndo.SetDataTable(m_MainDataTable);
             UpdateGridHeader();
+            m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
+            RedoUndo.DoSomething += OnRedoUndo_DoSomethingChange;
         }
         catch (Exception ex)
         {
@@ -233,6 +292,11 @@ public partial class CsvForm : Form
         return true;
     }
 
+    /// <summary>
+    /// 更新标题
+    /// 行:数字1~x
+    /// 列:字母A~Z
+    /// </summary>
     private void UpdateGridHeader()
     {
         for (int colIdx = 0; colIdx < m_DataGridView.Columns.Count; colIdx++)
@@ -263,6 +327,10 @@ public partial class CsvForm : Form
         }
     }
 
+    /// <summary>
+    /// 监听回车键  
+    /// 如果单元格正在被编辑, 就在光标处添加换行(\r\n)
+    /// </summary>
     protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
     {
         if (keyData != Keys.Enter)
@@ -281,6 +349,9 @@ public partial class CsvForm : Form
     }
 
     #region UIEvent
+    /// <summary>
+    /// 窗口加载时读取csv文件
+    /// </summary>
     private void OnCsvForm_Load(object sender, EventArgs e)
     {
         // 初始化文件，创建文件副本
@@ -300,20 +371,41 @@ public partial class CsvForm : Form
         Initialized = LoadCsvFileToDataTable(SourceFileFullName);
     }
 
+    /// <summary>
+    /// RedoUndo触发  
+    /// 因为(Re\Un)Do时要取消DataGridView的监听, 所以在这里进行 数据改变 & 更新标题
+    /// </summary>
+    private void OnRedoUndo_DoSomethingChange(object sender, DoSomethingEventArgs e)
+    {
+        if (e.MyDoType == DataGridViewRedoUndo.DoType.CellValueChange)
+        {
+            OnDataGridViewData_Change();
+        }
+        else if(e.MyDoType == DataGridViewRedoUndo.DoType.AddRow)
+        {
+            OnDataGridViewData_Change();
+            UpdateGridHeader();
+        }
+    }
+
+    /// <summary>
+    /// 数据改变时 
+    /// 更新标题 & 更新菜单栏
+    /// </summary>
     private void OnDataGridViewData_Change()
     {
         NeedSaveSourceFile = true;
         DataChanged = true;
-
+        
         UpdateFormText();
         MainForm.Instance.UpdateAllToolStripMenu();
     }
 
-    private void OnDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-    {
-        OnDataGridViewData_Change();
-    }
-
+    /// <summary>
+    /// 切换SelectionMode 
+    /// 改变DataGridView选择的行列 
+    /// 更新菜单项(Un)Frozen状态
+    /// </summary>
     private void OnDataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
     {
         if (e.ColumnIndex < 0 && e.RowIndex < 0)
@@ -373,15 +465,15 @@ public partial class CsvForm : Form
                     m_FrozenToolStripMenuItem.Enabled = true;
                 }
             }
-            else
-            {
-
-            }
         }
     }
 
+    /// <summary>
+    /// 插入行并添加Do事件到RedoUndo里
+    /// </summary>
     private void OnInsertRowToolStripMenuItem_MouseDown(object sender, MouseEventArgs e)
     {
+        m_DataGridView.CellValueChanged -= OnDataGridView_CellValueChanged;
         if (!Initialized)
         {
             return;
@@ -407,16 +499,32 @@ public partial class CsvForm : Form
         }
 
         int index = m_DataGridView.SelectedRows[0].Index + offset;
-        DataRow newRowData = MainDataTable.NewRow();
-        MainDataTable.Rows.InsertAt(newRowData, index);
+        DataRow newRowData = m_MainDataTable.NewRow();
+        m_MainDataTable.Rows.InsertAt(newRowData, index);
 
         m_DataGridView.ClearSelection();
         m_DataGridView.Rows[index].Selected = true;
+        m_CopyDataTable = m_MainDataTable.Copy();
+        RedoUndo.DoAddRow(index);
 
         OnDataGridViewData_Change();
         UpdateGridHeader();
+        m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
     }
 
+    /// <summary>
+    /// 单元格值改变时添加Do事件到RedoUndo里
+    /// </summary>
+    private void OnDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+    {
+        RedoUndo.DoCellValueChange(e.ColumnIndex, e.RowIndex, m_CopyDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString(), m_MainDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString());
+        m_CopyDataTable = m_MainDataTable.Copy();
+        OnDataGridViewData_Change();
+    }
+
+    /// <summary>
+    /// 锁定行或列
+    /// </summary>
     private void OnFrozenToolStripMenuItem_Click(object sender, EventArgs e)
     {
         bool frozen = true;
