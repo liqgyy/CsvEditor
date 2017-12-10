@@ -15,7 +15,7 @@ public class CsvEdit
         m_RedoStack = new Stack<IUndoRedo>();
     }
 
-    #region Edit
+    #region Copy\Cut\Paste
     public void Copy()
     {
         if (!CanCopy())
@@ -54,9 +54,9 @@ public class CsvEdit
     {
         return true;
     }
-    #endregion // End Edit
+    #endregion // End Copy\Cut\Paste
 
-    #region UndoRedo
+    #region Undo\Redo
     public delegate void DoSomethingEventHandler(object sender, DoSomethingEventArgs e);
     public event DoSomethingEventHandler DoSomething;
 
@@ -232,5 +232,5 @@ public class CsvEdit
         AddRow,
         CellsValueChange
     }
-    #endregion // End UndoRedo
+    #endregion // End Undo\Redo
 }

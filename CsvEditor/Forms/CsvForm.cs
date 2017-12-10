@@ -407,7 +407,7 @@ public partial class CsvForm : Form
             m_FrozenToolStripMenuItem.Enabled = false;
             m_UnFrozenToolStripMenuItem.Enabled = false;
 
-            // TODO 右键菜单里的操作只针对单行、单列 未来可能支持多行、多列操作
+            // UNDONE 右键菜单里的不支持多行、多列操作
             if (e.ColumnIndex < 0 && e.RowIndex < 0)
             {
                 return;

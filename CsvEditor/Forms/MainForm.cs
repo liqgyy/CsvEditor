@@ -47,7 +47,7 @@ public partial class MainForm : Form
     {
         UpdateFileToolStripMenu();
         UpdateFileRevertToolStripMenu();
-        UpdateEditToolStripMenu();       
+        UpdateEditToolStripMenu();
     }
 
     public void UpdateAllTabControlTabPageText()
@@ -248,7 +248,7 @@ public partial class MainForm : Form
         {
             SelCsvForm.Editor.Redo();
         }
-        else if(item == m_CopyEditToolStripMenuItem)
+        else if (item == m_CopyEditToolStripMenuItem)
         {
             SelCsvForm.Editor.Copy();
         }
@@ -349,3 +349,4 @@ public partial class MainForm : Form
         settingForm.ShowDialog();
     }
     #endregion // END UIEvent
+}

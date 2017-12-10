@@ -166,7 +166,9 @@ public partial class SearchForm : Form
                oldValue,
                newValue);
 
+            MainForm.Instance.SelCsvForm.BeforeChangeCellValue();
             dataGridView.CurrentCell.Value = newValue;
+            MainForm.Instance.SelCsvForm.AfterChangeCellValue();
             return;
         }
 
@@ -178,6 +180,7 @@ public partial class SearchForm : Form
             startCol = dataGridView.CurrentCell.ColumnIndex;
         }
 
+        MainForm.Instance.SelCsvForm.BeforeChangeCellValue();
         DataGridViewCell cell = Searching(dataGridView, startRow, startCol);
         if (cell != null)
         {
@@ -189,6 +192,7 @@ public partial class SearchForm : Form
             dataGridView.ClearSelection();
             dataGridView.CurrentCell = cell;
         }
+        MainForm.Instance.SelCsvForm.AfterChangeCellValue();
     }
 
     private void OnReplaceAllButton_Click(object sender, EventArgs e)
@@ -201,6 +205,7 @@ public partial class SearchForm : Form
 
         DataGridView dataGridView = MainForm.Instance.SelCsvForm.MainDataGridView;
 
+        MainForm.Instance.SelCsvForm.BeforeChangeCellValue();
         List<CellValueChangeItem> ChangeList = new List<CellValueChangeItem>();
         DataGridViewCell cell = Searching(dataGridView, 0, 0);
         while(cell != null)
@@ -216,6 +221,7 @@ public partial class SearchForm : Form
             cell = Searching(dataGridView, cell.RowIndex, cell.ColumnIndex);
         }
         MainForm.Instance.SelCsvForm.Editor.DidCellsValueChange(ChangeList);
+        MainForm.Instance.SelCsvForm.AfterChangeCellValue();
     }
 
     private void OnValueChanged(object sender, EventArgs e)
