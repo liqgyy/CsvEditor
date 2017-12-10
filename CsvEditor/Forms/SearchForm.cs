@@ -18,9 +18,20 @@ public partial class SearchForm : Form
         m_CaseCheckBox.Checked = ms_IsCase;
         m_SearchTextBox.Text = ms_SearchText;
         m_ReplaceTextBox.Text = ms_ReplaceText;
+
+        // TEMP 未实现不区分大小写的替换
+        m_ReplaceButton.Enabled = ms_IsCase;
+        m_ReplaceAllButton.Enabled = ms_IsCase;
         Initialized = true;
     }
 
+    /// <summary>
+    /// 从起始位置的下一个位置开始搜索，搜索到文件结尾后从文件开始位置搜索到起始位置
+    /// startRow,startCol 必须是dataGridView里存在的Cell，否则会死循环
+    /// </summary>
+    /// <param name="startRow">起始行</param>
+    /// <param name="startCol">起始列</param>
+    /// <returns>搜索到的Cell null是没搜索到</returns>
     public DataGridViewCell Searching(DataGridView dataGridView, int startRow, int startCol)
     {
         int nowRow = startRow;
@@ -62,7 +73,7 @@ public partial class SearchForm : Form
         {
             return false;
         }
-        
+
         //不匹配大小写
         if (!ms_IsCase)
         {
@@ -77,6 +88,28 @@ public partial class SearchForm : Form
         else
         {
             return target.Contains(ms_SearchText);
+        }
+    }
+
+    /// <summary>
+    /// 替换
+    /// TODO 实现不区分大小写的替换
+    /// </summary>
+    /// <param name="target">目标字符串</param>
+    /// <returns>替换结果</returns>
+    public string Replacing(string target)
+    {
+        if (string.IsNullOrEmpty(target) || string.IsNullOrEmpty(ms_SearchText) || ms_ReplaceText == null)
+        {
+            return target;
+        }
+        if (ms_IsWildcard)
+        {
+            return ConvertUtility.WildcardToRegex(ms_SearchText).Replace(target, ms_ReplaceText);
+        }
+        else
+        {
+            return target.Replace(ms_SearchText, ms_ReplaceText);
         }
     }
 
@@ -117,15 +150,44 @@ public partial class SearchForm : Form
         DataGridView dataGridView = MainForm.Instance.SelCsvForm.MainDataGridView;
 
         // 当前单元格
-        if (Matching((string)dataGridView.CurrentCell.Value))
+        if (dataGridView.CurrentCell != null && Matching((string)dataGridView.CurrentCell.Value))
         {
+            dataGridView.CurrentCell.Value = Replacing((string)dataGridView.CurrentCell.Value);
             return;
+        }
+
+        int startRow = 0;
+        int startCol = 0;
+        if (dataGridView.CurrentCell != null)
+        {
+            startRow = dataGridView.CurrentCell.RowIndex;
+            startCol = dataGridView.CurrentCell.ColumnIndex;
+        }
+
+        DataGridViewCell cell = Searching(dataGridView, startRow, startCol);
+        if (cell != null)
+        {
+            cell.Value = Replacing((string)cell.Value);
+            dataGridView.CurrentCell = cell;
         }
     }
 
     private void OnReplaceAllButton_Click(object sender, EventArgs e)
     {
+        if (!MainForm.Instance.SelCsvFormInitialized())
+        {
+            MessageBox.Show("当前没有打开Csv文件", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
 
+        DataGridView dataGridView = MainForm.Instance.SelCsvForm.MainDataGridView;
+
+        DataGridViewCell cell = Searching(dataGridView, 0, 0);
+        while(cell != null)
+        {
+            cell.Value = Replacing((string)cell.Value);
+            cell = Searching(dataGridView, cell.RowIndex, cell.ColumnIndex);
+        }
     }
 
     private void OnValueChanged(object sender, EventArgs e)
@@ -138,6 +200,10 @@ public partial class SearchForm : Form
         ms_IsCase = m_CaseCheckBox.Checked;
         ms_SearchText = m_SearchTextBox.Text;
         ms_ReplaceText = m_ReplaceTextBox.Text;
+
+        // TEMP 未实现不区分大小写的替换
+        m_ReplaceButton.Enabled = ms_IsCase;
+        m_ReplaceAllButton.Enabled = ms_IsCase;
     }
     #endregion // END UIEvent
 }
