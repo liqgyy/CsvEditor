@@ -17,7 +17,7 @@ public class Setting
         }
     }
 
-    private static string ms_SaveFileFullName = Directory.GetCurrentDirectory() + "\\" + GlobalData.SETTING_FILE_NAME;
+    private static string ms_SaveFileFullName = AppDomain.CurrentDomain.SetupInformation.ApplicationBase + GlobalData.SETTING_FILE_NAME;
 
 
     public bool UseSkin;
@@ -42,7 +42,7 @@ public class Setting
         }
         catch (Exception ex)
         {
-            Debug.ShowExceptionMessageBox("保存设置失败", ex);
+            Debug.ShowExceptionMessageBox("保存设置失败\n" + ms_SaveFileFullName, ex);
         }
     }
 
@@ -63,7 +63,7 @@ public class Setting
         }
         catch (Exception ex)
         {
-            if (Debug.ShowExceptionMessageBox("读取设置失败\n是否删除设置文件重新读取?", ex, MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (Debug.ShowExceptionMessageBox("读取设置失败\n是否删除设置文件重新读取?\n" + ms_SaveFileFullName, ex, MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 ms_Instance = DeleteAndLoad();
             }

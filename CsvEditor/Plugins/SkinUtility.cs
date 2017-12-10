@@ -22,7 +22,7 @@ public class SkinUtility
         string[] skins = null;
         try
         {
-            skins = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\" + GlobalData.SKIN_FOLDER_NAME, "*.ssk", SearchOption.TopDirectoryOnly);
+            skins = Directory.GetFiles(AppDomain.CurrentDomain.SetupInformation.ApplicationBase + GlobalData.SKIN_FOLDER_NAME, "*.ssk", SearchOption.TopDirectoryOnly);
             for(int skinIdx = 0; skinIdx < skins.Length; skinIdx ++)
             {
                 skins[skinIdx] = Path.GetFileName(skins[skinIdx]).Replace(".ssk", "");
@@ -38,6 +38,6 @@ public class SkinUtility
 
     private static string GetSkinFileFullName(string sskName)
     {
-        return Directory.GetCurrentDirectory() + "\\" + GlobalData.SKIN_FOLDER_NAME + "\\" + sskName + ".ssk";
+        return AppDomain.CurrentDomain.SetupInformation.ApplicationBase + GlobalData.SKIN_FOLDER_NAME + "\\" + sskName + ".ssk";
     }
 }
