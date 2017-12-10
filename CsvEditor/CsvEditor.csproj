@@ -83,6 +83,7 @@
     <Compile Include="Forms\SettingForm.Designer.cs">
       <DependentUpon>SettingForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Plugins\BeyondCompare.cs" />
     <Compile Include="Plugins\BinaryFormatterUtility.cs" />
     <Compile Include="Plugins\CodeCompare.cs" />
     <Compile Include="Plugins\ConvertUtility.cs" />

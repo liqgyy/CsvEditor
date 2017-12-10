@@ -23,20 +23,20 @@ public partial class GotoForm : Form
     /// <param name="col">列  范围1~ColumnCount</param>
     private void Goto()
     {
+        if (!MainForm.Instance.SelCsvFormInitialized())
+        {
+            MessageBox.Show("当前没有打开Csv文件", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
         int row, col;
-        if (!int.TryParse(m_RowTextBox.Text,out row))
+        if (!int.TryParse(m_RowTextBox.Text, out row))
         {
             row = 1;
         }
         if (!int.TryParse(m_ColTextBox.Text, out col))
         {
             col = ConvertUtility.LetterToNumber(m_ColTextBox.Text);
-        }
-
-        if (!MainForm.Instance.SelCsvFormInitialized())
-        {
-            MessageBox.Show("当前没有打开Csv文件", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
         }
 
         DataGridView dataGridView = MainForm.Instance.SelCsvForm.MainDataGridView;

@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 /// <summary>
-/// 代码比较工具
+/// 比较工具
 /// 使用 https://www.devart.com/codecompare 软件的cmd命令比较两个文件
+/// TODO 提取CodeCompare和BeyondCompare通用部分作为基类
 /// </summary>
 public class CodeCompare
 {
@@ -19,22 +20,22 @@ public class CodeCompare
 	{
 		get
 		{
-			if (m_Instance == null)
+			if (ms_Instance == null)
 			{
-				m_Instance = new CodeCompare();
+				ms_Instance = new CodeCompare();
 			}
-			return m_Instance;
+			return ms_Instance;
 		}
 	}
 
-	private static CodeCompare m_Instance;
+	private static CodeCompare ms_Instance;
 
 	public bool Initialized = false;
 
 	/// <summary>
 	/// CodeCompare.exe的路径
 	/// </summary>
-	private string exeFilePath; 
+	private string m_ExeFilePath; 
 
 	public CodeCompare()
 	{
@@ -54,7 +55,7 @@ public class CodeCompare
 		string fileTitle2,
 		bool needCopy = false)
 	{
-		if(string.IsNullOrEmpty(exeFilePath))
+		if(string.IsNullOrEmpty(m_ExeFilePath))
 		{
 			return false;
 		}
@@ -63,11 +64,11 @@ public class CodeCompare
 		{
 			try
 			{
-				string copyFileFullName = Path.GetTempPath() + "CsvEditorCodeCompare1";
+				string copyFileFullName = Path.GetTempPath() + "CsvEditorCompare1";
 				File.Copy(fileFullName1, copyFileFullName);
 				fileFullName1 = copyFileFullName;
 
-				copyFileFullName = Path.GetTempPath() + "CsvEditorCodeCompare2";
+				copyFileFullName = Path.GetTempPath() + "CsvEditorCompare2";
 				File.Copy(fileFullName2, copyFileFullName);
 				fileFullName2 = copyFileFullName;
 			}
@@ -99,7 +100,7 @@ public class CodeCompare
 			// 向标准输入写入要执行的命令。这里使用&是批处理命令的符号，表示前面一个命令不管是否执行成功都执行后面(exit)命令，如果不执行exit命令，后面调用ReadToEnd()方法会假死
 			// 同类的符号还有&&和||前者表示必须前一个命令执行成功才会执行后面的命令，后者表示必须前一个命令执行失败才会执行后面的命令
 			cmdProcess.StandardInput.WriteLine(string.Format("\"{0}\" /T1=\"{1}\" /T2=\"{2}\" \"{3}\" \"{4}\" & exit",
-				exeFilePath, fileTitle1, fileTitle2, fileFullName1, fileFullName2));
+				m_ExeFilePath, fileTitle1, fileTitle2, fileFullName1, fileFullName2));
 
 			// 等待程序执行完退出进程
 			cmdProcess.WaitForExit();
@@ -118,31 +119,6 @@ public class CodeCompare
 		return true;
 	}
 
-	static void PrintKeys(RegistryKey rkey)
-	{
-
-		// Retrieve all the subkeys for the specified key. 
-		String[] names = rkey.GetSubKeyNames();
-
-		int icount = 0;
-
-		Console.WriteLine("Subkeys of " + rkey.Name);
-		Console.WriteLine("-----------------------------------------------");
-
-		// Print the contents of the array to the console. 
-		foreach (String s in names)
-		{
-			Console.WriteLine(s);
-
-			// The following code puts a limit on the number 
-			// of keys displayed.  Comment it out to print the 
-			// complete list. 
-			icount++;
-			if (icount >= 10)
-				break;
-		}
-	}
-
 	/// <summary>
 	// CodeCompare注册表里只有帮助文件的地址, 利用帮助文件的地址寻找CodeCompare.exe的地址
 	/// </summary>
@@ -156,7 +132,7 @@ public class CodeCompare
 			localMachineKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
 			software = localMachineKey.OpenSubKey(GlobalData.REGISTRY_KEY_CODECOMPARE, false);
 			string helpFile = (string)software.GetValue("HelpFile");
-			exeFilePath = helpFile.Replace("CodeCompare.chm", "CodeCompare.exe");
+			m_ExeFilePath = helpFile.Replace("CodeCompare.chm", "CodeCompare.exe");
 		}
 		catch (Exception ex)
 		{

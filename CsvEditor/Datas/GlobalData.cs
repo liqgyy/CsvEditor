@@ -10,6 +10,7 @@
     public const bool REGISTRY_FORCE_INITIALIZE = true;
 
     public const string REGISTRY_KEY_CODECOMPARE = "SOFTWARE\\Devart\\Code Compare";
+    public const string REGISTRY_KEY_BEYONDCOMPARE = "SOFTWARE\\Scooter Software\\Beyond Compare 4";
     #endregion // End Registry
 
     #region Setting

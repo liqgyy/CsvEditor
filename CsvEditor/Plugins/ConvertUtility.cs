@@ -77,20 +77,6 @@ public class ConvertUtility
     /// <returns>正则字符串</returns>
     public static string WildcardToRegexStr(string wildcard)
     {
-        Regex replace = new Regex("[.$^{\\[(|)*+?\\\\]");
-        return replace.Replace(wildcard, OnWildcardToRegexMatch) + "$";
-    }
-
-    private static string OnWildcardToRegexMatch(Match match)
-    {
-        switch (match.Value)
-        {
-            case "?":
-                return ".?";
-            case "*":
-                return ".*";
-            default:
-                return "\\" + match.Value;
-        }
+        return "^" + Regex.Escape(wildcard).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
     }
 }
