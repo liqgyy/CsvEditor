@@ -7,6 +7,19 @@ using System.Windows.Forms;
 /// </summary>
 public class BeyondCompare : BaseDiffCompare
 {
+	public static BeyondCompare Instance
+	{
+		get
+		{
+			if (m_Instance == null)
+			{
+				m_Instance = new BeyondCompare();
+			}
+			return m_Instance;
+		}
+	}
+	private static BeyondCompare m_Instance;
+
 	private const string BEYOND_COMPARE_URL = "http://www.beyondcompare.cc/";
 
 	public override bool Initialized()

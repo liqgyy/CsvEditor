@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Datas\CsvFileSetting.cs" />
     <Compile Include="Datas\GlobalData.cs" />
     <Compile Include="Datas\Setting.cs" />
     <Compile Include="Forms\GotoForm.cs">
@@ -109,7 +110,7 @@
     <Compile Include="Forms\SearchForm.Designer.cs">
       <DependentUpon>SearchForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Plugins\CsvEdit.cs" />
+    <Compile Include="Manager\CsvEditManager.cs" />
     <Compile Include="Plugins\Debug.cs" />
     <Compile Include="Plugins\DiffCompare\BaseDiffCompare.cs" />
     <Compile Include="Plugins\RegistryUtility.cs" />

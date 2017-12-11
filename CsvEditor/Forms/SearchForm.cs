@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using static CsvEdit;
+using static CsvEditManager;
 
 /// <summary>
 /// 搜索窗口
@@ -161,7 +161,7 @@ public partial class SearchForm : Form
         {
             string oldValue = (string)dataGridView.CurrentCell.Value;
             string newValue = Replacing(oldValue);
-            MainForm.Instance.SelCsvForm.Editor.DidCellValueChange(dataGridView.CurrentCell.ColumnIndex,
+            MainForm.Instance.SelCsvForm.EditManager.DidCellValueChange(dataGridView.CurrentCell.ColumnIndex,
                dataGridView.CurrentCell.RowIndex,
                oldValue,
                newValue);
@@ -186,7 +186,7 @@ public partial class SearchForm : Form
         {
             string oldValue = (string)cell.Value;
             string newValue = Replacing(oldValue);
-            MainForm.Instance.SelCsvForm.Editor.DidCellValueChange(cell.ColumnIndex, cell.RowIndex, oldValue, newValue);
+            MainForm.Instance.SelCsvForm.EditManager.DidCellValueChange(cell.ColumnIndex, cell.RowIndex, oldValue, newValue);
 
             cell.Value = Replacing(oldValue);
             dataGridView.ClearSelection();
@@ -220,7 +220,7 @@ public partial class SearchForm : Form
             cell.Value = changeItem.NewValue;
             cell = Searching(dataGridView, cell.RowIndex, cell.ColumnIndex);
         }
-        MainForm.Instance.SelCsvForm.Editor.DidCellsValueChange(ChangeList);
+        MainForm.Instance.SelCsvForm.EditManager.DidCellsValueChange(ChangeList);
         MainForm.Instance.SelCsvForm.AfterChangeCellValue();
     }
 

@@ -17,21 +17,21 @@ public partial class SettingForm : Form
     {
         InitializeComponent();
 
-        m_SettingItems = new SettingItem[(int)SettingItemType.End];
+		m_SettingItems = new SettingItem[(int)SettingItemType.End];
 		m_SettingItems[(int)SettingItemType.DiffCompare] = new SettingForm_DiffCompare(this, "差异比较", m_DiffComparePanal);
 		m_SettingItems[(int)SettingItemType.Skin] = new SettingForm_Skin(this, "皮肤", m_SkinPanal);
 
 		m_SettingItemListBox.Items.Clear();
-        for (int itemIdx = 0; itemIdx < m_SettingItems.Length; itemIdx++)
-        {
-            SettingItem settingItem = m_SettingItems[itemIdx];
-            Trace.Assert(settingItem != null, "设置项(" + (SettingItemType)itemIdx + ")没有初始化");
-            m_SettingItemListBox.Items.Add(settingItem.Text);
-            settingItem.MainPanel.Visible = false;
-            settingItem.MainPanel.Dock = DockStyle.Fill;
-        }
-        m_SettingItemListBox.SelectedIndex = 0;
-    }
+		for (int itemIdx = 0; itemIdx < m_SettingItems.Length; itemIdx++)
+		{
+			SettingItem settingItem = m_SettingItems[itemIdx];
+			Trace.Assert(settingItem != null, "设置项(" + (SettingItemType)itemIdx + ")没有初始化");
+			m_SettingItemListBox.Items.Add(settingItem.Text);
+			settingItem.MainPanel.Visible = false;
+			settingItem.MainPanel.Dock = DockStyle.Fill;
+		}
+		m_SettingItemListBox.SelectedIndex = 0;
+	}
 
     public bool SettingChanged()
     {
@@ -62,23 +62,15 @@ public partial class SettingForm : Form
     private void OnCloseButton_Click(object sender, EventArgs e)
     {
         Button button = (Button)sender;
-        if(button == m_CancelButton)
+        if (button == m_OkButton)
         {
-            if (ShowCloseFormMessageBox() == DialogResult.No)
-            {
-                return;
-            }
-            Setting.Load();
-        }
-        else if (button == m_OkButton)
-        {
-            Setting.Save();
-        }
-        for (int itemIdx = 0; itemIdx < m_SettingItems.Length; itemIdx++)
-        {
-            m_SettingItems[itemIdx].Close();
-        }
-        Dispose();
+			Setting.Save();
+			for (int itemIdx = 0; itemIdx < m_SettingItems.Length; itemIdx++)
+			{
+				m_SettingItems[itemIdx].SettingChanged = false;
+			}
+		}
+		Close();
     }
 
     private void OnForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -88,10 +80,6 @@ public partial class SettingForm : Form
             e.Cancel = true;
 			return;
         }
-		for (int itemIdx = 0; itemIdx < m_SettingItems.Length; itemIdx++)
-		{
-			m_SettingItems[itemIdx].Close();
-		}
 	}
 
     private void OnSettingItemListBox_SelectedValueChanged(object sender, EventArgs e)
@@ -102,8 +90,8 @@ public partial class SettingForm : Form
             SettingItem settingItem = m_SettingItems[itemIdx];
             if (selectedIndex == itemIdx)
             {
-                settingItem.MainPanel.Visible = true;
-                settingItem.Show();
+				settingItem.MainPanel.Visible = true;
+				settingItem.Show();
             }
             else
             {
@@ -116,8 +104,9 @@ public partial class SettingForm : Form
 
     private enum SettingItemType
     {
+		Begin = -1,
 		DiffCompare,
-		Skin = 0,
+		Skin,
         End
     }
 
@@ -187,7 +176,10 @@ public partial class SettingForm : Form
 
         protected override void OnClose()
         {
-            if (!SettingChanged)
+			Form.m_SkinUseCheckBox.CheckedChanged -= OnSkinUseCheckBox_CheckedChanged;
+			Form.m_SkinItemsListBox.SelectedIndexChanged -= OnSkinItemsListBox_SelectedIndexChanged;
+
+			if (!SettingChanged)
             {
                 return;
             }
@@ -212,8 +204,100 @@ public partial class SettingForm : Form
 
 	public class SettingForm_DiffCompare : SettingItem
 	{
-		public SettingForm_DiffCompare(SettingForm settingForm, string text, Panel mainPanel) : base(settingForm, text, mainPanel){}
+		public SettingForm_DiffCompare(SettingForm settingForm, string text, Panel mainPanel) : base(settingForm, text, mainPanel) { }
 
+		protected override void OnLoad()
+		{
+            Form.m_BeyondCompareAutoExePathCheckBox.CheckedChanged += OnAutoExePathCheckBox_CheckedChanged;
+            Form.m_BeyondCompareChooseExePathTextBox.TextChanged += OnExePathTextBox_TextChanged;
+			Form.m_BeyondCompareChooseExePathButton.Click += OnExePathButton_Click;
+			Form.m_BeyondCompareAutoExePathCheckBox.Checked = Setting.Instance.BeyondCompareAutoExePath;
+			Form.m_BeyondCompareChooseExePathTextBox.Text = Setting.Instance.BeyondCompareExePath;
 
+			Form.m_CodeCompareAutoExePathCheckBox.CheckedChanged += OnAutoExePathCheckBox_CheckedChanged;
+			Form.m_CodeCompareChooseExePathTextBox.TextChanged += OnExePathTextBox_TextChanged;
+			Form.m_CodeCompareChooseExePathButton.Click += OnExePathButton_Click;
+			Form.m_CodeCompareAutoExePathCheckBox.Checked = Setting.Instance.CodeCompareAutoExePath;
+			Form.m_CodeCompareChooseExePathTextBox.Text = Setting.Instance.CodeCompareExePath;
+		}
+
+		protected override void OnClose()
+		{
+			Form.m_BeyondCompareAutoExePathCheckBox.CheckedChanged -= OnAutoExePathCheckBox_CheckedChanged;
+			Form.m_BeyondCompareChooseExePathTextBox.TextChanged -= OnExePathTextBox_TextChanged;
+			Form.m_BeyondCompareChooseExePathButton.Click -= OnExePathButton_Click;
+
+			Form.m_CodeCompareAutoExePathCheckBox.CheckedChanged -= OnAutoExePathCheckBox_CheckedChanged;
+			Form.m_CodeCompareChooseExePathTextBox.TextChanged -= OnExePathTextBox_TextChanged;
+			Form.m_CodeCompareChooseExePathButton.Click -= OnExePathButton_Click;
+		}
+
+		private void OnExePathButton_Click(object sender, EventArgs e)
+		{
+			Button button = (Button)sender;
+			if (button == Form.m_BeyondCompareChooseExePathButton)
+			{
+				Form.m_DiffCompareOpenFileDialog.InitialDirectory = Setting.Instance.BeyondCompareExePath;
+			}
+			else if (button == Form.m_CodeCompareChooseExePathButton)
+			{
+				Form.m_DiffCompareOpenFileDialog.InitialDirectory = Setting.Instance.CodeCompareExePath;
+			}
+
+			if (Form.m_DiffCompareOpenFileDialog.ShowDialog() != DialogResult.OK)
+			{
+				return;
+			}
+
+			string exePath = Form.m_DiffCompareOpenFileDialog.FileName;
+			if (button == Form.m_BeyondCompareChooseExePathButton)
+			{
+				Setting.Instance.BeyondCompareExePath = exePath;
+			}
+			else if (button == Form.m_CodeCompareChooseExePathButton)
+			{
+				Setting.Instance.CodeCompareExePath = exePath;
+			}
+		}
+
+		private void OnExePathTextBox_TextChanged(object sender, EventArgs e)
+		{
+			TextBox textBox = (TextBox)sender;
+
+			if (textBox == Form.m_BeyondCompareChooseExePathTextBox)
+			{
+				SettingChanged = SettingChanged || Setting.Instance.BeyondCompareExePath != Form.m_BeyondCompareChooseExePathTextBox.Text;
+				Setting.Instance.BeyondCompareExePath = Form.m_BeyondCompareChooseExePathTextBox.Text;
+			}
+			else if(textBox == Form.m_CodeCompareChooseExePathTextBox)
+			{
+				SettingChanged = SettingChanged || Setting.Instance.CodeCompareExePath != Form.m_CodeCompareChooseExePathTextBox.Text;
+				Setting.Instance.CodeCompareExePath = Form.m_CodeCompareChooseExePathTextBox.Text;
+			}
+		}
+
+		private void OnAutoExePathCheckBox_CheckedChanged(object sender, EventArgs e)
+		{
+			CheckBox checkBox = (CheckBox)sender;
+
+			if (checkBox == Form.m_BeyondCompareAutoExePathCheckBox)
+			{
+				SettingChanged = SettingChanged || Setting.Instance.BeyondCompareAutoExePath != Form.m_BeyondCompareAutoExePathCheckBox.Checked;
+				Setting.Instance.BeyondCompareAutoExePath = Form.m_BeyondCompareAutoExePathCheckBox.Checked;
+				Form.m_BeyondCompareChooseExePathTextBox.Enabled = !Setting.Instance.BeyondCompareAutoExePath;
+				Form.m_BeyondCompareChooseExePathButton.Enabled = !Setting.Instance.BeyondCompareAutoExePath;
+				BeyondCompare.Instance.AutoExePathToSetting();
+				Form.m_BeyondCompareChooseExePathTextBox.Text = Setting.Instance.BeyondCompareExePath;
+			}
+			else if (checkBox == Form.m_CodeCompareAutoExePathCheckBox)
+			{
+				SettingChanged = SettingChanged || Setting.Instance.CodeCompareAutoExePath != Form.m_CodeCompareAutoExePathCheckBox.Checked;
+				Setting.Instance.CodeCompareAutoExePath = Form.m_CodeCompareAutoExePathCheckBox.Checked;
+				Form.m_CodeCompareChooseExePathTextBox.Enabled = !Setting.Instance.CodeCompareAutoExePath;
+				Form.m_CodeCompareChooseExePathButton.Enabled = !Setting.Instance.CodeCompareAutoExePath;
+				BeyondCompare.Instance.AutoExePathToSetting();
+				Form.m_CodeCompareChooseExePathTextBox.Text = Setting.Instance.CodeCompareExePath;
+			}
+		}
 	}
 }

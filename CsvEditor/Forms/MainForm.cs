@@ -30,11 +30,8 @@ public partial class MainForm : Form
 
         Setting setting = Setting.Instance;
 
-		BeyondCompare beyondCompare = new BeyondCompare();
-		beyondCompare.AutoExePathToSetting();
-
-		CodeCompare codeCompare = new CodeCompare();
-		codeCompare.AutoExePathToSetting();
+		BeyondCompare.Instance.AutoExePathToSetting();
+		CodeCompare.Instance.AutoExePathToSetting();
 
 		SkinUtility.SetSkin();
     }
@@ -165,12 +162,12 @@ public partial class MainForm : Form
         m_GotoEditToolStripMenuItem.Enabled = true;
         m_SearchEditStripMenuItem.Enabled = true;
 
-        m_CopyEditToolStripMenuItem.Enabled = SelCsvForm.Editor.CanCopy();
-        m_CutEditToolStripMenuItem.Enabled = SelCsvForm.Editor.CanCut();
-        m_PasteEditToolStripMenuItem.Enabled = SelCsvForm.Editor.CanPaste();
+        m_CopyEditToolStripMenuItem.Enabled = SelCsvForm.EditManager.CanCopy();
+        m_CutEditToolStripMenuItem.Enabled = SelCsvForm.EditManager.CanCut();
+        m_PasteEditToolStripMenuItem.Enabled = SelCsvForm.EditManager.CanPaste();
 
-        m_UndoEditToolStripMenuItem.Enabled = SelCsvForm.Editor.CanUndo();
-        m_RedoEditToolStripMenuItem.Enabled = SelCsvForm.Editor.CanRedo();
+        m_UndoEditToolStripMenuItem.Enabled = SelCsvForm.EditManager.CanUndo();
+        m_RedoEditToolStripMenuItem.Enabled = SelCsvForm.EditManager.CanRedo();
     }
     #endregion // End Update ToolStripMenu
 
@@ -247,23 +244,23 @@ public partial class MainForm : Form
         ToolStripMenuItem item = (ToolStripMenuItem)sender;
         if (item == m_UndoEditToolStripMenuItem)
         {
-            SelCsvForm.Editor.Undo();
+            SelCsvForm.EditManager.Undo();
         }
         else if (item == m_RedoEditToolStripMenuItem)
         {
-            SelCsvForm.Editor.Redo();
+            SelCsvForm.EditManager.Redo();
         }
         else if (item == m_CopyEditToolStripMenuItem)
         {
-            SelCsvForm.Editor.Copy();
+            SelCsvForm.EditManager.Copy();
         }
         else if (item == m_CutEditToolStripMenuItem)
         {
-            SelCsvForm.Editor.Cut();
+            SelCsvForm.EditManager.Cut();
         }
         else if (item == m_PasteEditToolStripMenuItem)
         {
-            SelCsvForm.Editor.Paste();
+            SelCsvForm.EditManager.Paste();
         }
     }
 

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
 
-public class CsvEdit
+public class CsvEditManager
 {
     private CsvForm m_CsvForm;
 
-    public CsvEdit(CsvForm csvForm)
+    public CsvEditManager(CsvForm csvForm)
     {
         m_CsvForm = csvForm;
 

@@ -7,6 +7,18 @@ using System.Windows.Forms;
 /// </summary>
 public class CodeCompare : BaseDiffCompare
 {
+	public static CodeCompare Instance {
+		get
+		{
+			if (m_Instance == null)
+			{
+				m_Instance = new CodeCompare();
+			}
+			return m_Instance;
+		}
+	}
+	private static CodeCompare m_Instance;
+
 	private const string CODE_COMPARE_URL = "https://www.devart.com/codecompare";
 
 	public override bool Initialized()

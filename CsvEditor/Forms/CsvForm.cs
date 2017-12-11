@@ -4,7 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
-using static CsvEdit;
+using static CsvEditManager;
 
 public partial class CsvForm : Form
 {
@@ -23,7 +23,7 @@ public partial class CsvForm : Form
     /// </summary>
     public List<string> CopyFileNameList { get; private set; }
 
-    public CsvEdit Editor;
+    public CsvEditManager EditManager;
 
     public bool Initialized = false;
 
@@ -51,7 +51,7 @@ public partial class CsvForm : Form
         CopyFileNameList = new List<string>();
         SourceFileFullName = fileFullPath;
 
-        Editor = new CsvEdit(this);
+        EditManager = new CsvEditManager(this);
     }
 
     public void BeforeChangeCellValue()
@@ -111,11 +111,8 @@ public partial class CsvForm : Form
                 //    }
                 //}
             }
-			BeyondCompare beyondCompare = new BeyondCompare();
-			beyondCompare.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName, "源文件", "副本");
-
-			CodeCompare codeCompare = new CodeCompare();
-			codeCompare.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName, "源文件", "副本");
+			BeyondCompare.Instance.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName, "源文件", "副本");
+			CodeCompare.Instance.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName, "源文件", "副本");
             return;
         }
 
@@ -265,7 +262,7 @@ public partial class CsvForm : Form
             MainDataTable.AcceptChanges();
             UpdateGridHeader();
             m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
-            Editor.DoSomething += OnRedoUndo_DoSomethingChange;
+            EditManager.DoSomething += OnRedoUndo_DoSomethingChange;
         }
         catch (Exception ex)
         {
@@ -360,11 +357,11 @@ public partial class CsvForm : Form
     /// </summary>
     private void OnRedoUndo_DoSomethingChange(object sender, DoSomethingEventArgs e)
     {
-        if (e.MyDoType == CsvEdit.DoType.CellsValueChange)
+        if (e.MyDoType == CsvEditManager.DoType.CellsValueChange)
         {
             OnDataGridViewData_Change();
         }
-        else if(e.MyDoType == CsvEdit.DoType.AddRow)
+        else if(e.MyDoType == CsvEditManager.DoType.AddRow)
         {
             OnDataGridViewData_Change();
             UpdateGridHeader();
@@ -488,7 +485,7 @@ public partial class CsvForm : Form
         m_DataGridView.ClearSelection();
         m_DataGridView.Rows[index].Selected = true;
         CopyDataTable = MainDataTable.Copy();
-        Editor.DidAddRow(index);
+        EditManager.DidAddRow(index);
 
         OnDataGridViewData_Change();
         UpdateGridHeader();
@@ -500,7 +497,7 @@ public partial class CsvForm : Form
     /// </summary>
     private void OnDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
     {
-        Editor.DidCellValueChange(e.ColumnIndex, e.RowIndex, CopyDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString(), MainDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString());
+        EditManager.DidCellValueChange(e.ColumnIndex, e.RowIndex, CopyDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString(), MainDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString());
         CopyDataTable = MainDataTable.Copy();
         OnDataGridViewData_Change();
     }
