@@ -111,8 +111,11 @@ public partial class CsvForm : Form
                 //    }
                 //}
             }
-            CodeCompare.Instance.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName, "源文件", "副本");
-            BeyondCompare.Instance.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName);
+			BeyondCompare beyondCompare = new BeyondCompare();
+			beyondCompare.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName, "源文件", "副本");
+
+			CodeCompare codeCompare = new CodeCompare();
+			codeCompare.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName, "源文件", "副本");
             return;
         }
 

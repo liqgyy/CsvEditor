@@ -52,17 +52,17 @@ public class RegistryUtility
 		catch (Exception ex)
 		{
 			Debug.ShowExceptionMessageBox("创建ProgID：" + progID + "失败", ex);
-			CloseRegistryKey(classesRootKey);
+			CloseKey(classesRootKey);
 			return;
 		}
 		finally
 		{
-			CloseRegistryKey(defaultIconKey);
-			CloseRegistryKey(shellKey);
-			CloseRegistryKey(openKey);
-			CloseRegistryKey(commandKey);
-			CloseRegistryKey(playKey);
-			CloseRegistryKey(progIDKey);
+			CloseKey(defaultIconKey);
+			CloseKey(shellKey);
+			CloseKey(openKey);
+			CloseKey(commandKey);
+			CloseKey(playKey);
+			CloseKey(progIDKey);
 		}
 
 		// 修改对应文件类型的默认的关联程序
@@ -87,12 +87,39 @@ public class RegistryUtility
 		}
 		finally
 		{
-			CloseRegistryKey(fileExtendKey);
-			CloseRegistryKey(classesRootKey);
+			CloseKey(fileExtendKey);
+			CloseKey(classesRootKey);
 		}
 	}
 
-	public static void CloseRegistryKey(RegistryKey key)
+	public static object GetBaseSubKeyValue(RegistryHive hKey, RegistryView view, string subName, string valueName)
+	{
+		object value = null;
+		RegistryKey baseKey = null;
+		RegistryKey software = null;
+		try
+		{
+			baseKey = RegistryKey.OpenBaseKey(hKey, view);
+			software = baseKey.OpenSubKey(subName, false);
+			value = software.GetValue(valueName);
+		}
+		catch (Exception ex)
+		{
+			Debug.ShowExceptionMessageBox("获取注册表值失败\n"
+				+ hKey.ToString() + "\t"
+				+ view.ToString() + "\t"
+				+ subName + "\t"
+				+ valueName, ex);
+		}
+		finally
+		{
+			CloseKey(software);
+			CloseKey(baseKey);
+		}
+		return value;
+	}
+
+	public static void CloseKey(RegistryKey key)
 	{
 		if (key != null)
 			key.Close();

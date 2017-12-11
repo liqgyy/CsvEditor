@@ -83,9 +83,9 @@
     <Compile Include="Forms\SettingForm.Designer.cs">
       <DependentUpon>SettingForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Plugins\BeyondCompare.cs" />
+    <Compile Include="Plugins\DiffCompare\BeyondCompare.cs" />
     <Compile Include="Plugins\BinaryFormatterUtility.cs" />
-    <Compile Include="Plugins\CodeCompare.cs" />
+    <Compile Include="Plugins\DiffCompare\CodeCompare.cs" />
     <Compile Include="Plugins\ConvertUtility.cs" />
     <Compile Include="Plugins\Csv\CsvExport.cs" />
     <Compile Include="Plugins\Csv\CsvParser.cs" />
@@ -111,6 +111,7 @@
     </Compile>
     <Compile Include="Plugins\CsvEdit.cs" />
     <Compile Include="Plugins\Debug.cs" />
+    <Compile Include="Plugins\DiffCompare\BaseDiffCompare.cs" />
     <Compile Include="Plugins\RegistryUtility.cs" />
     <Compile Include="Plugins\SkinUtility.cs" />
     <Compile Include="Program.cs" />

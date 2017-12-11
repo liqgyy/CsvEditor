@@ -29,9 +29,14 @@ public partial class MainForm : Form
         InitializeComponent();
 
         Setting setting = Setting.Instance;
-        CodeCompare codeCompare = CodeCompare.Instance;
 
-        SkinUtility.SetSkin();
+		BeyondCompare beyondCompare = new BeyondCompare();
+		beyondCompare.AutoExePathToSetting();
+
+		CodeCompare codeCompare = new CodeCompare();
+		codeCompare.AutoExePathToSetting();
+
+		SkinUtility.SetSkin();
     }
 
     public bool SelCsvFormInitialized()

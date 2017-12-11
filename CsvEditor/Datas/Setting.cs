@@ -19,16 +19,30 @@ public class Setting
 
     private static string ms_SaveFileFullName = AppDomain.CurrentDomain.SetupInformation.ApplicationBase + GlobalData.SETTING_FILE_NAME;
 
-
-    public bool UseSkin;
+	#region Skin
+	public bool UseSkin;
     public string CurrentSkin;
+	#endregion // End Skin
 
-    public Setting()
+	#region DiffCompare
+	public bool BeyondCompareAutoExePath;
+	public string BeyondCompareExePath;
+
+	public bool CodeCompareAutoExePath;
+	public string CodeCompareExePath;
+	#endregion
+
+	public Setting()
     {
         UseSkin = false;
         CurrentSkin = GlobalData.SKIN_DEFAULT_SSK;
 
-        RegistryUtility.SetRegisterFileExtendWithThisApp(".csv", "CsvEditor.CSV", "CsvEditor的csv文件", "在CsvEditor中打开");
+		BeyondCompareAutoExePath = true;
+		BeyondCompareExePath = "";
+		CodeCompareAutoExePath = true;
+		CodeCompareExePath = "";
+
+		RegistryUtility.SetRegisterFileExtendWithThisApp(".csv", "CsvEditor.CSV", "CsvEditor的csv文件", "在CsvEditor中打开");
     }
 
     /// <summary>
@@ -55,6 +69,7 @@ public class Setting
         if (GlobalData.SETTING_FORCE_INITIALIZE || !File.Exists(ms_SaveFileFullName))
         {
             ms_Instance = new Setting();
+			return;
         }
 
         try
@@ -78,14 +93,10 @@ public class Setting
             {
                 File.Delete(ms_SaveFileFullName);
             }
-            ms_Instance = (Setting)SerializeUtility.ReadFile(ms_SaveFileFullName);
         }
         catch (Exception ex)
         {
-            if (Debug.ShowExceptionMessageBox("读取设置失败\n是否删除设置文件重新读取?", ex, MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                ms_Instance = DeleteAndLoad();
-            }
+			Debug.ShowExceptionMessageBox("删除设置文件失败,使用默认设置.", ex);
         }
         
         if (ms_Instance == null)

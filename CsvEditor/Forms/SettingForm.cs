@@ -18,9 +18,10 @@ public partial class SettingForm : Form
         InitializeComponent();
 
         m_SettingItems = new SettingItem[(int)SettingItemType.End];
-        m_SettingItems[(int)SettingItemType.Skin] = new SettingForm_Skin(this, "皮肤", m_SkinPanal);
+		m_SettingItems[(int)SettingItemType.DiffCompare] = new SettingForm_DiffCompare(this, "差异比较", m_DiffComparePanal);
+		m_SettingItems[(int)SettingItemType.Skin] = new SettingForm_Skin(this, "皮肤", m_SkinPanal);
 
-        m_SettingItemListBox.Items.Clear();
+		m_SettingItemListBox.Items.Clear();
         for (int itemIdx = 0; itemIdx < m_SettingItems.Length; itemIdx++)
         {
             SettingItem settingItem = m_SettingItems[itemIdx];
@@ -41,7 +42,7 @@ public partial class SettingForm : Form
                 return true;
             }
         }
-        return false;
+		return false;
     }
 
     /// <summary>
@@ -85,8 +86,13 @@ public partial class SettingForm : Form
         if(ShowCloseFormMessageBox() == DialogResult.No)
         {
             e.Cancel = true;
+			return;
         }
-    }
+		for (int itemIdx = 0; itemIdx < m_SettingItems.Length; itemIdx++)
+		{
+			m_SettingItems[itemIdx].Close();
+		}
+	}
 
     private void OnSettingItemListBox_SelectedValueChanged(object sender, EventArgs e)
     {
@@ -110,7 +116,8 @@ public partial class SettingForm : Form
 
     private enum SettingItemType
     {
-        Skin = 0,
+		DiffCompare,
+		Skin = 0,
         End
     }
 
@@ -202,4 +209,11 @@ public partial class SettingForm : Form
             SkinUtility.SetSkin();
         }
     }
+
+	public class SettingForm_DiffCompare : SettingItem
+	{
+		public SettingForm_DiffCompare(SettingForm settingForm, string text, Panel mainPanel) : base(settingForm, text, mainPanel){}
+
+
+	}
 }
