@@ -10,7 +10,7 @@
     /// 为true时强制初始化
     /// TODO 发布时改为false
     /// </summary>
-    public const bool SETTING_FORCE_INITIALIZE = true;
+    public const bool SETTING_FORCE_INITIALIZE = false;
 
     public const string SETTING_FILE_NAME = "Setting.bin";
 

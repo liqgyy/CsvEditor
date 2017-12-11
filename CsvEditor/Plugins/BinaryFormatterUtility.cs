@@ -4,53 +4,73 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 public class SerializeUtility
 {
-    private static string ObjectToBase64String(object graph)
+	private static byte[] ObjectToBuffer(object graph)
+	{
+		MemoryStream ms = null;
+		try
+		{
+			ms = new MemoryStream();
+			BinaryFormatter bf = new BinaryFormatter();
+			bf.Serialize(ms, graph);
+			return ms.GetBuffer();
+		}
+		catch (Exception ex)
+		{
+			throw (ex);
+		}
+		finally
+		{
+			if (ms != null)
+			{
+				ms.Close();
+			}
+		}
+	}
+
+	private static object BufferToObject(byte[] buffer)
+	{
+		MemoryStream ms = null;
+		try
+		{
+			ms = new MemoryStream(buffer);
+			BinaryFormatter bf = new BinaryFormatter();
+			return bf.Deserialize(ms);
+		}
+		catch (Exception ex)
+		{
+			throw (ex);
+		}
+		finally
+		{
+			if (ms != null)
+			{
+				ms.Close();
+			}
+		}
+	}
+
+	private static string ObjectToBase64String(object graph)
     {
-        string base64String;
-        MemoryStream ms = null;
         try
         {
-            ms = new MemoryStream();
-            BinaryFormatter bf = new BinaryFormatter();
-            bf.Serialize(ms, graph);
-            base64String = Convert.ToBase64String(ms.GetBuffer());
+            return Convert.ToBase64String(ObjectToBuffer(graph));
         }
         catch (Exception ex)
         {
             throw (ex);
         }
-        finally
-        {
-            if (ms != null)
-            {
-                ms.Close();
-            }
-        }
-        return base64String;
     }
 
     private static object Base64StringToObject(string base64String)
     {
-        object graph = null;
-        MemoryStream ms = null;
         try
         {
-            ms = new MemoryStream(Convert.FromBase64String(base64String));
-            BinaryFormatter bf = new BinaryFormatter();
-            graph = bf.Deserialize(ms);
+            return BufferToObject(Convert.FromBase64String(base64String));
         }
         catch (Exception ex)
         {
             throw (ex);
         }
-        finally
-        {
-            if (ms != null)
-            {
-                ms.Close();
-            }
-        }
-        return graph;
     }
 
     /// <summary>
@@ -88,13 +108,11 @@ public class SerializeUtility
     public static object ReadFile(string fileFullName)
     {
         FileStream fs = null;
-        object graph = null;
         try
         {
             fs = new FileStream(fileFullName, FileMode.OpenOrCreate);
             BinaryFormatter bf = new BinaryFormatter();
-            graph = bf.Deserialize(fs);
-            fs.Close();
+            return bf.Deserialize(fs);
         }
         catch (Exception ex)
         {
@@ -107,6 +125,5 @@ public class SerializeUtility
                 fs.Close();
             }
         }
-        return graph;
     }
 }

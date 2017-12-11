@@ -22,6 +22,7 @@ public class CsvEditManager
         {
             return;
         }
+		Clipboard.SetDataObject(m_CsvForm.MainDataGridView.GetClipboardContent());
     }
 
     public void Cut()
@@ -30,9 +31,10 @@ public class CsvEditManager
         {
             return;
         }
-    }
+		Clipboard.SetDataObject(m_CsvForm.MainDataGridView.GetClipboardContent());
+	}
 
-    public void Paste()
+	public void Paste()
     {
         if (!CanPaste())
         {
@@ -42,6 +44,15 @@ public class CsvEditManager
 
     public bool CanCopy()
     {
+		//if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
+		//{
+		//	TextBox textBox = m_CsvForm.MainDataGridView.EditingControl as TextBox;
+		//	return !string.IsNullOrEmpty(textBox.SelectedText);
+		//}
+		//if (m_CsvForm.MainDataGridView.SelectedCells.Count == 0)
+		//{
+		//	return false;
+		//}
         return true;
     }
 

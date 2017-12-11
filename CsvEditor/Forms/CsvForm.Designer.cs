@@ -104,6 +104,7 @@
 			// 
 			this.m_DataGridView.AllowUserToOrderColumns = true;
 			this.m_DataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
+			this.m_DataGridView.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
 			this.m_DataGridView.ContextMenuStrip = this.m_GridContextMenuStrip;
 			this.m_DataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.m_DataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
