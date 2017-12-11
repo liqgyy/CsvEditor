@@ -65,13 +65,19 @@ public partial class MainForm : Form
     private void CloseCsvForm(int tabIdx)
     {
         CsvForm csvForm = (CsvForm)m_MainTabControl.TabPages[tabIdx].Controls[0];
-        if (csvForm.TryClose())
+        if (!csvForm.CanClose())
         {
-            m_OpenedCsvFormList.Remove(csvForm);
-            m_MainTabControl.TabPages.RemoveAt(tabIdx);
-            csvForm.Close();
-        }
-    }
+			if (MessageBox.Show("文件未保存，确定关闭?", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+			{
+				// 防止用户误点，即使选择关闭也保存一份副本
+				csvForm.SaveToCopyFile();
+				return;
+			}
+		}
+		m_OpenedCsvFormList.Remove(csvForm);
+		m_MainTabControl.TabPages.RemoveAt(tabIdx);
+		csvForm.Close();
+	}
 
     private void LoadFile(string fileFullPath)
     {

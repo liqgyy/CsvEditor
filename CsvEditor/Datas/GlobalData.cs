@@ -13,6 +13,8 @@
     public const bool SETTING_FORCE_INITIALIZE = true;
 
     public const string SETTING_FILE_NAME = "Setting.bin";
+
+	public const string CSVSETTING_SAVE_FOLDER = "CsvSetting";
     #endregion // End Setting
 
     public const string SKIN_FOLDER_NAME = "Skins";

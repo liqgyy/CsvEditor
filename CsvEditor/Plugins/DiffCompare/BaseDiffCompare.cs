@@ -101,3 +101,24 @@ public class BaseDiffCompare
 		return "";
 	}
 }
+
+// TODD 利用GetChanges 做简单的版本比较工具
+//DataTable cdt = m_MainDataTable.GetChanges();
+//if (cdt != null)
+//{
+//    for (int i = 0; i < cdt.Rows.Count; i++)
+//    {
+//        if (cdt.Rows[i].RowState == DataRowState.Deleted)
+//        {
+//            Console.WriteLine("删除的行索引{0}，原来数值是{1}", i, cdt.Rows[i][0, DataRowVersion.Original]);
+//        }
+//        else if (cdt.Rows[i].RowState == DataRowState.Modified)
+//        {
+//            Console.WriteLine("修改的行索引{0}，原来数值是{1}，现在的新数值{2}", i, cdt.Rows[i][0, DataRowVersion.Original], cdt.Rows[i][0, DataRowVersion.Current]);
+//        }
+//        else if (cdt.Rows[i].RowState == DataRowState.Added)
+//        {
+//            Console.WriteLine("新添加行索引{0}，数值是{1}", i, cdt.Rows[i][0, DataRowVersion.Current]);
+//        }
+//    }
+//}

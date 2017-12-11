@@ -34,6 +34,8 @@ public partial class CsvForm : Form
     public DataTable MainDataTable;
     public DataTable CopyDataTable;
 
+	private CsvSetting m_Setting;
+
     /// <summary>
     /// 源文件 文件名 如: a.csv
     /// </summary>
@@ -50,8 +52,9 @@ public partial class CsvForm : Form
 
         CopyFileNameList = new List<string>();
         SourceFileFullName = fileFullPath;
+		m_Setting = CsvSettingManager.LoadSetting(SourceFileFullName);
 
-        EditManager = new CsvEditManager(this);
+		EditManager = new CsvEditManager(this);
     }
 
     public void BeforeChangeCellValue()
@@ -66,19 +69,17 @@ public partial class CsvForm : Form
         m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
     }
 
-    public bool TryClose()
-    {
-        if (DataChanged || NeedSaveSourceFile)
-        {
-            if (MessageBox.Show("文件未保存，确定关闭?", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+	public bool CanClose()
+	{
+		if (DataChanged || NeedSaveSourceFile)
+		{
+			return false;
+		}
+		return true;
+	}
 
-    public void SaveToSourceFile()
+	#region File
+	public void SaveToSourceFile()
     {
         if (DataChanged)
         {
@@ -89,28 +90,6 @@ public partial class CsvForm : Form
         // 保存到源文件前询问是否打开CodeCompare
         if (MessageBox.Show("是否打开文件比较工具", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
         {
-            // TODD 利用GetChanges 做简单的版本比较工具
-            {
-                //DataTable cdt = m_MainDataTable.GetChanges();
-                //if (cdt != null)
-                //{
-                //    for (int i = 0; i < cdt.Rows.Count; i++)
-                //    {
-                //        if (cdt.Rows[i].RowState == DataRowState.Deleted)
-                //        {
-                //            Console.WriteLine("删除的行索引{0}，原来数值是{1}", i, cdt.Rows[i][0, DataRowVersion.Original]);
-                //        }
-                //        else if (cdt.Rows[i].RowState == DataRowState.Modified)
-                //        {
-                //            Console.WriteLine("修改的行索引{0}，原来数值是{1}，现在的新数值{2}", i, cdt.Rows[i][0, DataRowVersion.Original], cdt.Rows[i][0, DataRowVersion.Current]);
-                //        }
-                //        else if (cdt.Rows[i].RowState == DataRowState.Added)
-                //        {
-                //            Console.WriteLine("新添加行索引{0}，数值是{1}", i, cdt.Rows[i][0, DataRowVersion.Current]);
-                //        }
-                //    }
-                //}
-            }
 			BeyondCompare.Instance.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName, "源文件", "副本");
 			CodeCompare.Instance.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName, "源文件", "副本");
             return;
@@ -145,7 +124,10 @@ public partial class CsvForm : Form
 
     public bool SaveToPath(string path)
     {
-        CsvExport myExport = new CsvExport(",", false);
+		SaveCsvSetting();
+
+		// 保存文件
+		CsvExport myExport = new CsvExport(",", false);
         try
         {
             for (int rowIdx = 0; rowIdx < MainDataTable.Rows.Count; rowIdx++)
@@ -191,12 +173,34 @@ public partial class CsvForm : Form
         m_CurrentCopyFileName = copyFileName;
         UpdateFormText();
     }
+	#endregion // End File
 
-    /// <summary>
-    /// 拷贝源文件文件副本
-    /// </summary>
-    /// <returns>副本文件名</returns>
-    private void CopySourceFile()
+	/// <summary>
+	/// 监听回车键  
+	/// 如果单元格正在被编辑, 就在光标处添加换行(\r\n)
+	/// </summary>
+	protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+	{
+		if (keyData != Keys.Enter)
+		{
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+		if (!m_DataGridView.IsCurrentCellInEditMode)
+		{
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
+		TextBox textBox = m_DataGridView.EditingControl as TextBox;
+		int nStart = textBox.SelectionStart;
+		m_DataGridView.CurrentCell.Value = textBox.Text.Insert(nStart, "\r\n");
+		return base.ProcessCmdKey(ref msg, keyData);
+	}
+
+	/// <summary>
+	/// 拷贝源文件文件副本
+	/// </summary>
+	/// <returns>副本文件名</returns>
+	private void CopySourceFile()
     {
         SourceCopyFileName = GetNewCopyFileName();
         File.Copy(SourceFileFullName, Path.GetTempPath() + SourceCopyFileName);
@@ -261,7 +265,11 @@ public partial class CsvForm : Form
             CopyDataTable = MainDataTable.Copy();
             MainDataTable.AcceptChanges();
             UpdateGridHeader();
-            m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
+
+			LoadColumnWidths();
+			LoadFrozen();
+
+			m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
             EditManager.DoSomething += OnRedoUndo_DoSomethingChange;
         }
         catch (Exception ex)
@@ -272,12 +280,83 @@ public partial class CsvForm : Form
         return true;
     }
 
-    /// <summary>
-    /// 更新标题
-    /// 行:数字1~x
-    /// 列:字母A~Z
-    /// </summary>
-    private void UpdateGridHeader()
+	#region CsvSetting
+	/// <summary>
+	/// 保存CsvSetting
+	/// </summary>
+	private void SaveCsvSetting()
+	{
+		SaveColumnWidths();
+		SaveFrozen();
+		CsvSettingManager.SaveSetting(m_Setting);
+	}
+
+	private void LoadColumnWidths()
+	{
+		if (m_Setting.ColumnWidths != null)
+		{
+			for (int colIdx = 0; colIdx < m_Setting.ColumnWidths.Length; colIdx++)
+			{
+				if (colIdx == m_DataGridView.Columns.Count)
+				{
+					break;
+				}
+				m_DataGridView.Columns[colIdx].Width = m_Setting.ColumnWidths[colIdx];
+			}
+		}
+	}
+
+	private void SaveColumnWidths()
+	{
+		m_Setting.ColumnWidths = new int[m_DataGridView.Columns.Count];
+		for (int colIdx = 0; colIdx < m_DataGridView.Columns.Count; colIdx++)
+		{
+			m_Setting.ColumnWidths[colIdx] = m_DataGridView.Columns[colIdx].Width;
+		}
+	}
+	
+	private void LoadFrozen()
+	{
+		if (m_Setting.FrozenRow >= 0)
+		{
+			m_DataGridView.Rows[m_Setting.FrozenRow >= m_DataGridView.RowCount ? m_DataGridView.RowCount - 1 : m_Setting.FrozenRow].Frozen = true;
+		}
+		if (m_Setting.FrozenColumn >= 0)
+		{
+			m_DataGridView.Columns[m_Setting.FrozenColumn >= m_DataGridView.ColumnCount ? m_DataGridView.ColumnCount - 1 : m_Setting.FrozenColumn].Frozen = true;
+		}
+	}
+
+	private void SaveFrozen()
+	{
+		m_Setting.FrozenRow = -1;
+		for (int rowIdx = 0; rowIdx < m_DataGridView.RowCount; rowIdx++)
+		{
+			if (!m_DataGridView.Rows[rowIdx].Frozen)
+			{
+				break;
+			}
+			m_Setting.FrozenRow = rowIdx;
+		}
+
+		m_Setting.FrozenColumn = -1;
+		for (int colIdx = 0; colIdx < m_DataGridView.ColumnCount; colIdx++)
+		{
+			if (!m_DataGridView.Columns[colIdx].Frozen)
+			{
+				break;
+			}
+			m_Setting.FrozenColumn = colIdx;
+		}
+	}
+	#endregion // End CsvSetting
+
+	/// <summary>
+	/// 更新标题
+	/// 行:数字1~x
+	/// 列:字母A~Z
+	/// </summary>
+	private void UpdateGridHeader()
     {
         for (int colIdx = 0; colIdx < m_DataGridView.Columns.Count; colIdx++)
         {
@@ -306,28 +385,7 @@ public partial class CsvForm : Form
             MainForm.Instance.UpdateAllTabControlTabPageText();
         }
     }
-
-    /// <summary>
-    /// 监听回车键  
-    /// 如果单元格正在被编辑, 就在光标处添加换行(\r\n)
-    /// </summary>
-    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-    {
-        if (keyData != Keys.Enter)
-        {
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-        if (!m_DataGridView.IsCurrentCellInEditMode)
-        {
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-
-        TextBox textBox = m_DataGridView.EditingControl as TextBox;
-        int nStart = textBox.SelectionStart;
-        m_DataGridView.CurrentCell.Value = textBox.Text.Insert(nStart, "\r\n");
-        return base.ProcessCmdKey(ref msg, keyData);
-    }
-
+  
     #region UIEvent
     /// <summary>
     /// 窗口加载时读取csv文件
@@ -497,6 +555,10 @@ public partial class CsvForm : Form
     /// </summary>
     private void OnDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
     {
+		if (e.RowIndex < 0 || e.ColumnIndex < 0)
+		{
+			return;
+		}
         EditManager.DidCellValueChange(e.ColumnIndex, e.RowIndex, CopyDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString(), MainDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString());
         CopyDataTable = MainDataTable.Copy();
         OnDataGridViewData_Change();
@@ -520,12 +582,29 @@ public partial class CsvForm : Form
         for (int rowIdx = 0; rowIdx < m_DataGridView.SelectedRows.Count; rowIdx++)
         {
             m_DataGridView.SelectedRows[rowIdx].Frozen = frozen;
-        }
+		}
         for (int colIdx = 0; colIdx < m_DataGridView.SelectedColumns.Count; colIdx++)
         {
             m_DataGridView.SelectedColumns[colIdx].Frozen = frozen;
         }
         UpdateGridHeader();
     }
-    #endregion UIEvent
+
+	/// <summary>
+	/// 增加列宽
+	/// </summary>
+	private void OnAddColWidthToolStripMenuItem_Click(object sender, EventArgs e)
+	{
+		for (int colIdx = 0; colIdx < m_DataGridView.SelectedColumns.Count; colIdx++)
+		{
+			// 魔法数字：列宽增加
+			m_DataGridView.SelectedColumns[colIdx].Width += 120;
+		}
+	}
+
+	private void OnForm_FormClosing(object sender, FormClosingEventArgs e)
+	{
+		SaveCsvSetting();
+	}
+	#endregion UIEvent
 }
