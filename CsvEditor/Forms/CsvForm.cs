@@ -427,8 +427,7 @@ public partial class CsvForm : Form
     }
 
     /// <summary>
-    /// 数据改变时 
-    /// 更新标题 & 更新菜单栏
+    /// 数据改变时更新标题
     /// </summary>
     private void OnDataGridViewData_Change()
     {
@@ -436,7 +435,6 @@ public partial class CsvForm : Form
         DataChanged = true;
         
         UpdateFormText();
-        MainForm.Instance.UpdateAllToolStripMenu();
     }
 
     /// <summary>
