@@ -266,7 +266,7 @@ public partial class CsvForm : Form
             MainDataTable.AcceptChanges();
             UpdateGridHeader();
 
-			LoadColumnWidths();
+			LoadCellSize();
 			LoadFrozen();
 
 			m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
@@ -286,13 +286,14 @@ public partial class CsvForm : Form
 	/// </summary>
 	private void SaveCsvSetting()
 	{
-		SaveColumnWidths();
+		SaveCellSize();
 		SaveFrozen();
 		CsvSettingManager.SaveSetting(m_Setting);
 	}
 
-	private void LoadColumnWidths()
+	private void LoadCellSize()
 	{
+		// Column
 		if (m_Setting.ColumnWidths != null)
 		{
 			for (int colIdx = 0; colIdx < m_Setting.ColumnWidths.Length; colIdx++)
@@ -302,16 +303,37 @@ public partial class CsvForm : Form
 					break;
 				}
 				m_DataGridView.Columns[colIdx].Width = m_Setting.ColumnWidths[colIdx];
+			}			
+		}
+
+		// Row
+		if (m_Setting.RowHeights != null)
+		{
+			for (int rowIdx = 0; rowIdx < m_Setting.RowHeights.Length; rowIdx++)
+			{
+				if (rowIdx == m_DataGridView.Rows.Count)
+				{
+					break;
+				}
+				m_DataGridView.Rows[rowIdx].Height = m_Setting.RowHeights[rowIdx];
 			}
 		}
 	}
 
-	private void SaveColumnWidths()
+	private void SaveCellSize()
 	{
+		// Column
 		m_Setting.ColumnWidths = new int[m_DataGridView.Columns.Count];
 		for (int colIdx = 0; colIdx < m_DataGridView.Columns.Count; colIdx++)
 		{
 			m_Setting.ColumnWidths[colIdx] = m_DataGridView.Columns[colIdx].Width;
+		}
+
+		// Row
+		m_Setting.RowHeights = new int[m_DataGridView.Rows.Count];
+		for (int rowIdx = 0; rowIdx < m_DataGridView.Rows.Count; rowIdx++)
+		{
+			m_Setting.RowHeights[rowIdx] = m_DataGridView.Rows[rowIdx].Height;
 		}
 	}
 	

@@ -8,6 +8,7 @@ public class CsvSetting
 {
 	public string FileFullName;
 	public int[] ColumnWidths;
+	public int[] RowHeights;
 
 	/// <summary>
 	/// 小于0时不冻结
