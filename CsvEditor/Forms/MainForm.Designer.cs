@@ -79,8 +79,8 @@ partial class MainForm
 			this.m_FileToolStripMenuItem.Name = "m_FileToolStripMenuItem";
 			this.m_FileToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
 			this.m_FileToolStripMenuItem.Text = "文件";
-			this.m_FileToolStripMenuItem.DropDownClosed += new System.EventHandler(this.OnTopToolStripMenuItem_DropDownChange);
-			this.m_FileToolStripMenuItem.DropDownOpening += new System.EventHandler(this.OnTopToolStripMenuItem_DropDownChange);
+			this.m_FileToolStripMenuItem.DropDownClosed += new System.EventHandler(this.OnTopToolStripMenuItem_DropDownClosed);
+			this.m_FileToolStripMenuItem.DropDownOpening += new System.EventHandler(this.OnTopToolStripMenuItem_DropDownOpening);
 			// 
 			// m_OpenFIleToolStripMenuItem
 			// 
@@ -142,8 +142,8 @@ partial class MainForm
 			this.m_EditToolStripMenuItem.Name = "m_EditToolStripMenuItem";
 			this.m_EditToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
 			this.m_EditToolStripMenuItem.Text = "编辑";
-			this.m_EditToolStripMenuItem.DropDownClosed += new System.EventHandler(this.OnTopToolStripMenuItem_DropDownChange);
-			this.m_EditToolStripMenuItem.DropDownOpening += new System.EventHandler(this.OnTopToolStripMenuItem_DropDownChange);
+			this.m_EditToolStripMenuItem.DropDownClosed += new System.EventHandler(this.OnTopToolStripMenuItem_DropDownClosed);
+			this.m_EditToolStripMenuItem.DropDownOpening += new System.EventHandler(this.OnTopToolStripMenuItem_DropDownOpening);
 			// 
 			// m_GotoEditToolStripMenuItem
 			// 

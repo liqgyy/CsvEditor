@@ -221,7 +221,6 @@ public partial class MainForm : Form
         }
     }
 
-
 	/// <summary>
 	/// 鼠标中键点击Tab时关闭Csv窗口
 	/// </summary>
@@ -259,9 +258,10 @@ public partial class MainForm : Form
     }
 
 	/// <summary>
-	/// 顶层菜单打开或关闭时，更新菜单里的菜单项状态
+	/// 顶层菜单打开时，更新菜单里的菜单项状态
+	/// TODO 优化逻辑
 	/// </summary>
-	private void OnTopToolStripMenuItem_DropDownChange(object sender, EventArgs e)
+	private void OnTopToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
 	{
 		ToolStripMenuItem item = (ToolStripMenuItem)sender;
 		if (item == m_FileToolStripMenuItem)
@@ -272,6 +272,31 @@ public partial class MainForm : Form
 		else if (item == m_EditToolStripMenuItem)
 		{
 			UpdateEditToolStripMenu();
+		}
+	}
+
+	/// <summary>
+	/// 顶层菜单关闭时，显示菜单里的所有菜单项
+	/// TODO 优化逻辑
+	/// </summary>
+	private void OnTopToolStripMenuItem_DropDownClosed(object sender, EventArgs e)
+	{
+		ToolStripMenuItem item = (ToolStripMenuItem)sender;
+		if (item == m_FileToolStripMenuItem)
+		{
+			m_SaveToSourceFileToolStripMenuItem.Enabled = true;
+			m_SaveToCopyFileToolStripMenuItem.Enabled = true;
+			m_SaveToFileToolStripMenuItem.Enabled = true;
+		}
+		else if (item == m_EditToolStripMenuItem)
+		{
+			m_GotoEditToolStripMenuItem.Enabled = true;
+			m_SearchEditStripMenuItem.Enabled = true;
+			m_UndoEditToolStripMenuItem.Enabled = true;
+			m_RedoEditToolStripMenuItem.Enabled = true;
+			m_CopyEditToolStripMenuItem.Enabled = true;
+			m_CutEditToolStripMenuItem.Enabled = true;
+			m_PasteEditToolStripMenuItem.Enabled = true;
 		}
 	}
 

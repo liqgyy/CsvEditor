@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 public class CsvEditManager
@@ -32,6 +33,24 @@ public class CsvEditManager
             return;
         }
 		Clipboard.SetDataObject(m_CsvForm.MainDataGridView.GetClipboardContent());
+
+		m_CsvForm.BeforeChangeCellValue();
+		List<CellValueChangeItem> changeList = new List<CellValueChangeItem>();
+		for(int cellIdx = 0; cellIdx < m_CsvForm.MainDataGridView.SelectedCells.Count; cellIdx++)
+		{
+			DataGridViewCell cell = m_CsvForm.MainDataGridView.SelectedCells[cellIdx];
+
+			CellValueChangeItem change = new CellValueChangeItem();
+			change.Row = cell.RowIndex;
+			change.Column = cell.ColumnIndex;
+			change.OldValue = (string)cell.Value;
+			change.NewValue = "";
+			changeList.Add(change);
+
+			cell.Value = "";
+		}
+		DidCellsValueChange(changeList);
+		m_CsvForm.AfterChangeCellValue();
 	}
 
 	public void Paste()
@@ -40,9 +59,140 @@ public class CsvEditManager
         {
             return;
         }
-    }
+		
+		DataObject clipboardData = null;
+		string clipboardStr = null;
+		// 获取剪切板的数据
+		try
+		{
+			clipboardData = (DataObject)Clipboard.GetDataObject();
+			if (!clipboardData.GetDataPresent(DataFormats.Text))
+			{
+				return;
+			}
+			clipboardStr = clipboardData.GetData(DataFormats.Text).ToString();
+		}
+		catch (Exception ex)
+		{
+			Debug.ShowExceptionMessageBox("获取剪切板数据失败", ex);
+			return;
+		}
+		finally
+		{
+			clipboardData = null;
+		}
 
-    public bool CanCopy()
+		DataGridView dataGridView = m_CsvForm.MainDataGridView;
+
+		// 粘贴剪切板的数据到DataGridViewCell
+		if (dataGridView.IsCurrentCellInEditMode)
+		{
+			m_CsvForm.BeforeChangeCellValue();
+			TextBox textBox = dataGridView.EditingControl as TextBox;
+			CellValueChangeItem change = new CellValueChangeItem();
+			try
+			{
+				change.OldValue = textBox.Text;
+				change.Row = dataGridView.CurrentCell.RowIndex;
+				change.Column = dataGridView.CurrentCell.ColumnIndex;
+
+				int selectionStart = textBox.SelectionStart;
+				string newValue = textBox.Text;
+				newValue.Remove(selectionStart, textBox.SelectionLength);
+				newValue.Insert(selectionStart, clipboardStr);
+				// 在这之后不会抛出异常
+				textBox.Text = newValue;
+
+				change.NewValue = newValue;
+				DidCellValueChange(change);
+			}
+			catch (Exception ex)
+			{
+				textBox.Text = change.OldValue;
+				Debug.ShowExceptionMessageBox("粘贴剪切板的数据到DataGridViewCell失败", ex);
+			}
+			finally
+			{
+				m_CsvForm.AfterChangeCellValue();
+			}
+			return;
+		}
+
+		// 粘贴剪切板的数据到DataGridView
+		// 引用下面两个链接
+		// https://stackoverflow.com/questions/22833327/pasting-excel-data-into-a-blank-datagridview-index-out-of-range-exception
+		// https://stackoverflow.com/questions/1679778/is-it-possible-to-paste-excel-csv-data-from-clipboard-to-datagridview-in-c
+		List<CellValueChangeItem> changeList = new List<CellValueChangeItem>();
+		try
+		{
+			m_CsvForm.BeforeChangeCellValue();
+			string[] lines = Regex.Split(clipboardStr.TrimEnd("\r\n".ToCharArray()), "\r\n");
+			// 当前行
+			int currentRow = dataGridView.CurrentCell.RowIndex;
+			// 当前列
+			int currentCol = dataGridView.CurrentCell.ColumnIndex;
+			DataGridViewCell currentCell;
+			for (int lineIdx = 0; lineIdx < lines.Length; lineIdx++)
+			{
+				string line = lines[lineIdx];
+				// 行超过表格限制，默认不添加新行
+				if (currentRow >= dataGridView.RowCount)
+				{
+					break;
+				}
+				// 忽略空行
+				if (string.IsNullOrEmpty(line))
+				{
+					continue;
+				}
+				string[] cells = line.Split('\t');
+				for (int cellIdx = 0; cellIdx < cells.Length; ++cellIdx)
+				{
+					// 列超过表格限制，默认不添加新列
+					if (currentCol + cellIdx >= dataGridView.ColumnCount)
+					{
+						break;
+					}
+					currentCell = dataGridView.Rows[currentRow].Cells[currentCol + cellIdx];
+					// 当前的设计需求不会出现ReadOnly = true的情况
+					if (currentCell.ReadOnly)
+					{
+						continue;
+					}
+					string cell = cells[cellIdx];
+					// 忽略空值
+					if (string.IsNullOrEmpty(cell))
+					{
+						continue;
+					}
+					if (currentCell.Value == null || currentCell.Value.ToString() != cells[cellIdx])
+					{
+						CellValueChangeItem change = new CellValueChangeItem();
+						change.Row = currentCell.RowIndex;
+						change.Column = currentCell.ColumnIndex;
+						change.OldValue = (string)currentCell.Value;
+						change.NewValue = cells[cellIdx];
+
+						currentCell.Value = cells[cellIdx];
+						changeList.Add(change);
+					}
+				}
+				currentRow++;
+			}
+		}
+		catch (Exception ex)
+		{
+			Debug.ShowExceptionMessageBox("粘贴剪切板的数据到DataGridView失败", ex);
+			return;
+		}
+		finally
+		{
+			DidCellsValueChange(changeList);
+			m_CsvForm.AfterChangeCellValue();
+		}
+	}
+
+	public bool CanCopy()
     {
 		//if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
 		//{
@@ -82,19 +232,23 @@ public class CsvEditManager
     public void DidCellValueChange(int column, int row, string oldValue, string newValue)
     {
         CellValueChangeItem change = new CellValueChangeItem();
-        change.Column = column;
-        change.Row = row;
-        change.OldValue = oldValue;
-        change.NewValue = newValue;
+		change.Column = column;
+		change.Row = row;
+		change.OldValue = oldValue;
+		change.NewValue = newValue;
+		DidCellValueChange(change);
+	}
 
-        DoCellsValueChangeEvent doCellsValueChangeEvent = new DoCellsValueChangeEvent();
-        doCellsValueChangeEvent.ChangeList = new List<CellValueChangeItem>();
-        doCellsValueChangeEvent.ChangeList.Add(change);
+	public void DidCellValueChange(CellValueChangeItem change)
+	{
+		DoCellsValueChangeEvent doCellsValueChangeEvent = new DoCellsValueChangeEvent();
+		doCellsValueChangeEvent.ChangeList = new List<CellValueChangeItem>();
+		doCellsValueChangeEvent.ChangeList.Add(change);
 
-        m_UndoStack.Push(doCellsValueChangeEvent);
-    }
+		m_UndoStack.Push(doCellsValueChangeEvent);
+	}
 
-    public void DidCellsValueChange(List<CellValueChangeItem> changeList)
+	public void DidCellsValueChange(List<CellValueChangeItem> changeList)
     {
         if (changeList == null || changeList.Count == 0)
         {
