@@ -270,6 +270,7 @@ partial class MainForm
 			this.MainMenuStrip = this.m_MenuStrip;
 			this.Name = "MainForm";
 			this.Text = "Csv编辑器";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnForm_FormClosing);
 			this.Load += new System.EventHandler(this.OnMainForm_Load);
 			this.m_MenuStrip.ResumeLayout(false);
 			this.m_MenuStrip.PerformLayout();

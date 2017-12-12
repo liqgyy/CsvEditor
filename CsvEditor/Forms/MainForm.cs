@@ -221,10 +221,26 @@ public partial class MainForm : Form
         }
     }
 
+	private void OnForm_FormClosing(object sender, FormClosingEventArgs e)
+	{
+		for(int formIdx = 0; formIdx < m_OpenedCsvFormList.Count; formIdx++)
+		{
+			CsvForm csvForm = m_OpenedCsvFormList[formIdx];
+			if (csvForm.DataChanged || csvForm.NeedSaveSourceFile)
+			{
+				if (MessageBox.Show("有文件未保存，是否关闭?", "提示" , MessageBoxButtons.YesNo) == DialogResult.No)
+				{
+					e.Cancel = true;
+				}
+				break;
+			}
+		}
+	}
+
 	/// <summary>
 	/// 鼠标中键点击Tab时关闭Csv窗口
 	/// </summary>
-    private void OnMainTabControl_MouseClick(object sender, MouseEventArgs e)
+	private void OnMainTabControl_MouseClick(object sender, MouseEventArgs e)
     {
         if (e.Button == MouseButtons.Middle)
         {
