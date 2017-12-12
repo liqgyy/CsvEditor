@@ -23,7 +23,16 @@ public class CsvEditManager
         {
             return;
         }
-		Clipboard.SetDataObject(m_CsvForm.MainDataGridView.GetClipboardContent());
+
+		if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
+		{
+			TextBox textBox = m_CsvForm.MainDataGridView.EditingControl as TextBox;
+			Clipboard.SetDataObject(textBox.SelectedText);
+		}
+		else
+		{
+			Clipboard.SetDataObject(m_CsvForm.MainDataGridView.GetClipboardContent());
+		}
     }
 
     public void Cut()
@@ -32,24 +41,55 @@ public class CsvEditManager
         {
             return;
         }
-		Clipboard.SetDataObject(m_CsvForm.MainDataGridView.GetClipboardContent());
+		Copy();
 
 		m_CsvForm.BeforeChangeCellValue();
-		List<CellValueChangeItem> changeList = new List<CellValueChangeItem>();
-		for(int cellIdx = 0; cellIdx < m_CsvForm.MainDataGridView.SelectedCells.Count; cellIdx++)
+
+		if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
 		{
-			DataGridViewCell cell = m_CsvForm.MainDataGridView.SelectedCells[cellIdx];
-
+			TextBox textBox = m_CsvForm.MainDataGridView.EditingControl as TextBox;
 			CellValueChangeItem change = new CellValueChangeItem();
-			change.Row = cell.RowIndex;
-			change.Column = cell.ColumnIndex;
-			change.OldValue = (string)cell.Value;
-			change.NewValue = "";
-			changeList.Add(change);
+			try
+			{
+				int selectionStart = textBox.SelectionStart;
+				change.OldValue = textBox.Text;
+				change.Row = m_CsvForm.MainDataGridView.CurrentCell.RowIndex;
+				change.Column = m_CsvForm.MainDataGridView.CurrentCell.ColumnIndex;
+				change.NewValue = change.OldValue.Remove(textBox.SelectionStart, textBox.SelectionLength);
 
-			cell.Value = "";
+				textBox.Text = change.NewValue;
+				textBox.SelectionStart = selectionStart;
+				DidCellValueChange(change);
+			}
+			catch (Exception ex)
+			{
+				textBox.Text = change.OldValue;
+				Debug.ShowExceptionMessageBox("剪切DataGridViewCell数据到剪切板失败", ex);
+			}
+			finally
+			{
+				m_CsvForm.AfterChangeCellValue();
+			}
 		}
-		DidCellsValueChange(changeList);
+		else
+		{
+			List<CellValueChangeItem> changeList = new List<CellValueChangeItem>();
+			for (int cellIdx = 0; cellIdx < m_CsvForm.MainDataGridView.SelectedCells.Count; cellIdx++)
+			{
+				DataGridViewCell cell = m_CsvForm.MainDataGridView.SelectedCells[cellIdx];
+
+				CellValueChangeItem change = new CellValueChangeItem();
+				change.Row = cell.RowIndex;
+				change.Column = cell.ColumnIndex;
+				change.OldValue = (string)cell.Value;
+				change.NewValue = "";
+				changeList.Add(change);
+
+				cell.Value = "";
+			}
+			DidCellsValueChange(changeList);
+		}
+
 		m_CsvForm.AfterChangeCellValue();
 	}
 
@@ -98,10 +138,11 @@ public class CsvEditManager
 
 				int selectionStart = textBox.SelectionStart;
 				string newValue = textBox.Text;
-				newValue.Remove(selectionStart, textBox.SelectionLength);
-				newValue.Insert(selectionStart, clipboardStr);
+				newValue = newValue.Remove(selectionStart, textBox.SelectionLength);
+				newValue = newValue.Insert(selectionStart, clipboardStr);
 				// 在这之后不会抛出异常
 				textBox.Text = newValue;
+				textBox.SelectionStart = selectionStart;
 
 				change.NewValue = newValue;
 				DidCellValueChange(change);
@@ -194,16 +235,18 @@ public class CsvEditManager
 
 	public bool CanCopy()
     {
-		//if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
-		//{
-		//	TextBox textBox = m_CsvForm.MainDataGridView.EditingControl as TextBox;
-		//	return !string.IsNullOrEmpty(textBox.SelectedText);
-		//}
-		//if (m_CsvForm.MainDataGridView.SelectedCells.Count == 0)
-		//{
-		//	return false;
-		//}
-        return true;
+		// 编辑模式中没有选中文件
+		if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
+		{
+			TextBox textBox = m_CsvForm.MainDataGridView.EditingControl as TextBox;
+			return !string.IsNullOrEmpty(textBox.SelectedText);
+		}
+		// 没有选中的单元格
+		if (m_CsvForm.MainDataGridView.SelectedCells.Count == 0)
+		{
+			return false;
+		}
+		return true;
     }
 
     public bool CanCut()
@@ -213,7 +256,11 @@ public class CsvEditManager
 
     public bool CanPaste()
     {
-        return true;
+		if (!m_CsvForm.MainDataGridView.IsCurrentCellInEditMode && m_CsvForm.MainDataGridView.SelectedCells.Count == 0)
+		{
+			return false;
+		}
+		return true;
     }
     #endregion // End Copy\Cut\Paste
 

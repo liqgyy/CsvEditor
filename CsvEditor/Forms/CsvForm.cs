@@ -438,9 +438,10 @@ public partial class CsvForm : Form
     }
 
     /// <summary>
+	/// 点击DataGridViewCell时
     /// 切换SelectionMode 
     /// 改变DataGridView选择的行列 
-    /// 更新菜单项(Un)Frozen状态
+    /// 更新菜单项状态
     /// </summary>
     private void OnDataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
     {
@@ -462,6 +463,7 @@ public partial class CsvForm : Form
             m_InsertUpRowToolStripMenuItem.Enabled = false;
             m_FrozenToolStripMenuItem.Enabled = false;
             m_UnFrozenToolStripMenuItem.Enabled = false;
+			m_AddColWidthToolStripMenuItem.Enabled = false;
 
             // UNDONE 右键菜单里的不支持多行、多列操作
             if (e.ColumnIndex < 0 && e.RowIndex < 0)
@@ -500,8 +502,10 @@ public partial class CsvForm : Form
                 {
                     m_FrozenToolStripMenuItem.Enabled = true;
                 }
-            }
-        }
+
+				m_AddColWidthToolStripMenuItem.Enabled = true;
+			}
+		}
     }
 
     /// <summary>
