@@ -29,16 +29,16 @@ public partial class SearchForm : Form
         m_ReplaceButton.Enabled = ms_IsCase;
         m_ReplaceAllButton.Enabled = ms_IsCase;
         Initialized = true;
-    }
+	}
 
-    /// <summary>
-    /// 从起始位置的下一个位置开始搜索，搜索到文件结尾后从文件开始位置搜索到起始位置
-    /// startRow,startCol 必须是dataGridView里存在的Cell，否则会死循环
-    /// </summary>
-    /// <param name="startRow">起始行</param>
-    /// <param name="startCol">起始列</param>
-    /// <returns>搜索到的Cell null是没搜索到</returns>
-    public DataGridViewCell Searching(DataGridView dataGridView, int startRow, int startCol)
+	/// <summary>
+	/// 从起始位置的下一个位置开始搜索，搜索到文件结尾后从文件开始位置搜索到起始位置
+	/// startRow,startCol 必须是dataGridView里存在的Cell，否则会死循环
+	/// </summary>
+	/// <param name="startRow">起始行</param>
+	/// <param name="startCol">起始列</param>
+	/// <returns>搜索到的Cell null是没搜索到</returns>
+	public DataGridViewCell Searching(DataGridView dataGridView, int startRow, int startCol)
     {
         int nowRow = startRow;
         int nowCol = startCol;

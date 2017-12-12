@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using static CsvEditManager;
+using System.Text;
 
 public partial class CsvForm : Form
 {
@@ -48,16 +50,16 @@ public partial class CsvForm : Form
 
     public CsvForm(string fileFullPath)
     {
-        InitializeComponent();
+		InitializeComponent();
 
         CopyFileNameList = new List<string>();
         SourceFileFullName = fileFullPath;
 		m_Setting = CsvSettingManager.LoadSetting(SourceFileFullName);
 
 		EditManager = new CsvEditManager(this);
-    }
+	}
 
-    public void BeforeChangeCellValue()
+	public void BeforeChangeCellValue()
     {
         m_DataGridView.CellValueChanged -= OnDataGridView_CellValueChanged;
 
@@ -192,7 +194,7 @@ public partial class CsvForm : Form
 
 		TextBox textBox = m_DataGridView.EditingControl as TextBox;
 		int nStart = textBox.SelectionStart;
-		m_DataGridView.CurrentCell.Value = textBox.Text.Insert(nStart, "\r\n");
+		textBox.Text = textBox.Text.Insert(nStart, "\r\n");
 		return base.ProcessCmdKey(ref msg, keyData);
 	}
 
@@ -219,7 +221,7 @@ public partial class CsvForm : Form
         string fileText;
         try
         {
-            fileText = File.ReadAllText(fileFullName);
+            fileText = File.ReadAllText(fileFullName, Encoding.UTF8);
         }
         catch (Exception ex)
         {
@@ -307,6 +309,10 @@ public partial class CsvForm : Form
 		}
 
 		// Row
+		if (m_Setting.RowHeadersWidth > 0)
+		{
+			m_DataGridView.RowHeadersWidth = m_Setting.RowHeadersWidth;
+		}
 		if (m_Setting.RowHeights != null)
 		{
 			for (int rowIdx = 0; rowIdx < m_Setting.RowHeights.Length; rowIdx++)
@@ -330,6 +336,7 @@ public partial class CsvForm : Form
 		}
 
 		// Row
+		m_Setting.RowHeadersWidth = m_DataGridView.RowHeadersWidth;
 		m_Setting.RowHeights = new int[m_DataGridView.Rows.Count];
 		for (int rowIdx = 0; rowIdx < m_DataGridView.Rows.Count; rowIdx++)
 		{
@@ -429,13 +436,13 @@ public partial class CsvForm : Form
         }
 
         Initialized = LoadCsvFileToDataTable(SourceFileFullName);
-    }
+	}
 
-    /// <summary>
-    /// RedoUndo触发  
-    /// 因为(Re\Un)Do时要取消DataGridView的监听, 所以在这里进行 数据改变 & 更新标题
-    /// </summary>
-    private void OnRedoUndo_DoSomethingChange(object sender, DoSomethingEventArgs e)
+	/// <summary>
+	/// RedoUndo触发  
+	/// 因为(Re\Un)Do时要取消DataGridView的监听, 所以在这里进行 数据改变 & 更新标题
+	/// </summary>
+	private void OnRedoUndo_DoSomethingChange(object sender, DoSomethingEventArgs e)
     {
         if (e.MyDoType == CsvEditManager.DoType.CellsValueChange)
         {

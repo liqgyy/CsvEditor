@@ -33,7 +33,7 @@ public partial class SettingForm : Form
 		m_SettingItemListBox.SelectedIndex = 0;
 	}
 
-    public bool SettingChanged()
+	public bool SettingChanged()
     {
         for(int itemIdx = 0; itemIdx < m_SettingItems.Length; itemIdx++)
         {
@@ -80,6 +80,7 @@ public partial class SettingForm : Form
             e.Cancel = true;
 			return;
         }
+		MessageBox.Show("部分设置需要重启后生效", "提示");
 	}
 
     private void OnSettingItemListBox_SelectedValueChanged(object sender, EventArgs e)

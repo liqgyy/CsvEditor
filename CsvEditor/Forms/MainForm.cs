@@ -101,12 +101,12 @@ public partial class MainForm : Form
         newCsvForm.FormBorderStyle = FormBorderStyle.None;
         newCsvForm.Dock = DockStyle.Fill;
 
-        m_MainTabControl.TabPages.Add(newCsvForm.Text + "  ");
-        int tabIdx = m_MainTabControl.TabPages.Count - 1;
-        m_MainTabControl.TabPages[tabIdx].Controls.Add(newCsvForm);
-        m_MainTabControl.SelectTab(tabIdx);
+		m_MainTabControl.TabPages.Add(newCsvForm.Text + "  ");
+		int tabIdx = m_MainTabControl.TabPages.Count - 1;
+		m_MainTabControl.TabPages[tabIdx].Controls.Add(newCsvForm);
+		m_MainTabControl.SelectTab(tabIdx);
 
-        m_OpenedCsvFormList.Add(newCsvForm);
+		m_OpenedCsvFormList.Add(newCsvForm);
         SetSelCsvForm(newCsvForm);
     }
 

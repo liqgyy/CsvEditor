@@ -14,14 +14,14 @@ public partial class GotoForm : Form
         m_RowTextBox.Text = ms_RowTextBoxText;
         m_ColTextBox.Text = ms_ColTextBoxText;
         Initialized = true;
-    }
+	}
 
-    /// <summary>
-    /// 跳转到某一个单元格
-    /// </summary>
-    /// <param name="row">行  范围1~RowCount</param>
-    /// <param name="col">列  范围1~ColumnCount</param>
-    private void Goto()
+	/// <summary>
+	/// 跳转到某一个单元格
+	/// </summary>
+	/// <param name="row">行  范围1~RowCount</param>
+	/// <param name="col">列  范围1~ColumnCount</param>
+	private void Goto()
     {
         if (!MainForm.Instance.SelCsvFormInitialized())
         {

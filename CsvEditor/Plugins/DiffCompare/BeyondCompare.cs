@@ -11,14 +11,14 @@ public class BeyondCompare : BaseDiffCompare
 	{
 		get
 		{
-			if (m_Instance == null)
+			if (ms_Instance == null)
 			{
-				m_Instance = new BeyondCompare();
+				ms_Instance = new BeyondCompare();
 			}
-			return m_Instance;
+			return ms_Instance;
 		}
 	}
-	private static BeyondCompare m_Instance;
+	private static BeyondCompare ms_Instance;
 
 	private const string BEYOND_COMPARE_URL = "http://www.beyondcompare.cc/";
 

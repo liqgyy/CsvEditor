@@ -27,6 +27,7 @@
     private void InitializeComponent()
     {
 			this.components = new System.ComponentModel.Container();
+			this.m_DataGridViewDefaultCellStyle = new System.Windows.Forms.DataGridViewCellStyle();
 			this.m_GridContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.m_InsertUpRowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_InsertDownRowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -106,6 +107,14 @@
 			this.m_DataGridView.AllowUserToOrderColumns = true;
 			this.m_DataGridView.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
 			this.m_DataGridView.ContextMenuStrip = this.m_GridContextMenuStrip;
+			m_DataGridViewDefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+			m_DataGridViewDefaultCellStyle.BackColor = System.Drawing.SystemColors.Window;
+			m_DataGridViewDefaultCellStyle.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+			m_DataGridViewDefaultCellStyle.ForeColor = System.Drawing.SystemColors.ControlText;
+			m_DataGridViewDefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			m_DataGridViewDefaultCellStyle.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+			m_DataGridViewDefaultCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+			this.m_DataGridView.DefaultCellStyle = m_DataGridViewDefaultCellStyle;
 			this.m_DataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.m_DataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
 			this.m_DataGridView.Location = new System.Drawing.Point(0, 0);
@@ -131,7 +140,8 @@
 
     }
 
-    #endregion
+	#endregion
+	private System.Windows.Forms.DataGridViewCellStyle m_DataGridViewDefaultCellStyle;
     private System.Windows.Forms.ContextMenuStrip m_GridContextMenuStrip;
     private System.Windows.Forms.ToolStripMenuItem m_InsertUpRowToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem m_InsertDownRowToolStripMenuItem;

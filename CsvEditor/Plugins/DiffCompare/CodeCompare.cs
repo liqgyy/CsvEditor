@@ -10,14 +10,14 @@ public class CodeCompare : BaseDiffCompare
 	public static CodeCompare Instance {
 		get
 		{
-			if (m_Instance == null)
+			if (ms_Instance == null)
 			{
-				m_Instance = new CodeCompare();
+				ms_Instance = new CodeCompare();
 			}
-			return m_Instance;
+			return ms_Instance;
 		}
 	}
-	private static CodeCompare m_Instance;
+	private static CodeCompare ms_Instance;
 
 	private const string CODE_COMPARE_URL = "https://www.devart.com/codecompare";
 

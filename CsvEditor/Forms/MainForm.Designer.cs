@@ -250,15 +250,15 @@ partial class MainForm
 			this.m_MainTabControl.TabIndex = 0;
 			this.m_MainTabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.OnMainTabControl_Selected);
 			this.m_MainTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnMainTabControl_MouseClick);
-			// 
-			// SkinEngine
-			// 
-			this.SkinEngine.@__DrawButtonFocusRectangle = true;
-			this.SkinEngine.DisabledButtonTextColor = System.Drawing.Color.Gray;
-			this.SkinEngine.DisabledMenuFontColor = System.Drawing.SystemColors.GrayText;
-			this.SkinEngine.InactiveCaptionColor = System.Drawing.SystemColors.InactiveCaptionText;
-			this.SkinEngine.SerialNumber = "";
-			this.SkinEngine.SkinFile = null;
+		// 
+		// SkinEngine
+		// 
+		this.SkinEngine.@__DrawButtonFocusRectangle = true;
+		this.SkinEngine.DisabledButtonTextColor = System.Drawing.Color.Gray;
+		this.SkinEngine.DisabledMenuFontColor = System.Drawing.SystemColors.GrayText;
+		this.SkinEngine.InactiveCaptionColor = System.Drawing.SystemColors.InactiveCaptionText;
+		this.SkinEngine.SerialNumber = "";
+		this.SkinEngine.SkinFile = null;
 			// 
 			// MainForm
 			// 
