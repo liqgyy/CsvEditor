@@ -504,7 +504,8 @@ public partial class CsvForm : Form
             m_FrozenToolStripMenuItem.Enabled = false;
             m_UnFrozenToolStripMenuItem.Enabled = false;
 			m_AddColWidthToolStripMenuItem.Enabled = false;
-			m_NoteToolStripMenuItem.Enabled = false;
+			m_AddRowHeightToolStripMenuItem.Enabled = false;
+			m_EditNoteToolStripMenuItem.Enabled = false;
 
             // UNDONE 右键菜单里的不支持多行、多列操作
             if (e.ColumnIndex < 0 && e.RowIndex < 0)
@@ -528,7 +529,9 @@ public partial class CsvForm : Form
                 {
                     m_FrozenToolStripMenuItem.Enabled = true;
                 }
-            }
+
+				m_AddRowHeightToolStripMenuItem.Enabled = true;
+			}
             // 点击列标题
             else if (e.RowIndex < 0)
             {
@@ -549,7 +552,9 @@ public partial class CsvForm : Form
 			// 点击单元格
 			else
 			{
-				m_NoteToolStripMenuItem.Enabled = true;
+				m_DataGridView.ClearSelection();
+				m_DataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Selected = true;
+				m_EditNoteToolStripMenuItem.Enabled = true;
 			}
 		}
     }
@@ -627,6 +632,10 @@ public partial class CsvForm : Form
 		{
 			return;
 		}
+		if (string.IsNullOrEmpty(cell.ToolTipText))
+		{
+			return;
+		}
 
 		e.Paint(e.ClipBounds, e.PaintParts);
 
@@ -671,12 +680,27 @@ public partial class CsvForm : Form
 	/// <summary>
 	/// 增加列宽
 	/// </summary>
-	private void OnAddColWidthToolStripMenuItem_Click(object sender, EventArgs e)
+	private void OnAddCellSizeToolStripMenuItem_Click(object sender, EventArgs e)
 	{
+		ToolStripMenuItem item = (ToolStripMenuItem)sender;
+		// 增加列宽
+		if (item == m_AddColWidthToolStripMenuItem)
+		{
 		for (int colIdx = 0; colIdx < m_DataGridView.SelectedColumns.Count; colIdx++)
 		{
 			// 魔法数字：列宽增加
 			m_DataGridView.SelectedColumns[colIdx].Width += 120;
+		}
+		}
+
+		// 增加行高
+		if (item == m_AddRowHeightToolStripMenuItem)
+		{
+			for (int rowIdx = 0; rowIdx < m_DataGridView.SelectedRows.Count; rowIdx++)
+			{
+				// 魔法数字：行高增加
+				m_DataGridView.SelectedRows[rowIdx].Height += 40;
+			}
 		}
 	}
 
@@ -685,7 +709,10 @@ public partial class CsvForm : Form
 		SaveCsvSetting();
 	}
 
-	private void OnNoteToolStripMenuItem_Click(object sender, EventArgs e)
+	/// <summary>
+	/// 编辑批注
+	/// </summary>
+	private void OnEditNoteToolStripMenuItem_Click(object sender, EventArgs e)
 	{
 
 	}

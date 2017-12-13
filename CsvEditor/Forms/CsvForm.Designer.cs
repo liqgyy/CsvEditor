@@ -36,8 +36,9 @@
 			this.m_UnFrozenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.m_AddColWidthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.m_AddRowHeightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-			this.m_NoteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.m_EditNoteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_DataGridView = new System.Windows.Forms.DataGridView();
 			this.m_GridContextMenuStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.m_DataGridView)).BeginInit();
@@ -54,10 +55,11 @@
             this.m_UnFrozenToolStripMenuItem,
             this.toolStripSeparator2,
             this.m_AddColWidthToolStripMenuItem,
+            this.m_AddRowHeightToolStripMenuItem,
             this.toolStripSeparator3,
-            this.m_NoteToolStripMenuItem});
+            this.m_EditNoteToolStripMenuItem});
 			this.m_GridContextMenuStrip.Name = "m_GridContextMenuStrip";
-			this.m_GridContextMenuStrip.Size = new System.Drawing.Size(149, 154);
+			this.m_GridContextMenuStrip.Size = new System.Drawing.Size(149, 176);
 			// 
 			// m_InsertUpRowToolStripMenuItem
 			// 
@@ -102,19 +104,26 @@
 			this.m_AddColWidthToolStripMenuItem.Name = "m_AddColWidthToolStripMenuItem";
 			this.m_AddColWidthToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.m_AddColWidthToolStripMenuItem.Text = "增加列宽";
-			this.m_AddColWidthToolStripMenuItem.Click += new System.EventHandler(this.OnAddColWidthToolStripMenuItem_Click);
+			this.m_AddColWidthToolStripMenuItem.Click += new System.EventHandler(this.OnAddCellSizeToolStripMenuItem_Click);
+			// 
+			// m_AddRowHeightToolStripMenuItem
+			// 
+			this.m_AddRowHeightToolStripMenuItem.Name = "m_AddRowHeightToolStripMenuItem";
+			this.m_AddRowHeightToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.m_AddRowHeightToolStripMenuItem.Text = "增加行高";
+			this.m_AddRowHeightToolStripMenuItem.Click += new System.EventHandler(this.OnAddCellSizeToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
 			this.toolStripSeparator3.Size = new System.Drawing.Size(145, 6);
 			// 
-			// m_NoteToolStripMenuItem
+			// m_EditNoteToolStripMenuItem
 			// 
-			this.m_NoteToolStripMenuItem.Name = "m_NoteToolStripMenuItem";
-			this.m_NoteToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-			this.m_NoteToolStripMenuItem.Text = "批注";
-			this.m_NoteToolStripMenuItem.Click += new System.EventHandler(this.OnNoteToolStripMenuItem_Click);
+			this.m_EditNoteToolStripMenuItem.Name = "m_EditNoteToolStripMenuItem";
+			this.m_EditNoteToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.m_EditNoteToolStripMenuItem.Text = "批注";
+			this.m_EditNoteToolStripMenuItem.Click += new System.EventHandler(this.OnEditNoteToolStripMenuItem_Click);
 			// 
 			// m_DataGridView
 			// 
@@ -168,5 +177,6 @@
 	private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 	private System.Windows.Forms.ToolStripMenuItem m_AddColWidthToolStripMenuItem;
 	private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-	private System.Windows.Forms.ToolStripMenuItem m_NoteToolStripMenuItem;
+	private System.Windows.Forms.ToolStripMenuItem m_EditNoteToolStripMenuItem;
+	private System.Windows.Forms.ToolStripMenuItem m_AddRowHeightToolStripMenuItem;
 }
