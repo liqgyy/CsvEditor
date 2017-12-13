@@ -166,8 +166,9 @@ public partial class MainForm : Form
             return;
         }
         m_SaveToCopyFileToolStripMenuItem.Enabled = SelCsvForm.DataChanged;
-        m_SaveToSourceFileToolStripMenuItem.Enabled = SelCsvForm.NeedSaveSourceFile && !SelCsvForm.DataChanged;
-        m_SaveToFileToolStripMenuItem.Enabled = true;
+        m_SaveToSourceFileToolStripMenuItem.Enabled = SelCsvForm.DataChanged;
+        //m_SaveToSourceFileToolStripMenuItem.Enabled = SelCsvForm.NeedSaveSourceFile && !SelCsvForm.DataChanged;
+		m_SaveToFileToolStripMenuItem.Enabled = true;
     }
 
     private void UpdateFileRevertToolStripMenu()

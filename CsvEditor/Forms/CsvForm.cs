@@ -93,12 +93,12 @@ public partial class CsvForm : Form
         }
 
         // 保存到源文件前询问是否打开CodeCompare
-        if (MessageBox.Show("是否打开文件比较工具", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
-        {
+        //if (MessageBox.Show("是否打开文件比较工具", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+        //{
 			BeyondCompare.Instance.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName, "源文件", "副本");
 			CodeCompare.Instance.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName, "源文件", "副本");
-            return;
-        }
+        //    return;
+        //}
 
         if (SaveToPath(SourceFileFullName))
         {

@@ -35,7 +35,9 @@ public class Debug
 	/// <param name="ex">异常</param>
     public static DialogResult ShowExceptionMessageBox(string text, Exception ex, MessageBoxButtons buttons, MessageBoxIcon icon)
     {
-        Console.WriteLine(ex.ToString());
-        return MessageBox.Show(text + "\n" + ex.ToString(), "Throw Exception!", buttons, icon);
+		//Console.WriteLine(ex.ToString());
+		//return MessageBox.Show(text + "\n" + ex.ToString(), "Throw Exception!", buttons, icon);
+		Console.WriteLine(text + "\n" + ex.ToString());
+		return DialogResult.None;
     }
 }
