@@ -7,7 +7,10 @@ using System.IO;
 using System.Windows.Forms;
 using static CsvEditManager;
 using System.Text;
-
+/// <summary>
+/// 现代空战 更灵活配置飞机
+/// 近乎不连服务器，直接进场景
+/// </summary>
 public partial class CsvForm : Form
 {
     /// <summary>

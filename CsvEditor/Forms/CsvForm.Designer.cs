@@ -59,69 +59,69 @@
             this.toolStripSeparator3,
             this.m_EditNoteToolStripMenuItem});
 			this.m_GridContextMenuStrip.Name = "m_GridContextMenuStrip";
-			this.m_GridContextMenuStrip.Size = new System.Drawing.Size(149, 176);
+			this.m_GridContextMenuStrip.Size = new System.Drawing.Size(153, 198);
 			// 
 			// m_InsertUpRowToolStripMenuItem
 			// 
 			this.m_InsertUpRowToolStripMenuItem.Name = "m_InsertUpRowToolStripMenuItem";
-			this.m_InsertUpRowToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.m_InsertUpRowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.m_InsertUpRowToolStripMenuItem.Text = "在上方插入行";
 			this.m_InsertUpRowToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnInsertRowToolStripMenuItem_MouseDown);
 			// 
 			// m_InsertDownRowToolStripMenuItem
 			// 
 			this.m_InsertDownRowToolStripMenuItem.Name = "m_InsertDownRowToolStripMenuItem";
-			this.m_InsertDownRowToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.m_InsertDownRowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.m_InsertDownRowToolStripMenuItem.Text = "在下方插入行";
 			this.m_InsertDownRowToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnInsertRowToolStripMenuItem_MouseDown);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(145, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// m_FrozenToolStripMenuItem
 			// 
 			this.m_FrozenToolStripMenuItem.Name = "m_FrozenToolStripMenuItem";
-			this.m_FrozenToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-			this.m_FrozenToolStripMenuItem.Text = "锁定";
+			this.m_FrozenToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_FrozenToolStripMenuItem.Text = "冻结";
 			this.m_FrozenToolStripMenuItem.Click += new System.EventHandler(this.OnFrozenToolStripMenuItem_Click);
 			// 
 			// m_UnFrozenToolStripMenuItem
 			// 
 			this.m_UnFrozenToolStripMenuItem.Name = "m_UnFrozenToolStripMenuItem";
-			this.m_UnFrozenToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-			this.m_UnFrozenToolStripMenuItem.Text = "解除锁定";
+			this.m_UnFrozenToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_UnFrozenToolStripMenuItem.Text = "解除冻结";
 			this.m_UnFrozenToolStripMenuItem.Click += new System.EventHandler(this.OnFrozenToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(145, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
 			// 
 			// m_AddColWidthToolStripMenuItem
 			// 
 			this.m_AddColWidthToolStripMenuItem.Name = "m_AddColWidthToolStripMenuItem";
-			this.m_AddColWidthToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.m_AddColWidthToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.m_AddColWidthToolStripMenuItem.Text = "增加列宽";
 			this.m_AddColWidthToolStripMenuItem.Click += new System.EventHandler(this.OnAddCellSizeToolStripMenuItem_Click);
 			// 
 			// m_AddRowHeightToolStripMenuItem
 			// 
 			this.m_AddRowHeightToolStripMenuItem.Name = "m_AddRowHeightToolStripMenuItem";
-			this.m_AddRowHeightToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.m_AddRowHeightToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.m_AddRowHeightToolStripMenuItem.Text = "增加行高";
 			this.m_AddRowHeightToolStripMenuItem.Click += new System.EventHandler(this.OnAddCellSizeToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(145, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
 			// 
 			// m_EditNoteToolStripMenuItem
 			// 
 			this.m_EditNoteToolStripMenuItem.Name = "m_EditNoteToolStripMenuItem";
-			this.m_EditNoteToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.m_EditNoteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.m_EditNoteToolStripMenuItem.Text = "批注";
 			this.m_EditNoteToolStripMenuItem.Click += new System.EventHandler(this.OnEditNoteToolStripMenuItem_Click);
 			// 
