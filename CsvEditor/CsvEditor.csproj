@@ -55,6 +55,7 @@
   <ItemGroup>
     <Reference Include="IrisSkin4">
       <HintPath>..\..\..\..\IrisSkin4.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

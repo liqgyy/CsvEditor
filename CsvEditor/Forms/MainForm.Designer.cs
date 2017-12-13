@@ -86,42 +86,42 @@ partial class MainForm
 			// 
 			this.m_OpenFIleToolStripMenuItem.Name = "m_OpenFIleToolStripMenuItem";
 			this.m_OpenFIleToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.m_OpenFIleToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+			this.m_OpenFIleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.m_OpenFIleToolStripMenuItem.Text = "打开";
 			this.m_OpenFIleToolStripMenuItem.Click += new System.EventHandler(this.OnOpenFileToolStripMenuItem_Click);
 			// 
 			// m_RevertFileToolStripMenuItem
 			// 
 			this.m_RevertFileToolStripMenuItem.Name = "m_RevertFileToolStripMenuItem";
-			this.m_RevertFileToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+			this.m_RevertFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.m_RevertFileToolStripMenuItem.Text = "还原到副本";
+			this.m_RevertFileToolStripMenuItem.Visible = false;
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(223, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// m_SaveToSourceFileToolStripMenuItem
 			// 
 			this.m_SaveToSourceFileToolStripMenuItem.Name = "m_SaveToSourceFileToolStripMenuItem";
-			this.m_SaveToSourceFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.S)));
-			this.m_SaveToSourceFileToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-			this.m_SaveToSourceFileToolStripMenuItem.Text = "保存到源文件";
+			this.m_SaveToSourceFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+			this.m_SaveToSourceFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_SaveToSourceFileToolStripMenuItem.Text = "保存";
 			this.m_SaveToSourceFileToolStripMenuItem.Click += new System.EventHandler(this.OnSaveFileToolStripMenuItem_Click);
 			// 
 			// m_SaveToCopyFileToolStripMenuItem
 			// 
 			this.m_SaveToCopyFileToolStripMenuItem.Name = "m_SaveToCopyFileToolStripMenuItem";
-			this.m_SaveToCopyFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.m_SaveToCopyFileToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+			this.m_SaveToCopyFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.m_SaveToCopyFileToolStripMenuItem.Text = "保存到副本";
+			this.m_SaveToCopyFileToolStripMenuItem.Visible = false;
 			this.m_SaveToCopyFileToolStripMenuItem.Click += new System.EventHandler(this.OnSaveFileToolStripMenuItem_Click);
 			// 
 			// m_SaveToFileToolStripMenuItem
 			// 
 			this.m_SaveToFileToolStripMenuItem.Name = "m_SaveToFileToolStripMenuItem";
-			this.m_SaveToFileToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+			this.m_SaveToFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.m_SaveToFileToolStripMenuItem.Text = "保存为";
 			this.m_SaveToFileToolStripMenuItem.Click += new System.EventHandler(this.OnSaveFileToolStripMenuItem_Click);
 			// 
@@ -250,15 +250,15 @@ partial class MainForm
 			this.m_MainTabControl.TabIndex = 0;
 			this.m_MainTabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.OnMainTabControl_Selected);
 			this.m_MainTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnMainTabControl_MouseClick);
-		// 
-		// SkinEngine
-		// 
-		this.SkinEngine.@__DrawButtonFocusRectangle = true;
-		this.SkinEngine.DisabledButtonTextColor = System.Drawing.Color.Gray;
-		this.SkinEngine.DisabledMenuFontColor = System.Drawing.SystemColors.GrayText;
-		this.SkinEngine.InactiveCaptionColor = System.Drawing.SystemColors.InactiveCaptionText;
-		this.SkinEngine.SerialNumber = "";
-		this.SkinEngine.SkinFile = null;
+			// 
+			// SkinEngine
+			// 
+			this.SkinEngine.@__DrawButtonFocusRectangle = true;
+			this.SkinEngine.DisabledButtonTextColor = System.Drawing.Color.Gray;
+			this.SkinEngine.DisabledMenuFontColor = System.Drawing.SystemColors.GrayText;
+			this.SkinEngine.InactiveCaptionColor = System.Drawing.SystemColors.InactiveCaptionText;
+			this.SkinEngine.SerialNumber = "";
+			this.SkinEngine.SkinFile = null;
 			// 
 			// MainForm
 			// 

@@ -112,7 +112,7 @@ public partial class CsvForm : Form
             {
                 Debug.ShowExceptionMessageBox("拷贝文件副本失败: " + SourceFileFullName, ex);
             }
-			MessageBox.Show("源文件保存成功\n" + SourceFileFullName, "提示");
+			//MessageBox.Show("源文件保存成功\n" + SourceFileFullName, "提示");
         }
         UpdateFormText();
     }
@@ -161,15 +161,15 @@ public partial class CsvForm : Form
     /// </summary>
     /// <param name="copyFileName"></param>
     public void RevertToCopyFile(string copyFileName)
-    {
-        if (DataChanged)
-        {
-            if (MessageBox.Show("当前文件未保存，是否还原?", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-            {
-                return;
-            }
-        }
-        Initialized = false;
+	{
+		//    if (DataChanged)
+		//    {
+		//        if (MessageBox.Show("当前文件未保存，是否还原?", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+		//        {
+		//            return;
+		//        }
+		//    }
+		Initialized = false;
         Initialized = LoadCsvFileToDataTable(Path.GetTempPath() + copyFileName);
         // 还原为源文件的副本
         if (copyFileName == SourceCopyFileName)
@@ -421,7 +421,7 @@ public partial class CsvForm : Form
     /// </summary>
     private void UpdateFormText()
     {
-        string newFormText = (NeedSaveSourceFile ? "?" : "") + m_SourceFileName + (DataChanged ? "*" : "");
+        string newFormText = (false ? "?" : "") + m_SourceFileName + (DataChanged ? "*" : "");
         if (Text != newFormText)
         {
             Text = newFormText;

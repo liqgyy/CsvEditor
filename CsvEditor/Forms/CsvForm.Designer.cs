@@ -123,6 +123,7 @@
 			this.m_EditNoteToolStripMenuItem.Name = "m_EditNoteToolStripMenuItem";
 			this.m_EditNoteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.m_EditNoteToolStripMenuItem.Text = "批注";
+			this.m_EditNoteToolStripMenuItem.Visible = false;
 			this.m_EditNoteToolStripMenuItem.Click += new System.EventHandler(this.OnEditNoteToolStripMenuItem_Click);
 			// 
 			// m_DataGridView

@@ -68,21 +68,48 @@ public partial class MainForm : Form
 	/// 关闭csv窗口
 	/// </summary>
 	/// <param name="tabIdx">窗口id</param>
-    private void CloseCsvForm(int tabIdx)
+	private void CloseCsvForm(int tabIdx)
+	{
+		CsvForm csvForm = (CsvForm)m_MainTabControl.TabPages[tabIdx].Controls[0];
+		if (CloseCsvForm(csvForm))
+		{
+			m_MainTabControl.TabPages.RemoveAt(tabIdx);
+		}
+	}
+
+	/// <summary>
+	/// 关闭csv窗口
+	/// </summary>
+	private bool CloseCsvForm(CsvForm csvForm)
     {
-        CsvForm csvForm = (CsvForm)m_MainTabControl.TabPages[tabIdx].Controls[0];
-        if (!csvForm.CanClose())
+        if (csvForm.DataChanged)
         {
 			if (MessageBox.Show("文件未保存，确定关闭?", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
 			{
 				// 防止用户误点，即使选择关闭也保存一份副本
-				csvForm.SaveToCopyFile();
-				return;
+				//csvForm.SaveToCopyFile();
+				return false;
+			}
+			else
+			{
+				if (csvForm.CopyFileNameList.Count > 0)
+				{
+					csvForm.RevertToCopyFile(csvForm.CopyFileNameList[csvForm.CopyFileNameList.Count - 1]);
+				}
+				else
+				{
+					csvForm.RevertToCopyFile(csvForm.SourceCopyFileName);
+				}
 			}
 		}
+		if (csvForm.NeedSaveSourceFile)
+		{
+			csvForm.SaveToSourceFile();
+			return false;
+		}
 		m_OpenedCsvFormList.Remove(csvForm);
-		m_MainTabControl.TabPages.RemoveAt(tabIdx);
 		csvForm.Close();
+		return true;
 	}
 
 	/// <summary>
@@ -226,12 +253,10 @@ public partial class MainForm : Form
 		for(int formIdx = 0; formIdx < m_OpenedCsvFormList.Count; formIdx++)
 		{
 			CsvForm csvForm = m_OpenedCsvFormList[formIdx];
-			if (csvForm.DataChanged || csvForm.NeedSaveSourceFile)
+			if (!csvForm.CanClose())
 			{
-				if (MessageBox.Show("有文件未保存，是否关闭?", "提示" , MessageBoxButtons.YesNo) == DialogResult.No)
-				{
-					e.Cancel = true;
-				}
+				MessageBox.Show("有Csv窗口未关闭", "提示", MessageBoxButtons.OK);
+				e.Cancel = true;
 				break;
 			}
 		}
@@ -413,15 +438,19 @@ public partial class MainForm : Form
 		}
 
 		ToolStripMenuItem item = (ToolStripMenuItem)sender;
-        if (SelCsvForm.NeedSaveSourceFile && !SelCsvForm.DataChanged && item == m_SaveToSourceFileToolStripMenuItem)
-        {
-            SelCsvForm.SaveToSourceFile();
-        }
-        else if (SelCsvForm.DataChanged && item == m_SaveToCopyFileToolStripMenuItem)
-        {
-            SelCsvForm.SaveToCopyFile();
-        }
-        else if (item == m_SaveToFileToolStripMenuItem)
+        //if (SelCsvForm.NeedSaveSourceFile && !SelCsvForm.DataChanged && item == m_SaveToSourceFileToolStripMenuItem)
+        //{
+        //    SelCsvForm.SaveToSourceFile();
+        //}
+        //else if (SelCsvForm.DataChanged && item == m_SaveToCopyFileToolStripMenuItem)
+        //{
+        //    SelCsvForm.SaveToCopyFile();
+        //}
+		if (item == m_SaveToSourceFileToolStripMenuItem && SelCsvForm.DataChanged)
+		{
+			SelCsvForm.SaveToCopyFile();
+		}
+		else if (item == m_SaveToFileToolStripMenuItem)
         {
             SkinEngine.SkinDialogs = false;
             if (m_SaveCsvFileDialog.ShowDialog() != DialogResult.OK)
