@@ -109,6 +109,7 @@ public partial class CsvForm : Form
             {
                 Debug.ShowExceptionMessageBox("拷贝文件副本失败: " + SourceFileFullName, ex);
             }
+			MessageBox.Show("源文件保存成功\n" + SourceFileFullName, "提示");
         }
         UpdateFormText();
     }
@@ -192,9 +193,19 @@ public partial class CsvForm : Form
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-		TextBox textBox = m_DataGridView.EditingControl as TextBox;
-		int nStart = textBox.SelectionStart;
-		textBox.Text = textBox.Text.Insert(nStart, "\r\n");
+		try
+		{
+			TextBox textBox = m_DataGridView.EditingControl as TextBox;
+			int nStart = textBox.SelectionStart;
+			string oldValue = textBox.Text;
+			string newValue = oldValue.Insert(nStart, "\r\n");
+			textBox.Text = newValue;
+			EditManager.DidCellValueChange(m_DataGridView.CurrentCell.ColumnIndex, m_DataGridView.CurrentCell.RowIndex, oldValue, newValue);
+		}
+		catch (Exception ex)
+		{
+			Debug.ShowExceptionMessageBox("插入换行符失败", ex);
+		}
 		return base.ProcessCmdKey(ref msg, keyData);
 	}
 
@@ -493,6 +504,7 @@ public partial class CsvForm : Form
             m_FrozenToolStripMenuItem.Enabled = false;
             m_UnFrozenToolStripMenuItem.Enabled = false;
 			m_AddColWidthToolStripMenuItem.Enabled = false;
+			m_NoteToolStripMenuItem.Enabled = false;
 
             // UNDONE 右键菜单里的不支持多行、多列操作
             if (e.ColumnIndex < 0 && e.RowIndex < 0)
@@ -533,6 +545,11 @@ public partial class CsvForm : Form
                 }
 
 				m_AddColWidthToolStripMenuItem.Enabled = true;
+			}
+			// 点击单元格
+			else
+			{
+				m_NoteToolStripMenuItem.Enabled = true;
 			}
 		}
     }
@@ -595,10 +612,17 @@ public partial class CsvForm : Form
         OnDataGridViewData_Change();
     }
 
-    /// <summary>
-    /// 锁定行或列
-    /// </summary>
-    private void OnFrozenToolStripMenuItem_Click(object sender, EventArgs e)
+	/// <summary>
+	/// 绘制单元格时，添加批注提示
+	/// </summary>
+	private void OnDataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+	{
+	}
+
+	/// <summary>
+	/// 锁定行或列
+	/// </summary>
+	private void OnFrozenToolStripMenuItem_Click(object sender, EventArgs e)
     {
         bool frozen = true;
         ToolStripMenuItem item = (ToolStripMenuItem)sender;
@@ -637,5 +661,10 @@ public partial class CsvForm : Form
 	{
 		SaveCsvSetting();
 	}
-	#endregion UIEvent
+
+	private void OnNoteToolStripMenuItem_Click(object sender, EventArgs e)
+	{
+
+	}
+	#endregion UIEvent	
 }

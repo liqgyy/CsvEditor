@@ -27,7 +27,7 @@
     private void InitializeComponent()
     {
 			this.components = new System.ComponentModel.Container();
-			this.m_DataGridViewDefaultCellStyle = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.m_GridContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.m_InsertUpRowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_InsertDownRowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -36,6 +36,8 @@
 			this.m_UnFrozenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.m_AddColWidthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.m_NoteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_DataGridView = new System.Windows.Forms.DataGridView();
 			this.m_GridContextMenuStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.m_DataGridView)).BeginInit();
@@ -51,9 +53,11 @@
             this.m_FrozenToolStripMenuItem,
             this.m_UnFrozenToolStripMenuItem,
             this.toolStripSeparator2,
-            this.m_AddColWidthToolStripMenuItem});
+            this.m_AddColWidthToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.m_NoteToolStripMenuItem});
 			this.m_GridContextMenuStrip.Name = "m_GridContextMenuStrip";
-			this.m_GridContextMenuStrip.Size = new System.Drawing.Size(149, 126);
+			this.m_GridContextMenuStrip.Size = new System.Drawing.Size(149, 154);
 			// 
 			// m_InsertUpRowToolStripMenuItem
 			// 
@@ -100,6 +104,18 @@
 			this.m_AddColWidthToolStripMenuItem.Text = "增加列宽";
 			this.m_AddColWidthToolStripMenuItem.Click += new System.EventHandler(this.OnAddColWidthToolStripMenuItem_Click);
 			// 
+			// toolStripSeparator3
+			// 
+			this.toolStripSeparator3.Name = "toolStripSeparator3";
+			this.toolStripSeparator3.Size = new System.Drawing.Size(145, 6);
+			// 
+			// m_NoteToolStripMenuItem
+			// 
+			this.m_NoteToolStripMenuItem.Name = "m_NoteToolStripMenuItem";
+			this.m_NoteToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.m_NoteToolStripMenuItem.Text = "批注";
+			this.m_NoteToolStripMenuItem.Click += new System.EventHandler(this.OnNoteToolStripMenuItem_Click);
+			// 
 			// m_DataGridView
 			// 
 			this.m_DataGridView.AllowUserToAddRows = false;
@@ -107,14 +123,14 @@
 			this.m_DataGridView.AllowUserToOrderColumns = true;
 			this.m_DataGridView.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
 			this.m_DataGridView.ContextMenuStrip = this.m_GridContextMenuStrip;
-			m_DataGridViewDefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-			m_DataGridViewDefaultCellStyle.BackColor = System.Drawing.SystemColors.Window;
-			m_DataGridViewDefaultCellStyle.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-			m_DataGridViewDefaultCellStyle.ForeColor = System.Drawing.SystemColors.ControlText;
-			m_DataGridViewDefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-			m_DataGridViewDefaultCellStyle.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-			m_DataGridViewDefaultCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-			this.m_DataGridView.DefaultCellStyle = m_DataGridViewDefaultCellStyle;
+			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+			dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+			dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+			dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+			this.m_DataGridView.DefaultCellStyle = dataGridViewCellStyle1;
 			this.m_DataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.m_DataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
 			this.m_DataGridView.Location = new System.Drawing.Point(0, 0);
@@ -122,6 +138,7 @@
 			this.m_DataGridView.Size = new System.Drawing.Size(944, 601);
 			this.m_DataGridView.TabIndex = 0;
 			this.m_DataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.OnDataGridView_CellMouseDown);
+			this.m_DataGridView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.OnDataGridView_CellPainting);
 			// 
 			// CsvForm
 			// 
@@ -141,7 +158,6 @@
     }
 
 	#endregion
-	private System.Windows.Forms.DataGridViewCellStyle m_DataGridViewDefaultCellStyle;
     private System.Windows.Forms.ContextMenuStrip m_GridContextMenuStrip;
     private System.Windows.Forms.ToolStripMenuItem m_InsertUpRowToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem m_InsertDownRowToolStripMenuItem;
@@ -151,4 +167,6 @@
     private System.Windows.Forms.ToolStripMenuItem m_UnFrozenToolStripMenuItem;
 	private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 	private System.Windows.Forms.ToolStripMenuItem m_AddColWidthToolStripMenuItem;
+	private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+	private System.Windows.Forms.ToolStripMenuItem m_NoteToolStripMenuItem;
 }

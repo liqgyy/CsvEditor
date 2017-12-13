@@ -236,6 +236,7 @@ public partial class SettingForm : Form
 		private void OnExePathButton_Click(object sender, EventArgs e)
 		{
 			Button button = (Button)sender;
+			// 打开选择文件窗口
 			if (button == Form.m_BeyondCompareChooseExePathButton)
 			{
 				Form.m_DiffCompareOpenFileDialog.InitialDirectory = Setting.Instance.BeyondCompareExePath;
