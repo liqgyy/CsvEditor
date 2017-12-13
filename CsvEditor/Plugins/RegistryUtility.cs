@@ -94,14 +94,13 @@ public class RegistryUtility
 
 	public static object GetBaseSubKeyValue(RegistryHive hKey, RegistryView view, string subName, string valueName)
 	{
-		object value = null;
 		RegistryKey baseKey = null;
 		RegistryKey software = null;
 		try
 		{
 			baseKey = RegistryKey.OpenBaseKey(hKey, view);
 			software = baseKey.OpenSubKey(subName, false);
-			value = software.GetValue(valueName);
+			return software.GetValue(valueName);
 		}
 		catch (Exception ex)
 		{
@@ -110,13 +109,13 @@ public class RegistryUtility
 				+ view.ToString() + "\t"
 				+ subName + "\t"
 				+ valueName, ex);
+			return null;
 		}
 		finally
 		{
 			CloseKey(software);
 			CloseKey(baseKey);
 		}
-		return value;
 	}
 
 	public static void CloseKey(RegistryKey key)

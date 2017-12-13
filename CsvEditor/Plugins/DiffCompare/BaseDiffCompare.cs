@@ -45,46 +45,42 @@ public class BaseDiffCompare
 			}
 		}
 
-		System.Diagnostics.Process cmdProcess = null;
+		// 执行CMD命令
 		try
 		{
-			cmdProcess = new System.Diagnostics.Process();
-			cmdProcess.StartInfo.FileName = "cmd.exe";
-			// 是否使用操作系统shell启动
-			cmdProcess.StartInfo.UseShellExecute = false;
-			// 接受来自调用程序的输入信息
-			cmdProcess.StartInfo.RedirectStandardInput = true;
-			// 由调用程序获取输出信息
-			cmdProcess.StartInfo.RedirectStandardOutput = true;
-			// 重定向标准错误输出
-			cmdProcess.StartInfo.RedirectStandardError = true;
-			// 不显示程序窗口
-			cmdProcess.StartInfo.CreateNoWindow = true;
-			cmdProcess.Start();
+			using (System.Diagnostics.Process cmdProcess = new System.Diagnostics.Process())
+			{
+				cmdProcess.StartInfo.FileName = "cmd.exe";
+				// 是否使用操作系统shell启动
+				cmdProcess.StartInfo.UseShellExecute = false;
+				// 接受来自调用程序的输入信息
+				cmdProcess.StartInfo.RedirectStandardInput = true;
+				// 由调用程序获取输出信息
+				cmdProcess.StartInfo.RedirectStandardOutput = true;
+				// 重定向标准错误输出
+				cmdProcess.StartInfo.RedirectStandardError = true;
+				// 不显示程序窗口
+				cmdProcess.StartInfo.CreateNoWindow = true;
+				cmdProcess.Start();
 
-			// 向cmd窗口发送输入信息
-			// 向标准输入写入要执行的命令。这里使用&是批处理命令的符号，表示前面一个命令不管是否执行成功都执行后面(exit)命令，如果不执行exit命令，后面调用ReadToEnd()方法会假死
-			// 同类的符号还有&&和||前者表示必须前一个命令执行成功才会执行后面的命令，后者表示必须前一个命令执行失败才会执行后面的命令
-			cmdProcess.StandardInput.WriteLine(GetCmdProcessLine(fileFullName1, fileFullName2, fileTitle1, fileTitle2));
+				// 向cmd窗口发送输入信息
+				// 向标准输入写入要执行的命令。这里使用&是批处理命令的符号，表示前面一个命令不管是否执行成功都执行后面(exit)命令，如果不执行exit命令，后面调用ReadToEnd()方法会假死
+				// 同类的符号还有&&和||前者表示必须前一个命令执行成功才会执行后面的命令，后者表示必须前一个命令执行失败才会执行后面的命令
+				cmdProcess.StandardInput.WriteLine(GetCmdProcessLine(fileFullName1, fileFullName2, fileTitle1, fileTitle2));
 
-			// UNDONE 暂时不需要接受数据
-			//Console.WriteLine(cmdProcess.StandardOutput.ReadToEnd());
+				// UNDONE 暂时不需要接受数据
+				//Console.WriteLine(cmdProcess.StandardOutput.ReadToEnd());
 
-			// 等待程序执行完退出进程
-			cmdProcess.WaitForExit();
-			cmdProcess.Close();
+				// 等待程序执行完退出进程
+				cmdProcess.WaitForExit();
+				cmdProcess.Close();
+			}
 		}
 		catch (Exception ex)
 		{
 			Debug.ShowExceptionMessageBox("比较文件: " + fileFullName1 + " - " + fileFullName2 + " 失败", ex);
 			return false;
 		}
-		finally
-		{
-			if (cmdProcess != null)
-				cmdProcess.Close();
-		}
-
 		return true;
 	}
 

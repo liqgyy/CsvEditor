@@ -19,4 +19,6 @@
 
     public const string SKIN_FOLDER_NAME = "Skins";
     public const string SKIN_DEFAULT_SSK = "office2007";
+
+	public const int CSV_NOTE_POLYGON_SIZE = 5;
 }

@@ -57,7 +57,7 @@ public partial class CsvForm : Form
 		m_Setting = CsvSettingManager.LoadSetting(SourceFileFullName);
 
 		EditManager = new CsvEditManager(this);
-	}
+	}	
 
 	public void BeforeChangeCellValue()
     {
@@ -388,7 +388,7 @@ public partial class CsvForm : Form
 			}
 			m_Setting.FrozenColumn = colIdx;
 		}
-	}
+	}	
 	#endregion // End CsvSetting
 
 	/// <summary>
@@ -617,6 +617,29 @@ public partial class CsvForm : Form
 	/// </summary>
 	private void OnDataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
 	{
+		if (e.ColumnIndex < 0 || e.RowIndex < 0)
+		{
+			return;
+		}
+
+		DataGridViewCell cell = m_DataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+		if (cell.Selected)
+		{
+			return;
+		}
+
+		e.Paint(e.ClipBounds, e.PaintParts);
+
+		// 批注提示
+		using (Brush gridBrush = new SolidBrush(Color.Red))
+		{
+			Point[] polygonPoints = new Point[3];
+			polygonPoints[0] = new Point(e.CellBounds.Right - 1, e.CellBounds.Bottom - 1);
+			polygonPoints[1] = new Point(e.CellBounds.Right - 1, e.CellBounds.Bottom - 1 - GlobalData.CSV_NOTE_POLYGON_SIZE);
+			polygonPoints[2] = new Point(e.CellBounds.Right - 1 - GlobalData.CSV_NOTE_POLYGON_SIZE, e.CellBounds.Bottom - 1);
+			e.Graphics.FillPolygon(gridBrush, polygonPoints);
+			e.Handled = true;
+		}
 	}
 
 	/// <summary>

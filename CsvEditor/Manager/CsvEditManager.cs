@@ -4,6 +4,9 @@ using System.Data;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
+/// <summary>
+/// TODO 添加m_UndoStack/m_RedoStack的上限
+/// </summary>
 public class CsvEditManager
 {
     private CsvForm m_CsvForm;
@@ -100,12 +103,12 @@ public class CsvEditManager
             return;
         }
 		
-		DataObject clipboardData = null;
+
 		string clipboardStr = null;
 		// 获取剪切板的数据
 		try
 		{
-			clipboardData = (DataObject)Clipboard.GetDataObject();
+			DataObject clipboardData = (DataObject)Clipboard.GetDataObject();
 			if (!clipboardData.GetDataPresent(DataFormats.Text))
 			{
 				return;
@@ -116,10 +119,6 @@ public class CsvEditManager
 		{
 			Debug.ShowExceptionMessageBox("获取剪切板数据失败", ex);
 			return;
-		}
-		finally
-		{
-			clipboardData = null;
 		}
 
 		DataGridView dataGridView = m_CsvForm.MainDataGridView;
