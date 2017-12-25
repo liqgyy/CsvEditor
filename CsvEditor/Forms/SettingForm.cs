@@ -19,7 +19,6 @@ public partial class SettingForm : Form
 
 		m_SettingItems = new SettingItem[(int)SettingItemType.End];
 		m_SettingItems[(int)SettingItemType.DiffCompare] = new SettingForm_DiffCompare(this, "差异比较", m_DiffComparePanal);
-		m_SettingItems[(int)SettingItemType.Skin] = new SettingForm_Skin(this, "皮肤", m_SkinPanal);
 
 		m_SettingItemListBox.Items.Clear();
 		for (int itemIdx = 0; itemIdx < m_SettingItems.Length; itemIdx++)
@@ -107,7 +106,6 @@ public partial class SettingForm : Form
     {
 		Begin = -1,
 		DiffCompare,
-		Skin,
         End
     }
 
@@ -150,57 +148,6 @@ public partial class SettingForm : Form
         protected virtual void OnShow() { }
         protected virtual void OnHide() { }
         protected virtual void OnClose() { }
-    }
-
-    public class SettingForm_Skin : SettingItem
-    {
-        public SettingForm_Skin(SettingForm settingForm, string text, Panel mainPanel) : base(settingForm, text, mainPanel) { }
-
-        protected override void OnLoad()
-        {
-            Form.m_SkinUseCheckBox.CheckedChanged += OnSkinUseCheckBox_CheckedChanged;
-            Form.m_SkinItemsListBox.SelectedIndexChanged += OnSkinItemsListBox_SelectedIndexChanged;
-
-            Form.m_SkinUseCheckBox.Checked = Setting.Instance.UseSkin;
-
-            string[] skins = SkinUtility.GetAllSkinSskName();
-            Form.m_SkinItemsListBox.Items.Clear();
-            for (int skinIdx = 0; skinIdx < skins.Length; skinIdx++)
-            {
-                Form.m_SkinItemsListBox.Items.Add(skins[skinIdx]);
-                if (skins[skinIdx] == Setting.Instance.CurrentSkin)
-                {
-                    Form.m_SkinItemsListBox.SelectedIndex = skinIdx;
-                }
-            }
-        }
-
-        protected override void OnClose()
-        {
-			Form.m_SkinUseCheckBox.CheckedChanged -= OnSkinUseCheckBox_CheckedChanged;
-			Form.m_SkinItemsListBox.SelectedIndexChanged -= OnSkinItemsListBox_SelectedIndexChanged;
-
-			if (!SettingChanged)
-            {
-                return;
-            }
-            SkinUtility.SetSkin();
-        }
-
-        private void OnSkinUseCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            SettingChanged = SettingChanged || Setting.Instance.UseSkin != Form.m_SkinUseCheckBox.Checked;
-            Setting.Instance.UseSkin = Form.m_SkinUseCheckBox.Checked;
-            Form.m_SkinUseCheckBox.Enabled = Setting.Instance.UseSkin;
-        }
-
-        private void OnSkinItemsListBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string skin = (string)Form.m_SkinItemsListBox.SelectedItem;
-            SettingChanged = SettingChanged || Setting.Instance.CurrentSkin != skin;
-            Setting.Instance.CurrentSkin = skin;
-            SkinUtility.SetSkin();
-        }
     }
 
 	public class SettingForm_DiffCompare : SettingItem

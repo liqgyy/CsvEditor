@@ -32,8 +32,6 @@ public partial class MainForm : Form
 
 		BeyondCompare.Instance.AutoExePathToSetting();
 		CodeCompare.Instance.AutoExePathToSetting();
-
-		SkinUtility.SetSkin();
     }
 
 	/// <summary>
@@ -321,13 +319,10 @@ public partial class MainForm : Form
 	/// </summary>
 	private void OnOpenFileToolStripMenuItem_Click(object sender, EventArgs e)
 	{
-		SkinEngine.SkinDialogs = false;
 		if (m_OpenCsvFileDialog.ShowDialog() != DialogResult.OK)
 		{
-			SkinEngine.SkinDialogs = true;
 			return;
 		}
-		SkinEngine.SkinDialogs = true;
 
 		if (m_OpenCsvFileDialog.FileNames.Length == 0)
 		{
@@ -423,13 +418,10 @@ public partial class MainForm : Form
         }
         else if (item == m_SaveToFileToolStripMenuItem)
         {
-            SkinEngine.SkinDialogs = false;
             if (m_SaveCsvFileDialog.ShowDialog() != DialogResult.OK)
             {
-                SkinEngine.SkinDialogs = true;
                 return;
             }
-            SkinEngine.SkinDialogs = true;
             if (m_SaveCsvFileDialog.FileNames.Length == 0)
             {
                 return;

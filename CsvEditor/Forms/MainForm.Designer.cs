@@ -51,7 +51,6 @@ partial class MainForm
 			this.m_OpenCsvFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.m_SaveCsvFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.m_MainTabControl = new System.Windows.Forms.TabControl();
-			this.SkinEngine = new Sunisoft.IrisSkin.SkinEngine();
 			this.m_MenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -250,15 +249,6 @@ partial class MainForm
 			this.m_MainTabControl.TabIndex = 0;
 			this.m_MainTabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.OnMainTabControl_Selected);
 			this.m_MainTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnMainTabControl_MouseClick);
-		// 
-		// SkinEngine
-		// 
-		this.SkinEngine.@__DrawButtonFocusRectangle = true;
-		this.SkinEngine.DisabledButtonTextColor = System.Drawing.Color.Gray;
-		this.SkinEngine.DisabledMenuFontColor = System.Drawing.SystemColors.GrayText;
-		this.SkinEngine.InactiveCaptionColor = System.Drawing.SystemColors.InactiveCaptionText;
-		this.SkinEngine.SerialNumber = "";
-		this.SkinEngine.SkinFile = null;
 			// 
 			// MainForm
 			// 
@@ -300,7 +290,6 @@ partial class MainForm
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
     private System.Windows.Forms.ToolStripMenuItem m_SettingToolStripMenuItem;
-    public Sunisoft.IrisSkin.SkinEngine SkinEngine;
     private System.Windows.Forms.ToolStripMenuItem m_UndoEditToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem m_RedoEditToolStripMenuItem;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;

@@ -19,11 +19,6 @@ public class Setting
 
     private static string ms_SaveFileFullName = AppDomain.CurrentDomain.SetupInformation.ApplicationBase + GlobalData.SETTING_FILE_NAME;
 
-	#region Skin
-	public bool UseSkin;
-    public string CurrentSkin;
-	#endregion // End Skin
-
 	#region DiffCompare
 	public bool BeyondCompareAutoExePath;
 	public string BeyondCompareExePath;
@@ -34,9 +29,6 @@ public class Setting
 
 	public Setting()
     {
-        UseSkin = false;
-        CurrentSkin = GlobalData.SKIN_DEFAULT_SSK;
-
 		BeyondCompareAutoExePath = true;
 		BeyondCompareExePath = "";
 		CodeCompareAutoExePath = true;

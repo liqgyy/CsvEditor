@@ -53,9 +53,6 @@
     <ApplicationIcon>CsvEditor.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IrisSkin4">
-      <HintPath>..\..\..\..\IrisSkin4.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -92,7 +89,6 @@
     <Compile Include="Plugins\Csv\CsvExport.cs" />
     <Compile Include="Plugins\Csv\CsvParser.cs" />
     <Compile Include="Plugins\Csv\CsvParser2.cs" />
-    <Compile Include="Plugins\Csv\CsvReader.cs" />
     <Compile Include="Forms\CsvForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -115,7 +111,6 @@
     <Compile Include="Plugins\Debug.cs" />
     <Compile Include="Plugins\DiffCompare\BaseDiffCompare.cs" />
     <Compile Include="Plugins\RegistryUtility.cs" />
-    <Compile Include="Plugins\SkinUtility.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\CsvForm.resx">

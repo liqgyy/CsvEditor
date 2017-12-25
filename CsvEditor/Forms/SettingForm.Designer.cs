@@ -35,7 +35,6 @@
 			this.m_CancelButton = new System.Windows.Forms.Button();
 			this.m_OkButton = new System.Windows.Forms.Button();
 			this.m_SettingItemListBox = new System.Windows.Forms.ListBox();
-			this.m_SkinPanal = new System.Windows.Forms.Panel();
 			this.m_DiffComparePanal = new System.Windows.Forms.Panel();
 			this.m_CodeCompareAutoExePathCheckBox = new System.Windows.Forms.CheckBox();
 			this.m_CodeCompareChooseExePathButton = new System.Windows.Forms.Button();
@@ -43,8 +42,6 @@
 			this.m_BeyondCompareChooseExePathButton = new System.Windows.Forms.Button();
 			this.m_BeyondCompareChooseExePathTextBox = new System.Windows.Forms.TextBox();
 			this.m_BeyondCompareAutoExePathCheckBox = new System.Windows.Forms.CheckBox();
-			this.m_SkinItemsListBox = new System.Windows.Forms.ListBox();
-			this.m_SkinUseCheckBox = new System.Windows.Forms.CheckBox();
 			this.m_DiffCompareOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
 			downPanal = new System.Windows.Forms.Panel();
 			m_MainSplitContainer = new System.Windows.Forms.SplitContainer();
@@ -57,7 +54,6 @@
 			m_MainSplitContainer.Panel1.SuspendLayout();
 			m_MainSplitContainer.Panel2.SuspendLayout();
 			m_MainSplitContainer.SuspendLayout();
-			this.m_SkinPanal.SuspendLayout();
 			this.m_DiffComparePanal.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -109,7 +105,6 @@
 			// 
 			// m_MainSplitContainer.Panel2
 			// 
-			m_MainSplitContainer.Panel2.Controls.Add(this.m_SkinPanal);
 			m_MainSplitContainer.Panel2.Controls.Add(this.m_DiffComparePanal);
 			m_MainSplitContainer.Size = new System.Drawing.Size(715, 362);
 			m_MainSplitContainer.SplitterDistance = 150;
@@ -130,17 +125,6 @@
 			this.m_SettingItemListBox.TabIndex = 0;
 			this.m_SettingItemListBox.SelectedValueChanged += new System.EventHandler(this.OnSettingItemListBox_SelectedValueChanged);
 			// 
-			// m_SkinPanal
-			// 
-			this.m_SkinPanal.Controls.Add(this.m_SkinItemsListBox);
-			this.m_SkinPanal.Controls.Add(this.m_SkinUseCheckBox);
-			this.m_SkinPanal.Location = new System.Drawing.Point(0, 0);
-			this.m_SkinPanal.Margin = new System.Windows.Forms.Padding(2);
-			this.m_SkinPanal.Name = "m_SkinPanal";
-			this.m_SkinPanal.Size = new System.Drawing.Size(0, 0);
-			this.m_SkinPanal.TabIndex = 0;
-			this.m_SkinPanal.Visible = false;
-			// 
 			// m_DiffComparePanal
 			// 
 			this.m_DiffComparePanal.Controls.Add(this.m_CodeCompareAutoExePathCheckBox);
@@ -153,11 +137,10 @@
 			this.m_DiffComparePanal.Controls.Add(beyondCompareExePathLabel);
 			this.m_DiffComparePanal.Controls.Add(this.m_BeyondCompareAutoExePathCheckBox);
 			this.m_DiffComparePanal.Controls.Add(beyondCompareLabel);
-			this.m_DiffComparePanal.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.m_DiffComparePanal.Location = new System.Drawing.Point(0, 0);
 			this.m_DiffComparePanal.Margin = new System.Windows.Forms.Padding(2);
 			this.m_DiffComparePanal.Name = "m_DiffComparePanal";
-			this.m_DiffComparePanal.Size = new System.Drawing.Size(562, 362);
+			this.m_DiffComparePanal.Size = new System.Drawing.Size(0, 0);
 			this.m_DiffComparePanal.TabIndex = 2;
 			this.m_DiffComparePanal.Visible = false;
 			// 
@@ -249,27 +232,6 @@
 			beyondCompareLabel.TabIndex = 0;
 			beyondCompareLabel.Text = "BeyondCompare";
 			// 
-			// m_SkinItemsListBox
-			// 
-			this.m_SkinItemsListBox.FormattingEnabled = true;
-			this.m_SkinItemsListBox.ItemHeight = 12;
-			this.m_SkinItemsListBox.Location = new System.Drawing.Point(16, 34);
-			this.m_SkinItemsListBox.Margin = new System.Windows.Forms.Padding(2);
-			this.m_SkinItemsListBox.Name = "m_SkinItemsListBox";
-			this.m_SkinItemsListBox.Size = new System.Drawing.Size(527, 316);
-			this.m_SkinItemsListBox.TabIndex = 1;
-			// 
-			// m_SkinUseCheckBox
-			// 
-			this.m_SkinUseCheckBox.AutoSize = true;
-			this.m_SkinUseCheckBox.Location = new System.Drawing.Point(16, 10);
-			this.m_SkinUseCheckBox.Margin = new System.Windows.Forms.Padding(2);
-			this.m_SkinUseCheckBox.Name = "m_SkinUseCheckBox";
-			this.m_SkinUseCheckBox.Size = new System.Drawing.Size(72, 16);
-			this.m_SkinUseCheckBox.TabIndex = 0;
-			this.m_SkinUseCheckBox.Text = "使用皮肤";
-			this.m_SkinUseCheckBox.UseVisualStyleBackColor = true;
-			// 
 			// m_DiffCompareOpenFileDialog
 			// 
 			this.m_DiffCompareOpenFileDialog.DefaultExt = "*.exe|*.exe";
@@ -296,8 +258,6 @@
 			m_MainSplitContainer.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(m_MainSplitContainer)).EndInit();
 			m_MainSplitContainer.ResumeLayout(false);
-			this.m_SkinPanal.ResumeLayout(false);
-			this.m_SkinPanal.PerformLayout();
 			this.m_DiffComparePanal.ResumeLayout(false);
 			this.m_DiffComparePanal.PerformLayout();
 			this.ResumeLayout(false);
@@ -308,9 +268,6 @@
     private System.Windows.Forms.Button m_CancelButton;
     private System.Windows.Forms.Button m_OkButton;
     private System.Windows.Forms.ListBox m_SettingItemListBox;
-    private System.Windows.Forms.Panel m_SkinPanal;
-    private System.Windows.Forms.ListBox m_SkinItemsListBox;
-    private System.Windows.Forms.CheckBox m_SkinUseCheckBox;
 	private System.Windows.Forms.Panel m_DiffComparePanal;
 	private System.Windows.Forms.CheckBox m_BeyondCompareAutoExePathCheckBox;
 	private System.Windows.Forms.Button m_BeyondCompareChooseExePathButton;
