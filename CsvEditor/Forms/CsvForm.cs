@@ -321,7 +321,7 @@ public partial class CsvForm : Form
     /// <summary>
     /// 窗口加载时读取csv文件
     /// </summary>
-    private void OnCsvForm_Load(object sender, EventArgs e)
+    private void OnForm_Load(object sender, EventArgs e)
     {
         // 初始化文件，创建文件副本
         try
