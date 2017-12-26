@@ -14,7 +14,6 @@ public partial class MainForm : Form
 {
     public static MainForm Instance;
 
-    private List<CsvForm> m_OpenedCsvFormList = new List<CsvForm>();
     /// <summary>
     /// 当前Csv窗口，只能通过SetSelCsvForm赋值
     /// </summary>
@@ -23,7 +22,9 @@ public partial class MainForm : Form
     private GotoForm m_GotoForm;
     private SearchForm m_SearchForm;
 
-    public MainForm()
+	private BeforeCloseCsvFormEventType m_BeforeCloseCsvFormEventType = BeforeCloseCsvFormEventType.None;
+
+	public MainForm()
     {
         Instance = this;
         InitializeComponent();
@@ -40,7 +41,7 @@ public partial class MainForm : Form
 	/// <returns></returns>
     public bool SelCsvFormInitialized()
     {
-        if (SelCsvForm == null)
+        if (SelCsvForm == null || SelCsvForm.IsDisposed)
         {
             return false;
         }
@@ -48,25 +49,48 @@ public partial class MainForm : Form
     }
 
 	/// <summary>
-	/// 更新Tab上的标题
-	/// 文件没有保存到源文件就在开头加 ?
-	/// 文件有改动就在结尾加 *
+	/// 更新窗口标题
+	/// 文件有改动在结尾加 *
 	/// </summary>
-	public void UpdateAllTabControlTabPageText()
+	public void UpdateFormText()
     {
-        for (int tabPageIdx = 0; tabPageIdx < m_MainTabControl.TabPages.Count; tabPageIdx++)
-        {
-            TabPage tabPage = m_MainTabControl.TabPages[tabPageIdx];
-            CsvForm csvForm = (CsvForm)tabPage.Controls[0];
-            tabPage.Text = csvForm.Text;
-        }
+		if (SelCsvFormInitialized())
+		{
+			Text = SelCsvForm.Text;
+		}
+		else
+		{
+			Text = "CsvEditor";
+		}
     }
+
+	private void OpenFile()
+	{
+		if (SelCsvForm != null && !SelCsvForm.IsDisposed)
+		{
+			m_BeforeCloseCsvFormEventType = BeforeCloseCsvFormEventType.OpenFile;
+			SelCsvForm.Close();
+			return;
+		}
+
+		if (m_OpenCsvFileDialog.ShowDialog() != DialogResult.OK)
+		{
+			return;
+		}
+		if (m_OpenCsvFileDialog.FileNames.Length == 0)
+		{
+			return;
+		}
+
+		string path = m_OpenCsvFileDialog.FileName;
+		LoadFile(path);
+	}
 
 	/// <summary>
 	/// 加载csv文件
 	/// </summary>
 	/// <param name="path">文件完整路径</param>
-    private void LoadFile(string path)
+	private void LoadFile(string path)
     {
         CsvForm newCsvForm = new CsvForm(path);
         if (newCsvForm == null)
@@ -77,13 +101,8 @@ public partial class MainForm : Form
         newCsvForm.Visible = true;
         newCsvForm.FormBorderStyle = FormBorderStyle.None;
         newCsvForm.Dock = DockStyle.Fill;
-
-		m_MainTabControl.TabPages.Add(newCsvForm.Text + "  ");
-		int tabIdx = m_MainTabControl.TabPages.Count - 1;
-		m_MainTabControl.TabPages[tabIdx].Controls.Add(newCsvForm);
-		m_MainTabControl.SelectTab(tabIdx);
-
-		m_OpenedCsvFormList.Add(newCsvForm);
+		newCsvForm.Show();
+		m_SplitContainer.Panel1.Controls.Add(newCsvForm);
         SetSelCsvForm(newCsvForm);
     }
 
@@ -145,17 +164,19 @@ public partial class MainForm : Form
 	#endregion // End Update ToolStripMenu
 
 	#region UIEvent
-	public void OnCsvForm_FormClosed(CsvForm csvForm)
+	public void OnCsvForm_FormClosed()
 	{
-		m_OpenedCsvFormList.Remove(csvForm);
-		for (int tabIdx = 0; tabIdx < m_MainTabControl.TabCount; tabIdx++)
+		UpdateFormText();
+		switch (m_BeforeCloseCsvFormEventType)
 		{
-			if (csvForm == (CsvForm)m_MainTabControl.TabPages[tabIdx].Controls[0])
-			{
-				m_MainTabControl.TabPages.RemoveAt(tabIdx);
+			case BeforeCloseCsvFormEventType.OpenFile:
+				OpenFile();
 				break;
-			}
+			case BeforeCloseCsvFormEventType.CloseForm:
+				Close();
+				break;
 		}
+		m_BeforeCloseCsvFormEventType = BeforeCloseCsvFormEventType.None;
 	}
 
 	/// <summary>
@@ -169,71 +190,19 @@ public partial class MainForm : Form
         // 关联csv文件
         if (commands != null && commands.Length > 1)
         {
-            for (int argIdx = 1; argIdx < commands.Length; argIdx++)
-            {
-                LoadFile(commands[argIdx]);
-            }
+			LoadFile(commands[1]);
         }
     }
 
 	private void OnForm_FormClosing(object sender, FormClosingEventArgs e)
 	{
-		// TODO
-		if (m_MainTabControl.TabCount > 0)
+		if (SelCsvForm != null && !SelCsvForm.IsDisposed)
 		{
+			m_BeforeCloseCsvFormEventType = BeforeCloseCsvFormEventType.CloseForm;
+			SelCsvForm.Close();
 			e.Cancel = true;
-			MessageBox.Show("有Csv文件未关闭", "提示", MessageBoxButtons.OK);
 		}
-		//for(int formIdx = 0; formIdx < m_OpenedCsvFormList.Count; formIdx++)
-		//{
-		//	CsvForm csvForm = m_OpenedCsvFormList[formIdx];
-		//	if (csvForm.DataChanged)
-		//	{
-		//		if (MessageBox.Show("有文件未保存，是否关闭?", "提示" , MessageBoxButtons.YesNo) == DialogResult.No)
-		//		{
-		//			e.Cancel = true;
-		//		}
-		//		break;
-		//	}
-		//}
 	}
-	
-	/// <summary>
-	/// 鼠标中键点击Tab时关闭Csv窗口
-	/// </summary>
-	private void OnMainTabControl_MouseClick(object sender, MouseEventArgs e)
-    {
-        if (e.Button == MouseButtons.Middle)
-        {
-            for (int tabIdx = 0; tabIdx < m_MainTabControl.TabCount; tabIdx++)
-            {
-                Rectangle r = m_MainTabControl.GetTabRect(tabIdx);
-                if (r.Contains(e.Location))
-                {
-					CsvForm csvForm = (CsvForm)m_MainTabControl.TabPages[tabIdx].Controls[0];
-					csvForm.Close();
-                    break;
-                }
-            }
-        }
-    }
-
-	/// <summary>
-	/// 切换当前csv窗口
-	/// </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-    private void OnMainTabControl_Selected(object sender, TabControlEventArgs e)
-    {
-        if (m_MainTabControl.TabPages.Count == 0)
-        {
-            SetSelCsvForm(null);
-        }
-        else
-        {
-            SetSelCsvForm((CsvForm)m_MainTabControl.TabPages[m_MainTabControl.SelectedIndex].Controls[0]);
-        }
-    }
 
 	/// <summary>
 	/// 顶层菜单打开时，更新菜单里的菜单项状态
@@ -253,7 +222,7 @@ public partial class MainForm : Form
 	}
 
 	/// <summary>
-	/// 顶层菜单关闭时，显示菜单里的所有菜单项
+	/// 顶层菜单关闭时，启用菜单里的所有菜单项
 	/// TODO 优化逻辑
 	/// </summary>
 	private void OnTopToolStripMenuItem_DropDownClosed(object sender, EventArgs e)
@@ -281,36 +250,7 @@ public partial class MainForm : Form
 	/// </summary>
 	private void OnOpenFileToolStripMenuItem_Click(object sender, EventArgs e)
 	{
-		if (m_OpenCsvFileDialog.ShowDialog() != DialogResult.OK)
-		{
-			return;
-		}
-
-		if (m_OpenCsvFileDialog.FileNames.Length == 0)
-		{
-			return;
-		}
-		for (int fileIdx = 0; fileIdx < m_OpenCsvFileDialog.FileNames.Length; fileIdx++)
-		{
-			string path = m_OpenCsvFileDialog.FileNames[fileIdx];
-
-			bool isOpened = false;
-			for (int csvFormIdx = 0; csvFormIdx < m_OpenedCsvFormList.Count; csvFormIdx++)
-			{
-				CsvForm openedCsvForm = m_OpenedCsvFormList[csvFormIdx];
-				if (openedCsvForm != null && openedCsvForm.SourcePath == path)
-				{
-					isOpened = true;
-					break;
-				}
-			}
-			if (isOpened)
-			{
-				break;
-			}
-
-			LoadFile(path);
-		}
+		OpenFile();
 	}
 
 	/// <summary>
@@ -422,4 +362,14 @@ public partial class MainForm : Form
         settingForm.ShowDialog();
     }
 	#endregion // END UIEvent
+
+	/// <summary>
+	/// 关闭csv窗口前的事件
+	/// </summary>
+	public enum BeforeCloseCsvFormEventType
+	{
+		None,
+		OpenFile,
+		CloseForm
+	}
 }

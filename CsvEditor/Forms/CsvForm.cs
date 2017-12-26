@@ -339,7 +339,7 @@ public partial class CsvForm : Form
         if (Text != newFormText)
         {
             Text = newFormText;
-            MainForm.Instance.UpdateAllTabControlTabPageText();
+            MainForm.Instance.UpdateFormText();
         }
     }
 
@@ -353,8 +353,8 @@ public partial class CsvForm : Form
         try
         {
             m_SourceFile = Path.GetFileName(SourcePath);
-            Text = m_SourceFile;
-
+			UpdateFormText();
+			MainForm.Instance.Text = Text;
             CopySourceFile();
         }
         catch (Exception ex)
@@ -624,10 +624,17 @@ public partial class CsvForm : Form
 	{
 		if (DataChanged)
 		{
-			if (MessageBox.Show("文件未保存，是否关闭?", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
+			DialogResult dialogResult = MessageBox.Show(string.Format("是否保存对\"{0}\"的更改?", m_SourceFile), "提示", MessageBoxButtons.YesNoCancel);
+			switch (dialogResult)
 			{
-				e.Cancel = true;
-				return;
+				case DialogResult.Yes:
+					SaveFile();
+					break;
+				case DialogResult.No:
+					break;
+				case DialogResult.Cancel:
+					e.Cancel = true;
+					break;
 			}
 		}
 	}
@@ -640,7 +647,8 @@ public partial class CsvForm : Form
 			CodeCompare.Instance.Compare(SourcePath, m_SourceCopyPath, "源文件", "副本");
 		}
 		SaveCsvSetting();
-		MainForm.Instance.OnCsvForm_FormClosed(this);
+		Dispose();
+		MainForm.Instance.OnCsvForm_FormClosed();
 	}
 
 	/// <summary>

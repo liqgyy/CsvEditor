@@ -28,8 +28,7 @@ partial class MainForm
     /// </summary>
     private void InitializeComponent()
     {
-			System.Windows.Forms.SplitContainer splitContainer;
-			this.m_MainTabControl = new System.Windows.Forms.TabControl();
+			this.m_SplitContainer = new System.Windows.Forms.SplitContainer();
 			this.m_MenuStrip = new System.Windows.Forms.MenuStrip();
 			this.m_FileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_OpenFIleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,41 +49,21 @@ partial class MainForm
 			this.m_SettingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_OpenCsvFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.m_SaveCsvFileDialog = new System.Windows.Forms.SaveFileDialog();
-			splitContainer = new System.Windows.Forms.SplitContainer();
-			((System.ComponentModel.ISupportInitialize)(splitContainer)).BeginInit();
-			splitContainer.Panel1.SuspendLayout();
-			splitContainer.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.m_SplitContainer)).BeginInit();
+			this.m_SplitContainer.SuspendLayout();
 			this.m_MenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// splitContainer
+			// m_SplitContainer
 			// 
-			splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-			splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-			splitContainer.Location = new System.Drawing.Point(0, 25);
-			splitContainer.Name = "splitContainer";
-			splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
-			// 
-			// splitContainer.Panel1
-			// 
-			splitContainer.Panel1.Controls.Add(this.m_MainTabControl);
-			splitContainer.Size = new System.Drawing.Size(767, 395);
-			splitContainer.SplitterDistance = 300;
-			splitContainer.TabIndex = 2;
-			// 
-			// m_MainTabControl
-			// 
-			this.m_MainTabControl.AllowDrop = true;
-			this.m_MainTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.m_MainTabControl.Location = new System.Drawing.Point(0, 0);
-			this.m_MainTabControl.Margin = new System.Windows.Forms.Padding(0);
-			this.m_MainTabControl.Name = "m_MainTabControl";
-			this.m_MainTabControl.Padding = new System.Drawing.Point(10, 3);
-			this.m_MainTabControl.SelectedIndex = 0;
-			this.m_MainTabControl.Size = new System.Drawing.Size(767, 300);
-			this.m_MainTabControl.TabIndex = 0;
-			this.m_MainTabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.OnMainTabControl_Selected);
-			this.m_MainTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnMainTabControl_MouseClick);
+			this.m_SplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.m_SplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+			this.m_SplitContainer.Location = new System.Drawing.Point(0, 25);
+			this.m_SplitContainer.Name = "m_SplitContainer";
+			this.m_SplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			this.m_SplitContainer.Size = new System.Drawing.Size(767, 395);
+			this.m_SplitContainer.SplitterDistance = 300;
+			this.m_SplitContainer.TabIndex = 2;
 			// 
 			// m_MenuStrip
 			// 
@@ -256,16 +235,15 @@ partial class MainForm
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(767, 420);
-			this.Controls.Add(splitContainer);
+			this.Controls.Add(this.m_SplitContainer);
 			this.Controls.Add(this.m_MenuStrip);
 			this.MainMenuStrip = this.m_MenuStrip;
 			this.Name = "MainForm";
 			this.Text = "Csv编辑器";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnForm_FormClosing);
 			this.Load += new System.EventHandler(this.OnMainForm_Load);
-			splitContainer.Panel1.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(splitContainer)).EndInit();
-			splitContainer.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.m_SplitContainer)).EndInit();
+			this.m_SplitContainer.ResumeLayout(false);
 			this.m_MenuStrip.ResumeLayout(false);
 			this.m_MenuStrip.PerformLayout();
 			this.ResumeLayout(false);
@@ -286,7 +264,6 @@ partial class MainForm
     private System.Windows.Forms.ToolStripMenuItem m_SaveFileToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem m_SaveToFileToolStripMenuItem;
     private System.Windows.Forms.SaveFileDialog m_SaveCsvFileDialog;
-    private System.Windows.Forms.TabControl m_MainTabControl;
     private System.Windows.Forms.ToolStripMenuItem m_GotoEditToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem m_SearchEditStripMenuItem;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
@@ -295,4 +272,5 @@ partial class MainForm
     private System.Windows.Forms.ToolStripMenuItem m_UndoEditToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem m_RedoEditToolStripMenuItem;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+	private System.Windows.Forms.SplitContainer m_SplitContainer;
 }
