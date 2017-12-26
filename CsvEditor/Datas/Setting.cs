@@ -27,6 +27,9 @@ public class Setting
 	public string CodeCompareExePath;
 	#endregion
 
+	/// <summary>
+	/// 初始化数据
+	/// </summary>
 	public Setting()
     {
 		BeyondCompareAutoExePath = true;

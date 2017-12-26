@@ -53,6 +53,10 @@ partial class MainForm
 			this.m_SettingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_OpenCsvFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.m_SaveCsvFileDialog = new System.Windows.Forms.SaveFileDialog();
+			this.m_LayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.m_SaveLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.m_ApplyLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.m_ManagerLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.m_SplitContainer)).BeginInit();
 			this.m_SplitContainer.Panel2.SuspendLayout();
@@ -118,6 +122,7 @@ partial class MainForm
             this.m_FileToolStripMenuItem,
             this.m_EditToolStripMenuItem,
             toolsToolStripMenuItem,
+            this.m_LayoutToolStripMenuItem,
             this.m_SettingToolStripMenuItem});
 			this.m_MenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.m_MenuStrip.Name = "m_MenuStrip";
@@ -277,6 +282,34 @@ partial class MainForm
 			toolsToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
 			toolsToolStripMenuItem.Text = "工具";
 			// 
+			// m_LayoutToolStripMenuItem
+			// 
+			this.m_LayoutToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.m_SaveLayoutToolStripMenuItem,
+            this.m_ApplyLayoutToolStripMenuItem,
+            this.m_ManagerLayoutToolStripMenuItem});
+			this.m_LayoutToolStripMenuItem.Name = "m_LayoutToolStripMenuItem";
+			this.m_LayoutToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+			this.m_LayoutToolStripMenuItem.Text = "布局";
+			// 
+			// m_SaveLayoutToolStripMenuItem
+			// 
+			this.m_SaveLayoutToolStripMenuItem.Name = "m_SaveLayoutToolStripMenuItem";
+			this.m_SaveLayoutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_SaveLayoutToolStripMenuItem.Text = "保存布局";
+			// 
+			// m_ApplyLayoutToolStripMenuItem
+			// 
+			this.m_ApplyLayoutToolStripMenuItem.Name = "m_ApplyLayoutToolStripMenuItem";
+			this.m_ApplyLayoutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_ApplyLayoutToolStripMenuItem.Text = "应用布局";
+			// 
+			// m_ManagerLayoutToolStripMenuItem
+			// 
+			this.m_ManagerLayoutToolStripMenuItem.Name = "m_ManagerLayoutToolStripMenuItem";
+			this.m_ManagerLayoutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_ManagerLayoutToolStripMenuItem.Text = "管理布局";
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -328,4 +361,8 @@ partial class MainForm
 	private System.Windows.Forms.Panel m_CellEditPanel;
 	private System.Windows.Forms.TextBox m_CellEditTextBox;
 	private System.Windows.Forms.ToolStripMenuItem m_SettingToolStripMenuItem;
+	private System.Windows.Forms.ToolStripMenuItem m_LayoutToolStripMenuItem;
+	private System.Windows.Forms.ToolStripMenuItem m_SaveLayoutToolStripMenuItem;
+	private System.Windows.Forms.ToolStripMenuItem m_ApplyLayoutToolStripMenuItem;
+	private System.Windows.Forms.ToolStripMenuItem m_ManagerLayoutToolStripMenuItem;
 }
