@@ -14,7 +14,7 @@
 
     public const string SETTING_FILE_NAME = "Setting.bin";
 
-	public const string CSVLAYOUT_SAVE_DIRECTORY = "CsvLayout\\Cache";
+	public const string CSVLAYOUT_SAVE_DIRECTORY = "CsvLayout";
     #endregion // End Setting
 
 	public const int CSV_NOTE_POLYGON_SIZE = 6;

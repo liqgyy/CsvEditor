@@ -394,11 +394,11 @@ public partial class MainForm : Form
 	/// <summary>
 	/// 打开设置窗口
 	/// </summary>
-    private void OnSettingToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-        SettingForm settingForm = new SettingForm();
-        settingForm.ShowDialog();
-    }
+	private void OnSettingToolStripMenuItem_Click(object sender, EventArgs e)
+	{
+		SettingForm settingForm = new SettingForm();
+		settingForm.ShowDialog();
+	}
 
 	private void OnCellEditTextBox_TextChanged(object sender, EventArgs e)
 	{
