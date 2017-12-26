@@ -74,4 +74,15 @@ public class SerializeUtility
             throw (ex);
         }
     }
+
+	public static T ObjectCopy<T>(T obj)
+	{
+		using (MemoryStream ms = new MemoryStream())
+		{
+			BinaryFormatter formatter = new BinaryFormatter();
+			formatter.Serialize(ms, obj);
+			ms.Position = 0;
+			return (T)formatter.Deserialize(ms);
+		}
+	}
 }

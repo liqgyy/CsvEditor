@@ -27,9 +27,9 @@ public class CsvLayoutManager
 	private List<CsvLayout> m_LayoutList;
 	private List<CsvLayout> m_SpecificLayoutList;
 
-	public CsvLayout Load(string key)
+	public CsvLayout LoadOrCreate(string key)
 	{
-		return Load(m_LayoutList , key);
+		return LoadOrCreate(m_LayoutList , key);
 	}
 
 	public void Save()
@@ -37,9 +37,9 @@ public class CsvLayoutManager
 		Save(m_SavePath, m_LayoutList);
 	}
 
-	public CsvLayout LoadSpecific(string key)
+	public CsvLayout LoadOrCreateSpecific(string key)
 	{
-		return Load(m_SpecificLayoutList, key);
+		return LoadOrCreate(m_SpecificLayoutList, key);
 	}
 
 	public void SaveSpecific()
@@ -55,6 +55,23 @@ public class CsvLayoutManager
 			keys[layoutIdx] = m_SpecificLayoutList[layoutIdx].Key;
 		}
 		return keys;
+	}
+
+	public bool ExistSpecific(string key)
+	{
+		if (string.IsNullOrEmpty(key))
+		{
+			return false;
+		}
+
+		for (int layoutIdx = 0; layoutIdx < m_SpecificLayoutList.Count; layoutIdx++)
+		{
+			if (key == m_SpecificLayoutList[layoutIdx].Key)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private CsvLayoutManager()
@@ -84,7 +101,7 @@ public class CsvLayoutManager
 		}
 	}
 
-	private CsvLayout Load(List<CsvLayout> list, string key)
+	private CsvLayout LoadOrCreate(List<CsvLayout> list, string key)
 	{
 		for (int layoutIdx = 0; layoutIdx < list.Count; layoutIdx++)
 		{

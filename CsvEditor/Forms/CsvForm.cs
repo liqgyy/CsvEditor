@@ -58,6 +58,11 @@ public partial class CsvForm : Form
         m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
     }
 
+	public CsvLayout GetCsvLayoutCopy()
+	{
+		return SerializeUtility.ObjectCopy(m_Layout);
+	}
+
 	#region File
     public void SaveFile()
     {
@@ -214,7 +219,7 @@ public partial class CsvForm : Form
 
 	private void LoadLayout()
 	{
-		m_Layout = CsvLayoutManager.Instance.Load(SourcePath);
+		m_Layout = CsvLayoutManager.Instance.LoadOrCreate(SourcePath);
 
 		LoadCellSize();
 		LoadFrozen();
