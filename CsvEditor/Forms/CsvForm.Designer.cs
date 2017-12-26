@@ -139,13 +139,14 @@
 			dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
 			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
 			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
 			this.m_DataGridView.DefaultCellStyle = dataGridViewCellStyle1;
 			this.m_DataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.m_DataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
 			this.m_DataGridView.Location = new System.Drawing.Point(0, 0);
 			this.m_DataGridView.Name = "m_DataGridView";
 			this.m_DataGridView.ReadOnly = true;
+			this.m_DataGridView.RowHeadersWidth = 60;
 			this.m_DataGridView.Size = new System.Drawing.Size(876, 384);
 			this.m_DataGridView.TabIndex = 0;
 			this.m_DataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.OnDataGridView_CellMouseDown);
