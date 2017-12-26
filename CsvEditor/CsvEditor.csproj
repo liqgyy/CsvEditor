@@ -88,7 +88,6 @@
     <Compile Include="Plugins\ConvertUtility.cs" />
     <Compile Include="Plugins\Csv\CsvExport.cs" />
     <Compile Include="Plugins\Csv\CsvParser.cs" />
-    <Compile Include="Plugins\Csv\CsvParser2.cs" />
     <Compile Include="Forms\CsvForm.cs">
       <SubType>Form</SubType>
     </Compile>

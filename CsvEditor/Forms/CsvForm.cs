@@ -155,7 +155,7 @@ public partial class CsvForm : Form
         string[][] csvTable;
         try
         {
-            csvTable = CsvParser2.Parse(fileText);
+            csvTable = CsvParser.Parse(fileText);
         }
         catch (Exception ex)
         {
