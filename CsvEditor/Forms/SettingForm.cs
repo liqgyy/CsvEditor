@@ -79,7 +79,6 @@ public partial class SettingForm : Form
             e.Cancel = true;
 			return;
         }
-		MessageBox.Show("部分设置需要重启后生效", "提示");
 	}
 
     private void OnSettingItemListBox_SelectedValueChanged(object sender, EventArgs e)

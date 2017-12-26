@@ -198,6 +198,35 @@ public partial class MainForm : Form
         m_UndoEditToolStripMenuItem.Enabled = SelCsvForm.EditManager.CanUndo();
         m_RedoEditToolStripMenuItem.Enabled = SelCsvForm.EditManager.CanRedo();
     }
+	
+	private void UpdateLayoutToolStripMenu()
+	{
+		m_SaveLayoutToolStripMenuItem.Enabled = false;
+		m_ApplyLayoutToolStripMenuItem.Enabled = false;
+		m_ManagerLayoutToolStripMenuItem.Enabled = false;
+
+		if (SelCsvFormInitialized())
+		{
+			m_SaveLayoutToolStripMenuItem.Enabled = true;
+			string[] specificLayoutKeys = CsvLayoutManager.Instance.GetSpecificKeys();
+			if (specificLayoutKeys.Length > 0)
+			{
+				m_ApplyLayoutToolStripMenuItem.Enabled = true;
+				m_ManagerLayoutToolStripMenuItem.Enabled = true;
+
+				m_ApplyLayoutToolStripMenuItem.DropDownItems.Clear();
+				for(int keyIdx = 0; keyIdx < specificLayoutKeys.Length; keyIdx++)
+				{
+					ToolStripMenuItem newToolStripMenuItem = new ToolStripMenuItem();
+					newToolStripMenuItem.Name = specificLayoutKeys[keyIdx];
+					newToolStripMenuItem.Text = specificLayoutKeys[keyIdx];
+					newToolStripMenuItem.Click += new EventHandler(OnApplyLayoutToolStripMenuItem_Click);
+
+					m_ApplyLayoutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newToolStripMenuItem });
+				}
+			}
+		}
+	}	
 	#endregion // End Update ToolStripMenu
 
 	#region UIEvent
@@ -256,6 +285,10 @@ public partial class MainForm : Form
 		else if (item == m_EditToolStripMenuItem)
 		{
 			UpdateEditToolStripMenu();
+		}
+		else if (item == m_LayoutToolStripMenuItem)
+		{
+			UpdateLayoutToolStripMenu();
 		}
 	}
 
@@ -397,7 +430,34 @@ public partial class MainForm : Form
 	private void OnSettingToolStripMenuItem_Click(object sender, EventArgs e)
 	{
 		SettingForm settingForm = new SettingForm();
+		settingForm.StartPosition = FormStartPosition.CenterParent;
 		settingForm.ShowDialog();
+	}
+
+	/// <summary>
+	/// 布局 Save\Manager
+	/// </summary>
+	private void OnLayoutToolStripMenuItem_Click(object sender, EventArgs e)
+	{
+		ToolStripMenuItem item = (ToolStripMenuItem)sender;
+		if (item == m_SaveLayoutToolStripMenuItem)
+		{
+			SaveLayoutForm saveLayoutForm = new SaveLayoutForm();
+			saveLayoutForm.StartPosition = FormStartPosition.CenterParent;
+			saveLayoutForm.ShowDialog();
+		}
+		else if (item == m_ManagerLayoutToolStripMenuItem)
+		{
+
+		}
+	}
+
+	/// <summary>
+	/// 应用布局
+	/// </summary>
+	private void OnApplyLayoutToolStripMenuItem_Click(object sender, EventArgs e)
+	{
+		// TODO
 	}
 
 	private void OnCellEditTextBox_TextChanged(object sender, EventArgs e)
@@ -414,5 +474,5 @@ public partial class MainForm : Form
 		None,
 		OpenFile,
 		CloseForm
-	}
+	}	
 }

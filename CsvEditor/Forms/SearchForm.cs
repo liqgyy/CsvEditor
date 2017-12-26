@@ -123,8 +123,8 @@ public partial class SearchForm : Form
     private void OnSearchNextButton_Click(object sender, EventArgs e)
     {
         if (!MainForm.Instance.SelCsvFormInitialized())
-        {
-            MessageBox.Show("当前没有打开Csv文件", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+		{
+			MessageBox.Show("当前没有打开Csv文件", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
@@ -150,7 +150,7 @@ public partial class SearchForm : Form
     {
         if (!MainForm.Instance.SelCsvFormInitialized())
         {
-            MessageBox.Show("当前没有打开Csv文件", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("当前没有打开Csv文件", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
@@ -199,7 +199,7 @@ public partial class SearchForm : Form
     {
         if (!MainForm.Instance.SelCsvFormInitialized())
         {
-            MessageBox.Show("当前没有打开Csv文件", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("当前没有打开Csv文件", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 

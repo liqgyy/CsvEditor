@@ -47,16 +47,26 @@ public class CsvLayoutManager
 		Save(m_SpecificSavePath, m_SpecificLayoutList);
 	}
 
+	public string[] GetSpecificKeys()
+	{
+		string[] keys = new string[m_SpecificLayoutList.Count];
+		for(int layoutIdx = 0; layoutIdx < m_SpecificLayoutList.Count; layoutIdx++)
+		{
+			keys[layoutIdx] = m_SpecificLayoutList[layoutIdx].Key;
+		}
+		return keys;
+	}
+
 	private CsvLayoutManager()
 	{
 		m_SavePath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase + GlobalData.CSVLAYOUT_FILE_NAME;
 		m_SpecificSavePath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase + GlobalData.SPECIFIC_CSVLAYOUT_FILE_NAME;
 
-		m_LayoutList = LoadLayoutList(m_SavePath);
-		m_SpecificLayoutList = LoadLayoutList(m_SpecificSavePath);
+		m_LayoutList = LoadList(m_SavePath);
+		m_SpecificLayoutList = LoadList(m_SpecificSavePath);
 	}
 
-	private List<CsvLayout> LoadLayoutList(string path)
+	private List<CsvLayout> LoadList(string path)
 	{
 		if (string.IsNullOrEmpty(path) || !File.Exists(path))
 		{

@@ -25,7 +25,7 @@ public partial class GotoForm : Form
     {
         if (!MainForm.Instance.SelCsvFormInitialized())
         {
-            MessageBox.Show("当前没有打开Csv文件", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("当前没有打开Csv文件", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
@@ -45,7 +45,7 @@ public partial class GotoForm : Form
         {
             string msgText = string.Format("输入的col或row超出范围.\n接受的范围:\n0 < col <= {0}\n0 < row <= {1}",
                 dataGridView.ColumnCount, dataGridView.RowCount);
-            MessageBox.Show(msgText, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show(msgText, "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
         dataGridView.CurrentCell = dataGridView.Rows[row - 1].Cells[col - 1];
