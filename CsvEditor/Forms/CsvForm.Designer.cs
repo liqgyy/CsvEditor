@@ -145,6 +145,7 @@
 			this.m_DataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
 			this.m_DataGridView.Location = new System.Drawing.Point(0, 0);
 			this.m_DataGridView.Name = "m_DataGridView";
+			this.m_DataGridView.ReadOnly = true;
 			this.m_DataGridView.Size = new System.Drawing.Size(876, 384);
 			this.m_DataGridView.TabIndex = 0;
 			this.m_DataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.OnDataGridView_CellMouseDown);

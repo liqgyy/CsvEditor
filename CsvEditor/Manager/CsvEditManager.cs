@@ -129,9 +129,17 @@ public class CsvEditManager
 		{
 			PasteCell(dataGridView, clipboardStr);
 		}
-		else
+		// 粘贴到DataGridView
+		else if (dataGridView.SelectedCells.Count > 0)
 		{
-			PasetCells(dataGridView, clipboardStr);
+			if (dataGridView.SelectedCells.Count == 1)
+			{
+				PasetCells(dataGridView, clipboardStr);
+			}
+			else
+			{
+				MessageBox.Show("选中多个单元格时不能粘贴", "提示", MessageBoxButtons.OK);
+			}
 		}
 	}
 
@@ -170,7 +178,6 @@ public class CsvEditManager
 
 	private void PasetCells(DataGridView dataGridView, string clipboardStr)
 	{
-		// 粘贴到DataGridView
 		// 引用下面两个链接
 		// https://stackoverflow.com/questions/22833327/pasting-excel-data-into-a-blank-datagridview-index-out-of-range-exception
 		// https://stackoverflow.com/questions/1679778/is-it-possible-to-paste-excel-csv-data-from-clipboard-to-datagridview-in-c
@@ -206,11 +213,6 @@ public class CsvEditManager
 						throw (new ArgumentOutOfRangeException("currentCol", "粘贴的列超出范围"));
 					}
 					currentCell = dataGridView.Rows[currentRow].Cells[currentCol + cellIdx];
-					// 当前的设计需求不会出现ReadOnly = true的情况
-					if (currentCell.ReadOnly)
-					{
-						continue;
-					}
 					string cell = cells[cellIdx];
 					// 忽略空值
 					if (string.IsNullOrEmpty(cell))
@@ -279,11 +281,15 @@ public class CsvEditManager
 
     public bool CanPaste()
     {
-		if (!m_CsvForm.MainDataGridView.IsCurrentCellInEditMode && m_CsvForm.MainDataGridView.SelectedCells.Count == 0)
+		if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
 		{
-			return false;
+			return true;
 		}
-		return true;
+		if (m_CsvForm.MainDataGridView.SelectedCells.Count > 0)
+		{
+			return true;
+		}
+		return false;
     }
     #endregion // End Copy\Cut\Paste
 
