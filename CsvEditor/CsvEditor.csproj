@@ -66,7 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Datas\CsvFileSetting.cs" />
+    <Compile Include="Datas\CsvLayout.cs" />
     <Compile Include="Datas\GlobalData.cs" />
     <Compile Include="Datas\Setting.cs" />
     <Compile Include="Forms\GotoForm.cs">
@@ -81,7 +81,7 @@
     <Compile Include="Forms\SettingForm.Designer.cs">
       <DependentUpon>SettingForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Manager\CsvFileSettingManager.cs" />
+    <Compile Include="Manager\CsvLayoutManager.cs" />
     <Compile Include="Plugins\DiffCompare\BeyondCompare.cs" />
     <Compile Include="Plugins\BinaryFormatterUtility.cs" />
     <Compile Include="Plugins\DiffCompare\CodeCompare.cs" />

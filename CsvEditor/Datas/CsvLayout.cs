@@ -1,12 +1,9 @@
 ﻿using System;
 
-/// <summary>
-/// 每个csv文件对应一个Setting
-/// </summary>
 [Serializable]
-public class CsvSetting
+public class CsvLayout
 {
-	public string FileFullName;
+	public string Path;
 	public int[] ColumnWidths;
 	public int[] RowHeights;
 	/// <summary>
@@ -24,8 +21,8 @@ public class CsvSetting
 	/// </summary>
 	public int FrozenRow = -1;
 
-	public CsvSetting(string fileFullName)
+	public CsvLayout(string path)
 	{
-		FileFullName = fileFullName;
+		Path = path;
 	}
 }

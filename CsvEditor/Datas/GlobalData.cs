@@ -14,7 +14,7 @@
 
     public const string SETTING_FILE_NAME = "Setting.bin";
 
-	public const string CSVSETTING_SAVE_FOLDER = "CsvSetting";
+	public const string CSVLAYOUT_SAVE_FOLDER = "CsvLayout";
     #endregion // End Setting
 
     public const string SKIN_FOLDER_NAME = "Skins";

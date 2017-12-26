@@ -22,7 +22,7 @@ public partial class CsvForm : Form
     public DataTable MainDataTable;
     public DataTable CopyDataTable;
 
-	private CsvSetting m_Setting;
+	private CsvLayout m_Setting;
 
 	private bool m_NeedDiff = false;
 
@@ -41,7 +41,7 @@ public partial class CsvForm : Form
 		InitializeComponent();
 
         SourcePath = path;
-		m_Setting = CsvSettingManager.LoadSetting(SourcePath);
+		m_Setting = CsvLayoutManager.Load(SourcePath);
 
 		EditManager = new CsvEditManager(this);
 	}	
@@ -215,7 +215,7 @@ public partial class CsvForm : Form
 	{
 		SaveCellSize();
 		SaveFrozen();
-		CsvSettingManager.SaveSetting(m_Setting);
+		CsvLayoutManager.Save(m_Setting);
 	}
 
 	private void LoadCsvSetting()
@@ -240,21 +240,21 @@ public partial class CsvForm : Form
 		}
 
 		// Row
-		if (m_Setting.RowHeadersWidth > 0)
-		{
-			m_DataGridView.RowHeadersWidth = m_Setting.RowHeadersWidth;
-		}
-		if (m_Setting.RowHeights != null)
-		{
-			for (int rowIdx = 0; rowIdx < m_Setting.RowHeights.Length; rowIdx++)
-			{
-				if (rowIdx == m_DataGridView.Rows.Count)
-				{
-					break;
-				}
-				m_DataGridView.Rows[rowIdx].Height = m_Setting.RowHeights[rowIdx];
-			}
-		}
+		//if (m_Setting.RowHeadersWidth > 0)
+		//{
+		//	m_DataGridView.RowHeadersWidth = m_Setting.RowHeadersWidth;
+		//}
+		//if (m_Setting.RowHeights != null)
+		//{
+		//	for (int rowIdx = 0; rowIdx < m_Setting.RowHeights.Length; rowIdx++)
+		//	{
+		//		if (rowIdx == m_DataGridView.Rows.Count)
+		//		{
+		//			break;
+		//		}
+		//		m_DataGridView.Rows[rowIdx].Height = m_Setting.RowHeights[rowIdx];
+		//	}
+		//}
 	}
 
 	private void SaveCellSize()
@@ -267,12 +267,12 @@ public partial class CsvForm : Form
 		}
 
 		// Row
-		m_Setting.RowHeadersWidth = m_DataGridView.RowHeadersWidth;
-		m_Setting.RowHeights = new int[m_DataGridView.Rows.Count];
-		for (int rowIdx = 0; rowIdx < m_DataGridView.Rows.Count; rowIdx++)
-		{
-			m_Setting.RowHeights[rowIdx] = m_DataGridView.Rows[rowIdx].Height;
-		}
+		//m_Setting.RowHeadersWidth = m_DataGridView.RowHeadersWidth;
+		//m_Setting.RowHeights = new int[m_DataGridView.Rows.Count];
+		//for (int rowIdx = 0; rowIdx < m_DataGridView.Rows.Count; rowIdx++)
+		//{
+		//	m_Setting.RowHeights[rowIdx] = m_DataGridView.Rows[rowIdx].Height;
+		//}
 	}
 	
 	private void LoadFrozen()
