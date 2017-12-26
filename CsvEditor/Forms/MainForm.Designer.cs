@@ -28,13 +28,13 @@ partial class MainForm
     /// </summary>
     private void InitializeComponent()
     {
+			System.Windows.Forms.SplitContainer splitContainer;
+			this.m_MainTabControl = new System.Windows.Forms.TabControl();
 			this.m_MenuStrip = new System.Windows.Forms.MenuStrip();
 			this.m_FileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_OpenFIleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.m_RevertFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.m_SaveToSourceFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.m_SaveToCopyFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.m_SaveFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_SaveToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_EditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_GotoEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,9 +50,41 @@ partial class MainForm
 			this.m_SettingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_OpenCsvFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.m_SaveCsvFileDialog = new System.Windows.Forms.SaveFileDialog();
-			this.m_MainTabControl = new System.Windows.Forms.TabControl();
+			splitContainer = new System.Windows.Forms.SplitContainer();
+			((System.ComponentModel.ISupportInitialize)(splitContainer)).BeginInit();
+			splitContainer.Panel1.SuspendLayout();
+			splitContainer.SuspendLayout();
 			this.m_MenuStrip.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// splitContainer
+			// 
+			splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+			splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+			splitContainer.Location = new System.Drawing.Point(0, 25);
+			splitContainer.Name = "splitContainer";
+			splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			// 
+			// splitContainer.Panel1
+			// 
+			splitContainer.Panel1.Controls.Add(this.m_MainTabControl);
+			splitContainer.Size = new System.Drawing.Size(767, 395);
+			splitContainer.SplitterDistance = 300;
+			splitContainer.TabIndex = 2;
+			// 
+			// m_MainTabControl
+			// 
+			this.m_MainTabControl.AllowDrop = true;
+			this.m_MainTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.m_MainTabControl.Location = new System.Drawing.Point(0, 0);
+			this.m_MainTabControl.Margin = new System.Windows.Forms.Padding(0);
+			this.m_MainTabControl.Name = "m_MainTabControl";
+			this.m_MainTabControl.Padding = new System.Drawing.Point(10, 3);
+			this.m_MainTabControl.SelectedIndex = 0;
+			this.m_MainTabControl.Size = new System.Drawing.Size(767, 300);
+			this.m_MainTabControl.TabIndex = 0;
+			this.m_MainTabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.OnMainTabControl_Selected);
+			this.m_MainTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnMainTabControl_MouseClick);
 			// 
 			// m_MenuStrip
 			// 
@@ -70,10 +102,8 @@ partial class MainForm
 			// 
 			this.m_FileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.m_OpenFIleToolStripMenuItem,
-            this.m_RevertFileToolStripMenuItem,
             this.toolStripSeparator1,
-            this.m_SaveToSourceFileToolStripMenuItem,
-            this.m_SaveToCopyFileToolStripMenuItem,
+            this.m_SaveFileToolStripMenuItem,
             this.m_SaveToFileToolStripMenuItem});
 			this.m_FileToolStripMenuItem.Name = "m_FileToolStripMenuItem";
 			this.m_FileToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
@@ -85,42 +115,27 @@ partial class MainForm
 			// 
 			this.m_OpenFIleToolStripMenuItem.Name = "m_OpenFIleToolStripMenuItem";
 			this.m_OpenFIleToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.m_OpenFIleToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+			this.m_OpenFIleToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
 			this.m_OpenFIleToolStripMenuItem.Text = "打开";
 			this.m_OpenFIleToolStripMenuItem.Click += new System.EventHandler(this.OnOpenFileToolStripMenuItem_Click);
-			// 
-			// m_RevertFileToolStripMenuItem
-			// 
-			this.m_RevertFileToolStripMenuItem.Name = "m_RevertFileToolStripMenuItem";
-			this.m_RevertFileToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-			this.m_RevertFileToolStripMenuItem.Text = "还原到副本";
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(223, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(144, 6);
 			// 
-			// m_SaveToSourceFileToolStripMenuItem
+			// m_SaveFileToolStripMenuItem
 			// 
-			this.m_SaveToSourceFileToolStripMenuItem.Name = "m_SaveToSourceFileToolStripMenuItem";
-			this.m_SaveToSourceFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.S)));
-			this.m_SaveToSourceFileToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-			this.m_SaveToSourceFileToolStripMenuItem.Text = "保存到源文件";
-			this.m_SaveToSourceFileToolStripMenuItem.Click += new System.EventHandler(this.OnSaveFileToolStripMenuItem_Click);
-			// 
-			// m_SaveToCopyFileToolStripMenuItem
-			// 
-			this.m_SaveToCopyFileToolStripMenuItem.Name = "m_SaveToCopyFileToolStripMenuItem";
-			this.m_SaveToCopyFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.m_SaveToCopyFileToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-			this.m_SaveToCopyFileToolStripMenuItem.Text = "保存到副本";
-			this.m_SaveToCopyFileToolStripMenuItem.Click += new System.EventHandler(this.OnSaveFileToolStripMenuItem_Click);
+			this.m_SaveFileToolStripMenuItem.Name = "m_SaveFileToolStripMenuItem";
+			this.m_SaveFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+			this.m_SaveFileToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+			this.m_SaveFileToolStripMenuItem.Text = "保存";
+			this.m_SaveFileToolStripMenuItem.Click += new System.EventHandler(this.OnSaveFileToolStripMenuItem_Click);
 			// 
 			// m_SaveToFileToolStripMenuItem
 			// 
 			this.m_SaveToFileToolStripMenuItem.Name = "m_SaveToFileToolStripMenuItem";
-			this.m_SaveToFileToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+			this.m_SaveToFileToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
 			this.m_SaveToFileToolStripMenuItem.Text = "保存为";
 			this.m_SaveToFileToolStripMenuItem.Click += new System.EventHandler(this.OnSaveFileToolStripMenuItem_Click);
 			// 
@@ -236,32 +251,21 @@ partial class MainForm
 			this.m_SaveCsvFileDialog.FileName = "NewCsvFile";
 			this.m_SaveCsvFileDialog.Filter = "*.csv|*.csv";
 			// 
-			// m_MainTabControl
-			// 
-			this.m_MainTabControl.AllowDrop = true;
-			this.m_MainTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.m_MainTabControl.Location = new System.Drawing.Point(0, 25);
-			this.m_MainTabControl.Margin = new System.Windows.Forms.Padding(0);
-			this.m_MainTabControl.Name = "m_MainTabControl";
-			this.m_MainTabControl.Padding = new System.Drawing.Point(10, 3);
-			this.m_MainTabControl.SelectedIndex = 0;
-			this.m_MainTabControl.Size = new System.Drawing.Size(767, 395);
-			this.m_MainTabControl.TabIndex = 0;
-			this.m_MainTabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.OnMainTabControl_Selected);
-			this.m_MainTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnMainTabControl_MouseClick);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(767, 420);
-			this.Controls.Add(this.m_MainTabControl);
+			this.Controls.Add(splitContainer);
 			this.Controls.Add(this.m_MenuStrip);
 			this.MainMenuStrip = this.m_MenuStrip;
 			this.Name = "MainForm";
 			this.Text = "Csv编辑器";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnForm_FormClosing);
 			this.Load += new System.EventHandler(this.OnMainForm_Load);
+			splitContainer.Panel1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(splitContainer)).EndInit();
+			splitContainer.ResumeLayout(false);
 			this.m_MenuStrip.ResumeLayout(false);
 			this.m_MenuStrip.PerformLayout();
 			this.ResumeLayout(false);
@@ -279,12 +283,10 @@ partial class MainForm
     private System.Windows.Forms.ToolStripMenuItem m_CopyEditToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem m_PasteEditToolStripMenuItem;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-    private System.Windows.Forms.ToolStripMenuItem m_SaveToSourceFileToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem m_SaveToCopyFileToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem m_SaveFileToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem m_SaveToFileToolStripMenuItem;
     private System.Windows.Forms.SaveFileDialog m_SaveCsvFileDialog;
     private System.Windows.Forms.TabControl m_MainTabControl;
-    private System.Windows.Forms.ToolStripMenuItem m_RevertFileToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem m_GotoEditToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem m_SearchEditStripMenuItem;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;

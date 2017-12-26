@@ -1,38 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using static CsvEditManager;
 using System.Text;
-/// <summary>
-/// 现代空战 更灵活配置飞机
-/// 近乎不连服务器，直接进场景
-/// </summary>
+
 public partial class CsvForm : Form
 {
     /// <summary>
     /// 源文件 完整路径 如: C://a.csv
     /// </summary>
-    public string SourceFileFullName;
-
-    /// <summary>
-    /// 源文件的副本 文件名
-    /// </summary>
-    public string SourceCopyFileName { get; private set; }
-
-    /// <summary>
-    /// 副本文件列表 文件名
-    /// </summary>
-    public List<string> CopyFileNameList { get; private set; }
+    public string SourcePath;
 
     public CsvEditManager EditManager;
 
     public bool Initialized = false;
 
-    public bool NeedSaveSourceFile = false;
     public bool DataChanged = false;
 
     public DataGridView MainDataGridView { get { return m_DataGridView; } }
@@ -41,23 +24,24 @@ public partial class CsvForm : Form
 
 	private CsvSetting m_Setting;
 
+	private bool m_NeedDiff = false;
+
     /// <summary>
     /// 源文件 文件名 如: a.csv
     /// </summary>
-    private string m_SourceFileName;
+    private string m_SourceFile;
 
-    /// <summary>
-    /// 当前的副本文件
-    /// </summary>
-    private string m_CurrentCopyFileName;
+	/// <summary>
+	/// 源文件的副本 完整路径
+	/// </summary>
+	private string m_SourceCopyPath;
 
-    public CsvForm(string fileFullPath)
+	public CsvForm(string path)
     {
 		InitializeComponent();
 
-        CopyFileNameList = new List<string>();
-        SourceFileFullName = fileFullPath;
-		m_Setting = CsvSettingManager.LoadSetting(SourceFileFullName);
+        SourcePath = path;
+		m_Setting = CsvSettingManager.LoadSetting(SourcePath);
 
 		EditManager = new CsvEditManager(this);
 	}	
@@ -74,61 +58,18 @@ public partial class CsvForm : Form
         m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
     }
 
-	public bool CanClose()
-	{
-		if (DataChanged || NeedSaveSourceFile)
-		{
-			return false;
-		}
-		return true;
-	}
-
 	#region File
-	public void SaveToSourceFile()
+    public void SaveFile()
     {
-        if (DataChanged)
-        {
-            // 应该先保存到副本，正常情况不会触发这里
-            return;
-        }
-
-        // 保存到源文件前询问是否打开CodeCompare
-        if (MessageBox.Show("是否打开文件比较工具", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
-        {
-			BeyondCompare.Instance.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName, "源文件", "副本");
-			CodeCompare.Instance.Compare(SourceFileFullName, Path.GetTempPath() + m_CurrentCopyFileName, "源文件", "副本");
-            return;
-        }
-
-        if (SaveToPath(SourceFileFullName))
+        if (SaveFile(SourcePath))
         {
             DataChanged = false;
-            NeedSaveSourceFile = false;
-            try
-            {
-                CopySourceFile();
-            }
-            catch (Exception ex)
-            {
-                Debug.ShowExceptionMessageBox("拷贝文件副本失败: " + SourceFileFullName, ex);
-            }
-			MessageBox.Show("源文件保存成功\n" + SourceFileFullName, "提示");
-        }
+			m_NeedDiff = true;
+		}
         UpdateFormText();
     }
 
-    public void SaveToCopyFile()
-    {
-        m_CurrentCopyFileName = GetNewCopyFileName();
-        if (SaveToPath(Path.GetTempPath() + m_CurrentCopyFileName))
-        {
-            CopyFileNameList.Add(m_CurrentCopyFileName);
-            DataChanged = false;
-        }
-        UpdateFormText();
-    }
-
-    public bool SaveToPath(string path)
+    public bool SaveFile(string path)
     {
 		SaveCsvSetting();
 
@@ -154,30 +95,6 @@ public partial class CsvForm : Form
             return false;
         }
         return true;
-    }
-
-    /// <summary>
-    /// 还原到副本文件
-    /// </summary>
-    /// <param name="copyFileName"></param>
-    public void RevertToCopyFile(string copyFileName)
-    {
-        if (DataChanged)
-        {
-            if (MessageBox.Show("当前文件未保存，是否还原?", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-            {
-                return;
-            }
-        }
-        Initialized = false;
-        Initialized = LoadCsvFileToDataTable(Path.GetTempPath() + copyFileName);
-        // 还原为源文件的副本
-        if (copyFileName == SourceCopyFileName)
-        {
-            NeedSaveSourceFile = false;
-        }
-        m_CurrentCopyFileName = copyFileName;
-        UpdateFormText();
     }
 	#endregion // End File
 
@@ -218,19 +135,11 @@ public partial class CsvForm : Form
 	/// <returns>副本文件名</returns>
 	private void CopySourceFile()
     {
-        SourceCopyFileName = GetNewCopyFileName();
-        File.Copy(SourceFileFullName, Path.GetTempPath() + SourceCopyFileName);
+		m_SourceCopyPath = string.Format("{0}{1}.{2}", Path.GetTempPath(), m_SourceFile, Guid.NewGuid());
+		File.Copy(SourcePath, m_SourceCopyPath);
     }
 
-    /// <summary>
-    /// 获得新的副本文件名。文件名唯一
-    /// </summary>
-    private string GetNewCopyFileName()
-    {
-        return m_SourceFileName + "." + Stopwatch.GetTimestamp() + "." + Guid.NewGuid();
-    }
-
-    private bool LoadCsvFileToDataTable(string fileFullName)
+    private bool LoadFileToDataTable(string fileFullName)
     {
         string fileText;
         try
@@ -280,10 +189,9 @@ public partial class CsvForm : Form
             m_DataGridView.DataSource = MainDataTable;
             CopyDataTable = MainDataTable.Copy();
             MainDataTable.AcceptChanges();
-            UpdateGridHeader();
 
-			LoadCellSize();
-			LoadFrozen();
+            UpdateGridHeader();
+			LoadCsvSetting();
 
 			m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
             EditManager.DoSomething += OnRedoUndo_DoSomethingChange;
@@ -305,6 +213,12 @@ public partial class CsvForm : Form
 		SaveCellSize();
 		SaveFrozen();
 		CsvSettingManager.SaveSetting(m_Setting);
+	}
+
+	private void LoadCsvSetting()
+	{
+		LoadCellSize();
+		LoadFrozen();
 	}
 
 	private void LoadCellSize()
@@ -421,7 +335,7 @@ public partial class CsvForm : Form
     /// </summary>
     private void UpdateFormText()
     {
-        string newFormText = (NeedSaveSourceFile ? "?" : "") + m_SourceFileName + (DataChanged ? "*" : "");
+        string newFormText = m_SourceFile + (DataChanged ? "*" : "");
         if (Text != newFormText)
         {
             Text = newFormText;
@@ -438,27 +352,27 @@ public partial class CsvForm : Form
         // 初始化文件，创建文件副本
         try
         {
-            m_SourceFileName = Path.GetFileName(SourceFileFullName);
-            Text = m_SourceFileName;
+            m_SourceFile = Path.GetFileName(SourcePath);
+            Text = m_SourceFile;
 
             CopySourceFile();
         }
         catch (Exception ex)
         {
-            Debug.ShowExceptionMessageBox("初始化文件失败:" + SourceFileFullName, ex);
+            Debug.ShowExceptionMessageBox("初始化文件失败:" + SourcePath, ex);
             return;
         }
 
-        Initialized = LoadCsvFileToDataTable(SourceFileFullName);
+        Initialized = LoadFileToDataTable(SourcePath);
 	}
 
 	/// <summary>
 	/// RedoUndo触发  
 	/// 因为(Re\Un)Do时要取消DataGridView的监听, 所以在这里进行 数据改变 & 更新标题
 	/// </summary>
-	private void OnRedoUndo_DoSomethingChange(object sender, DoSomethingEventArgs e)
+	private void OnRedoUndo_DoSomethingChange(object sender, CsvEditManager.DoSomethingEventArgs e)
     {
-        if (e.MyDoType == CsvEditManager.DoType.CellsValueChange)
+		if (e.MyDoType == CsvEditManager.DoType.CellsValueChange)
         {
             OnDataGridViewData_Change();
         }
@@ -474,7 +388,6 @@ public partial class CsvForm : Form
     /// </summary>
     private void OnDataGridViewData_Change()
     {
-        NeedSaveSourceFile = true;
         DataChanged = true;
         
         UpdateFormText();
@@ -607,7 +520,7 @@ public partial class CsvForm : Form
     }
 
     /// <summary>
-    /// 单元格值改变时添加Do事件到RedoUndo里
+    /// 单元格值改变时添加Did事件
     /// </summary>
     private void OnDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
     {
@@ -625,6 +538,8 @@ public partial class CsvForm : Form
 	/// </summary>
 	private void OnDataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
 	{
+		e.Paint(e.ClipBounds, e.PaintParts);
+
 		if (e.ColumnIndex < 0 || e.RowIndex < 0)
 		{
 			return;
@@ -639,8 +554,6 @@ public partial class CsvForm : Form
 		{
 			return;
 		}
-
-		e.Paint(e.ClipBounds, e.PaintParts);
 
 		// 批注提示
 		using (Brush gridBrush = new SolidBrush(Color.Red))
@@ -709,7 +622,25 @@ public partial class CsvForm : Form
 
 	private void OnForm_FormClosing(object sender, FormClosingEventArgs e)
 	{
+		if (DataChanged)
+		{
+			if (MessageBox.Show("文件未保存，是否关闭?", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
+			{
+				e.Cancel = true;
+				return;
+			}
+		}
+	}
+
+	private void OnForm_FormClosed(object sender, FormClosedEventArgs e)
+	{
+		if (m_NeedDiff)
+		{
+			BeyondCompare.Instance.Compare(SourcePath, m_SourceCopyPath, "源文件", "副本");
+			CodeCompare.Instance.Compare(SourcePath, m_SourceCopyPath, "源文件", "副本");
+		}
 		SaveCsvSetting();
+		MainForm.Instance.OnCsvForm_FormClosed(this);
 	}
 
 	/// <summary>

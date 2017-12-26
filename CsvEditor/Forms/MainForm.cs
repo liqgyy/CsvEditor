@@ -63,33 +63,12 @@ public partial class MainForm : Form
     }
 
 	/// <summary>
-	/// 关闭csv窗口
-	/// </summary>
-	/// <param name="tabIdx">窗口id</param>
-    private void CloseCsvForm(int tabIdx)
-    {
-        CsvForm csvForm = (CsvForm)m_MainTabControl.TabPages[tabIdx].Controls[0];
-        if (!csvForm.CanClose())
-        {
-			if (MessageBox.Show("文件未保存，确定关闭?", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-			{
-				// 防止用户误点，即使选择关闭也保存一份副本
-				csvForm.SaveToCopyFile();
-				return;
-			}
-		}
-		m_OpenedCsvFormList.Remove(csvForm);
-		m_MainTabControl.TabPages.RemoveAt(tabIdx);
-		csvForm.Close();
-	}
-
-	/// <summary>
 	/// 加载csv文件
 	/// </summary>
-	/// <param name="fileFullPath">文件完整路径</param>
-    private void LoadFile(string fileFullPath)
+	/// <param name="path">文件完整路径</param>
+    private void LoadFile(string path)
     {
-        CsvForm newCsvForm = new CsvForm(fileFullPath);
+        CsvForm newCsvForm = new CsvForm(path);
         if (newCsvForm == null)
         {
             return;
@@ -129,36 +108,14 @@ public partial class MainForm : Form
     #region Update ToolStripMenu
     private void UpdateFileToolStripMenu()
     {
-        m_SaveToSourceFileToolStripMenuItem.Enabled = false;
-        m_SaveToCopyFileToolStripMenuItem.Enabled = false;
+        m_SaveFileToolStripMenuItem.Enabled = false;
         m_SaveToFileToolStripMenuItem.Enabled = false;
         if (!SelCsvFormInitialized())
         {
             return;
         }
-        m_SaveToCopyFileToolStripMenuItem.Enabled = SelCsvForm.DataChanged;
-        m_SaveToSourceFileToolStripMenuItem.Enabled = SelCsvForm.NeedSaveSourceFile && !SelCsvForm.DataChanged;
+        m_SaveFileToolStripMenuItem.Enabled = SelCsvForm.DataChanged;
         m_SaveToFileToolStripMenuItem.Enabled = true;
-    }
-
-    private void UpdateFileRevertToolStripMenu()
-    {
-        m_RevertFileToolStripMenuItem.Enabled = false;
-        if (!SelCsvFormInitialized() || (string.IsNullOrEmpty(SelCsvForm.SourceCopyFileName) && SelCsvForm.CopyFileNameList.Count == 0))
-        {
-            return;
-        }
-        m_RevertFileToolStripMenuItem.Enabled = true;
-        m_RevertFileToolStripMenuItem.DropDownItems.Clear();
-        for (int copyFileIdx = 0; copyFileIdx < SelCsvForm.CopyFileNameList.Count; copyFileIdx++)
-        {
-            string copyFileName = SelCsvForm.CopyFileNameList[copyFileIdx];
-            AddMenumItemToRevertFileToolStripMenu(copyFileName);
-        }
-        if (!string.IsNullOrEmpty(SelCsvForm.SourceCopyFileName))
-        {
-            AddMenumItemToRevertFileToolStripMenu(SelCsvForm.SourceCopyFileName);
-        }
     }
    
     private void UpdateEditToolStripMenu()
@@ -185,19 +142,6 @@ public partial class MainForm : Form
         m_UndoEditToolStripMenuItem.Enabled = SelCsvForm.EditManager.CanUndo();
         m_RedoEditToolStripMenuItem.Enabled = SelCsvForm.EditManager.CanRedo();
     }
-
-	/// <summary>
-	/// 添加一个副本文件名到还原文件菜单里
-	/// </summary>
-	private void AddMenumItemToRevertFileToolStripMenu(string copyFileName)
-	{
-		ToolStripMenuItem newToolStripMenuItem = new ToolStripMenuItem();
-		newToolStripMenuItem.Name = copyFileName;
-		newToolStripMenuItem.Text = copyFileName;
-		newToolStripMenuItem.Click += new EventHandler(OnRevertFileToolStripMenuItem_Click);
-
-		m_RevertFileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newToolStripMenuItem });
-	}
 	#endregion // End Update ToolStripMenu
 
 	#region UIEvent
@@ -221,15 +165,29 @@ public partial class MainForm : Form
 
 	private void OnForm_FormClosing(object sender, FormClosingEventArgs e)
 	{
-		for(int formIdx = 0; formIdx < m_OpenedCsvFormList.Count; formIdx++)
+		// TODO
+		//for(int formIdx = 0; formIdx < m_OpenedCsvFormList.Count; formIdx++)
+		//{
+		//	CsvForm csvForm = m_OpenedCsvFormList[formIdx];
+		//	if (csvForm.DataChanged)
+		//	{
+		//		if (MessageBox.Show("有文件未保存，是否关闭?", "提示" , MessageBoxButtons.YesNo) == DialogResult.No)
+		//		{
+		//			e.Cancel = true;
+		//		}
+		//		break;
+		//	}
+		//}
+	}
+
+	public void OnCsvForm_FormClosed(CsvForm csvForm)
+	{
+		m_OpenedCsvFormList.Remove(csvForm);
+		for (int tabIdx = 0; tabIdx < m_MainTabControl.TabCount; tabIdx++)
 		{
-			CsvForm csvForm = m_OpenedCsvFormList[formIdx];
-			if (csvForm.DataChanged || csvForm.NeedSaveSourceFile)
+			if ( csvForm == (CsvForm)m_MainTabControl.TabPages[tabIdx].Controls[0])
 			{
-				if (MessageBox.Show("有文件未保存，是否关闭?", "提示" , MessageBoxButtons.YesNo) == DialogResult.No)
-				{
-					e.Cancel = true;
-				}
+				m_MainTabControl.TabPages.RemoveAt(tabIdx);
 				break;
 			}
 		}
@@ -247,7 +205,8 @@ public partial class MainForm : Form
                 Rectangle r = m_MainTabControl.GetTabRect(tabIdx);
                 if (r.Contains(e.Location))
                 {
-                    CloseCsvForm(tabIdx);
+					CsvForm csvForm = (CsvForm)m_MainTabControl.TabPages[tabIdx].Controls[0];
+					csvForm.Close();
                     break;
                 }
             }
@@ -281,7 +240,6 @@ public partial class MainForm : Form
 		if (item == m_FileToolStripMenuItem)
 		{
 			UpdateFileToolStripMenu();
-			UpdateFileRevertToolStripMenu();
 		}
 		else if (item == m_EditToolStripMenuItem)
 		{
@@ -298,8 +256,7 @@ public partial class MainForm : Form
 		ToolStripMenuItem item = (ToolStripMenuItem)sender;
 		if (item == m_FileToolStripMenuItem)
 		{
-			m_SaveToSourceFileToolStripMenuItem.Enabled = true;
-			m_SaveToCopyFileToolStripMenuItem.Enabled = true;
+			m_SaveFileToolStripMenuItem.Enabled = true;
 			m_SaveToFileToolStripMenuItem.Enabled = true;
 		}
 		else if (item == m_EditToolStripMenuItem)
@@ -330,13 +287,13 @@ public partial class MainForm : Form
 		}
 		for (int fileIdx = 0; fileIdx < m_OpenCsvFileDialog.FileNames.Length; fileIdx++)
 		{
-			string fileFullPath = m_OpenCsvFileDialog.FileNames[fileIdx];
+			string path = m_OpenCsvFileDialog.FileNames[fileIdx];
 
 			bool isOpened = false;
 			for (int csvFormIdx = 0; csvFormIdx < m_OpenedCsvFormList.Count; csvFormIdx++)
 			{
 				CsvForm openedCsvForm = m_OpenedCsvFormList[csvFormIdx];
-				if (openedCsvForm != null && openedCsvForm.SourceFileFullName == fileFullPath)
+				if (openedCsvForm != null && openedCsvForm.SourcePath == path)
 				{
 					isOpened = true;
 					break;
@@ -347,21 +304,8 @@ public partial class MainForm : Form
 				break;
 			}
 
-			LoadFile(fileFullPath);
+			LoadFile(path);
 		}
-	}
-
-	/// <summary>
-	/// 还原到文件
-	/// </summary>
-	private void OnRevertFileToolStripMenuItem_Click(object sender, EventArgs e)
-	{
-		if (!SelCsvFormInitialized())
-		{
-			return;
-		}
-		ToolStripMenuItem item = (ToolStripMenuItem)sender;
-		SelCsvForm.RevertToCopyFile(item.Text);
 	}
 
 	/// <summary>
@@ -408,13 +352,9 @@ public partial class MainForm : Form
 		}
 
 		ToolStripMenuItem item = (ToolStripMenuItem)sender;
-        if (SelCsvForm.NeedSaveSourceFile && !SelCsvForm.DataChanged && item == m_SaveToSourceFileToolStripMenuItem)
+        if (SelCsvForm.DataChanged && item == m_SaveFileToolStripMenuItem)
         {
-            SelCsvForm.SaveToSourceFile();
-        }
-        else if (SelCsvForm.DataChanged && item == m_SaveToCopyFileToolStripMenuItem)
-        {
-            SelCsvForm.SaveToCopyFile();
+            SelCsvForm.SaveFile();
         }
         else if (item == m_SaveToFileToolStripMenuItem)
         {
@@ -426,7 +366,7 @@ public partial class MainForm : Form
             {
                 return;
             }
-            SelCsvForm.SaveToPath(m_SaveCsvFileDialog.FileName);
+            SelCsvForm.SaveFile(m_SaveCsvFileDialog.FileName);
         }
     }
 

@@ -59,77 +59,78 @@
             this.toolStripSeparator3,
             this.m_EditNoteToolStripMenuItem});
 			this.m_GridContextMenuStrip.Name = "m_GridContextMenuStrip";
-			this.m_GridContextMenuStrip.Size = new System.Drawing.Size(153, 198);
+			this.m_GridContextMenuStrip.Size = new System.Drawing.Size(149, 176);
 			// 
 			// m_InsertUpRowToolStripMenuItem
 			// 
 			this.m_InsertUpRowToolStripMenuItem.Name = "m_InsertUpRowToolStripMenuItem";
-			this.m_InsertUpRowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_InsertUpRowToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.m_InsertUpRowToolStripMenuItem.Text = "在上方插入行";
 			this.m_InsertUpRowToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnInsertRowToolStripMenuItem_MouseDown);
 			// 
 			// m_InsertDownRowToolStripMenuItem
 			// 
 			this.m_InsertDownRowToolStripMenuItem.Name = "m_InsertDownRowToolStripMenuItem";
-			this.m_InsertDownRowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_InsertDownRowToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.m_InsertDownRowToolStripMenuItem.Text = "在下方插入行";
 			this.m_InsertDownRowToolStripMenuItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnInsertRowToolStripMenuItem_MouseDown);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(145, 6);
 			// 
 			// m_FrozenToolStripMenuItem
 			// 
 			this.m_FrozenToolStripMenuItem.Name = "m_FrozenToolStripMenuItem";
-			this.m_FrozenToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_FrozenToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.m_FrozenToolStripMenuItem.Text = "冻结";
 			this.m_FrozenToolStripMenuItem.Click += new System.EventHandler(this.OnFrozenToolStripMenuItem_Click);
 			// 
 			// m_UnFrozenToolStripMenuItem
 			// 
 			this.m_UnFrozenToolStripMenuItem.Name = "m_UnFrozenToolStripMenuItem";
-			this.m_UnFrozenToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_UnFrozenToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.m_UnFrozenToolStripMenuItem.Text = "解除冻结";
 			this.m_UnFrozenToolStripMenuItem.Click += new System.EventHandler(this.OnFrozenToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(145, 6);
 			// 
 			// m_AddColWidthToolStripMenuItem
 			// 
 			this.m_AddColWidthToolStripMenuItem.Name = "m_AddColWidthToolStripMenuItem";
-			this.m_AddColWidthToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_AddColWidthToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.m_AddColWidthToolStripMenuItem.Text = "增加列宽";
 			this.m_AddColWidthToolStripMenuItem.Click += new System.EventHandler(this.OnAddCellSizeToolStripMenuItem_Click);
 			// 
 			// m_AddRowHeightToolStripMenuItem
 			// 
 			this.m_AddRowHeightToolStripMenuItem.Name = "m_AddRowHeightToolStripMenuItem";
-			this.m_AddRowHeightToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_AddRowHeightToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.m_AddRowHeightToolStripMenuItem.Text = "增加行高";
 			this.m_AddRowHeightToolStripMenuItem.Click += new System.EventHandler(this.OnAddCellSizeToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(145, 6);
 			// 
 			// m_EditNoteToolStripMenuItem
 			// 
 			this.m_EditNoteToolStripMenuItem.Name = "m_EditNoteToolStripMenuItem";
-			this.m_EditNoteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_EditNoteToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.m_EditNoteToolStripMenuItem.Text = "批注";
+			this.m_EditNoteToolStripMenuItem.Visible = false;
 			this.m_EditNoteToolStripMenuItem.Click += new System.EventHandler(this.OnEditNoteToolStripMenuItem_Click);
 			// 
 			// m_DataGridView
 			// 
 			this.m_DataGridView.AllowUserToAddRows = false;
 			this.m_DataGridView.AllowUserToDeleteRows = false;
-			this.m_DataGridView.AllowUserToOrderColumns = true;
+			this.m_DataGridView.AllowUserToResizeRows = false;
 			this.m_DataGridView.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
 			this.m_DataGridView.ContextMenuStrip = this.m_GridContextMenuStrip;
 			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -144,7 +145,7 @@
 			this.m_DataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
 			this.m_DataGridView.Location = new System.Drawing.Point(0, 0);
 			this.m_DataGridView.Name = "m_DataGridView";
-			this.m_DataGridView.Size = new System.Drawing.Size(944, 601);
+			this.m_DataGridView.Size = new System.Drawing.Size(876, 384);
 			this.m_DataGridView.TabIndex = 0;
 			this.m_DataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.OnDataGridView_CellMouseDown);
 			this.m_DataGridView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.OnDataGridView_CellPainting);
@@ -153,12 +154,13 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(944, 601);
+			this.ClientSize = new System.Drawing.Size(876, 384);
 			this.Controls.Add(this.m_DataGridView);
 			this.DoubleBuffered = true;
 			this.Name = "CsvForm";
 			this.Text = "CsvForm";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnForm_FormClosing);
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnForm_FormClosed);
 			this.Load += new System.EventHandler(this.OnCsvForm_Load);
 			this.m_GridContextMenuStrip.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.m_DataGridView)).EndInit();
