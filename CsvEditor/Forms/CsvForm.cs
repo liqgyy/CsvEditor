@@ -24,8 +24,6 @@ public partial class CsvForm : Form
 
 	private CsvLayout m_Setting;
 
-	private bool m_NeedDiff = false;
-
     /// <summary>
     /// 源文件 文件名 如: a.csv
     /// </summary>
@@ -67,7 +65,6 @@ public partial class CsvForm : Form
         if (SaveFile(SourcePath))
         {
             DataChanged = false;
-			m_NeedDiff = true;
 		}
         UpdateFormText();
     }
@@ -345,7 +342,7 @@ public partial class CsvForm : Form
             MainForm.Instance.UpdateAllTabControlTabPageText();
         }
     }
-  
+
     #region UIEvent
     /// <summary>
     /// 窗口加载时读取csv文件
@@ -637,7 +634,7 @@ public partial class CsvForm : Form
 
 	private void OnForm_FormClosed(object sender, FormClosedEventArgs e)
 	{
-		if (m_NeedDiff)
+		if (!FileUtility.FilesAreEqual_Hash(SourcePath, m_SourceCopyPath))
 		{
 			BeyondCompare.Instance.Compare(SourcePath, m_SourceCopyPath, "源文件", "副本");
 			CodeCompare.Instance.Compare(SourcePath, m_SourceCopyPath, "源文件", "副本");
