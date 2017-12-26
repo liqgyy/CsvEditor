@@ -62,7 +62,7 @@ public class CsvLayoutManager
 		}
 		try
 		{
-			ms_SavePath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase + GlobalData.CSVLAYOUT_SAVE_FOLDER + "\\";
+			ms_SavePath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase + GlobalData.CSVLAYOUT_SAVE_DIRECTORY + "\\";
 			if (!Directory.Exists(ms_SavePath))
 			{
 				Directory.CreateDirectory(ms_SavePath);

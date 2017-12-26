@@ -14,11 +14,8 @@
 
     public const string SETTING_FILE_NAME = "Setting.bin";
 
-	public const string CSVLAYOUT_SAVE_FOLDER = "CsvLayout";
+	public const string CSVLAYOUT_SAVE_DIRECTORY = "CsvLayout\\Cache";
     #endregion // End Setting
-
-    public const string SKIN_FOLDER_NAME = "Skins";
-    public const string SKIN_DEFAULT_SSK = "office2007";
 
 	public const int CSV_NOTE_POLYGON_SIZE = 6;
 }

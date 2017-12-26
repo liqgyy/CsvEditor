@@ -244,7 +244,7 @@ public partial class SettingForm : Form
 				Setting.Instance.CodeCompareAutoExePath = Form.m_CodeCompareAutoExePathCheckBox.Checked;
 				Form.m_CodeCompareChooseExePathTextBox.Enabled = !Setting.Instance.CodeCompareAutoExePath;
 				Form.m_CodeCompareChooseExePathButton.Enabled = !Setting.Instance.CodeCompareAutoExePath;
-				BeyondCompare.Instance.AutoExePathToSetting();
+				CodeCompare.Instance.AutoExePathToSetting();
 				Form.m_CodeCompareChooseExePathTextBox.Text = Setting.Instance.CodeCompareExePath;
 			}
 		}
