@@ -145,6 +145,19 @@ public partial class MainForm : Form
 	#endregion // End Update ToolStripMenu
 
 	#region UIEvent
+	public void OnCsvForm_FormClosed(CsvForm csvForm)
+	{
+		m_OpenedCsvFormList.Remove(csvForm);
+		for (int tabIdx = 0; tabIdx < m_MainTabControl.TabCount; tabIdx++)
+		{
+			if (csvForm == (CsvForm)m_MainTabControl.TabPages[tabIdx].Controls[0])
+			{
+				m_MainTabControl.TabPages.RemoveAt(tabIdx);
+				break;
+			}
+		}
+	}
+
 	/// <summary>
 	/// 窗口加载时检查cmd传入的参数
 	/// </summary>
@@ -166,6 +179,11 @@ public partial class MainForm : Form
 	private void OnForm_FormClosing(object sender, FormClosingEventArgs e)
 	{
 		// TODO
+		if (m_MainTabControl.TabCount > 0)
+		{
+			e.Cancel = true;
+			MessageBox.Show("有Csv文件未关闭", "提示", MessageBoxButtons.OK);
+		}
 		//for(int formIdx = 0; formIdx < m_OpenedCsvFormList.Count; formIdx++)
 		//{
 		//	CsvForm csvForm = m_OpenedCsvFormList[formIdx];
@@ -179,20 +197,7 @@ public partial class MainForm : Form
 		//	}
 		//}
 	}
-
-	public void OnCsvForm_FormClosed(CsvForm csvForm)
-	{
-		m_OpenedCsvFormList.Remove(csvForm);
-		for (int tabIdx = 0; tabIdx < m_MainTabControl.TabCount; tabIdx++)
-		{
-			if ( csvForm == (CsvForm)m_MainTabControl.TabPages[tabIdx].Controls[0])
-			{
-				m_MainTabControl.TabPages.RemoveAt(tabIdx);
-				break;
-			}
-		}
-	}
-
+	
 	/// <summary>
 	/// 鼠标中键点击Tab时关闭Csv窗口
 	/// </summary>
