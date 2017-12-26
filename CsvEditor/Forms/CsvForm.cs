@@ -54,6 +54,9 @@ public partial class CsvForm : Form
 
     public void AfterChangeCellValue()
     {
+		DataChanged = true;
+		UpdateFormText();
+
         CopyDataTable = MainDataTable.Copy();
         m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
     }
