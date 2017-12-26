@@ -150,6 +150,7 @@
 			this.m_DataGridView.TabIndex = 0;
 			this.m_DataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.OnDataGridView_CellMouseDown);
 			this.m_DataGridView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.OnDataGridView_CellPainting);
+			this.m_DataGridView.SelectionChanged += new System.EventHandler(this.OnDataGridView_SelectionChanged);
 			// 
 			// CsvForm
 			// 

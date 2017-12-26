@@ -19,6 +19,8 @@ public partial class MainForm : Form
     /// </summary>
     public CsvForm SelCsvForm { get; private set; }
 
+	public TextBox CellEditTextBox { get { return m_CellEditTextBox; } }
+
     private GotoForm m_GotoForm;
     private SearchForm m_SearchForm;
 
@@ -33,13 +35,16 @@ public partial class MainForm : Form
 
 		BeyondCompare.Instance.AutoExePathToSetting();
 		CodeCompare.Instance.AutoExePathToSetting();
-    }
+
+		m_CellEditPanel.Dock = DockStyle.Fill;
+		m_CellEditTipPanel.Dock = DockStyle.Fill;
+	}
 
 	/// <summary>
 	/// 当前选中的csv是否存在且完成初始化
 	/// </summary>
 	/// <returns></returns>
-    public bool SelCsvFormInitialized()
+	public bool SelCsvFormInitialized()
     {
         if (SelCsvForm == null || SelCsvForm.IsDisposed)
         {
@@ -63,6 +68,38 @@ public partial class MainForm : Form
 			Text = "CsvEditor";
 		}
     }
+
+	public void UpdateCellEdit()
+	{
+		m_CellEditPanel.Visible = false;
+		m_CellEditTipPanel.Visible = false;
+		m_CellEditTextBox.TextChanged -= OnCellEditTextBox_TextChanged;
+
+		if (SelCsvFormInitialized())
+		{
+			if(SelCsvForm.MainDataGridView.SelectedCells.Count == 0)
+			{
+				m_CellEditTipPanel.Visible = true;
+				m_CellEditTipLabel.Text = "当前未选中单元格";
+			}
+			else if (SelCsvForm.MainDataGridView.SelectedCells.Count == 1)
+			{
+				m_CellEditPanel.Visible = true;
+				m_CellEditTextBox.Text = (string)SelCsvForm.MainDataGridView.SelectedCells[0].Value;
+				m_CellEditTextBox.TextChanged += OnCellEditTextBox_TextChanged;
+			}
+			else if (SelCsvForm.MainDataGridView.SelectedCells.Count > 1)
+			{
+				m_CellEditTipPanel.Visible = true;
+				m_CellEditTipLabel.Text = "不支持编辑多个单元格";
+			}
+		}
+		else
+		{
+			m_CellEditTipPanel.Visible = true;
+			m_CellEditTipLabel.Text = "";
+		}
+	}
 
 	private void OpenFile()
 	{
@@ -185,8 +222,9 @@ public partial class MainForm : Form
 	private void OnMainForm_Load(object sender, EventArgs e)
     {
         SetSelCsvForm(null);
+		UpdateCellEdit();
 
-        string[] commands = Environment.GetCommandLineArgs();
+		string[] commands = Environment.GetCommandLineArgs();
         // 关联csv文件
         if (commands != null && commands.Length > 1)
         {
@@ -361,6 +399,11 @@ public partial class MainForm : Form
         SettingForm settingForm = new SettingForm();
         settingForm.ShowDialog();
     }
+
+	private void OnCellEditTextBox_TextChanged(object sender, EventArgs e)
+	{
+		SelCsvForm.MainDataGridView.SelectedCells[0].Value = m_CellEditTextBox.Text;
+	}
 	#endregion // END UIEvent
 
 	/// <summary>

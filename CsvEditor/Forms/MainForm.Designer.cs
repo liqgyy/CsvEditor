@@ -29,6 +29,8 @@ partial class MainForm
     private void InitializeComponent()
     {
 			this.m_SplitContainer = new System.Windows.Forms.SplitContainer();
+			this.m_CellEditTipPanel = new System.Windows.Forms.Panel();
+			this.m_CellEditTipLabel = new System.Windows.Forms.Label();
 			this.m_MenuStrip = new System.Windows.Forms.MenuStrip();
 			this.m_FileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_OpenFIleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,9 +51,14 @@ partial class MainForm
 			this.m_SettingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_OpenCsvFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.m_SaveCsvFileDialog = new System.Windows.Forms.SaveFileDialog();
+			this.m_CellEditPanel = new System.Windows.Forms.Panel();
+			this.m_CellEditTextBox = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.m_SplitContainer)).BeginInit();
+			this.m_SplitContainer.Panel2.SuspendLayout();
 			this.m_SplitContainer.SuspendLayout();
+			this.m_CellEditTipPanel.SuspendLayout();
 			this.m_MenuStrip.SuspendLayout();
+			this.m_CellEditPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// m_SplitContainer
@@ -61,9 +68,31 @@ partial class MainForm
 			this.m_SplitContainer.Location = new System.Drawing.Point(0, 25);
 			this.m_SplitContainer.Name = "m_SplitContainer";
 			this.m_SplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
-			this.m_SplitContainer.Size = new System.Drawing.Size(767, 395);
-			this.m_SplitContainer.SplitterDistance = 300;
+			// 
+			// m_SplitContainer.Panel2
+			// 
+			this.m_SplitContainer.Panel2.Controls.Add(this.m_CellEditPanel);
+			this.m_SplitContainer.Panel2.Controls.Add(this.m_CellEditTipPanel);
+			this.m_SplitContainer.Size = new System.Drawing.Size(794, 454);
+			this.m_SplitContainer.SplitterDistance = 359;
 			this.m_SplitContainer.TabIndex = 2;
+			// 
+			// m_CellEditTipPanel
+			// 
+			this.m_CellEditTipPanel.Controls.Add(this.m_CellEditTipLabel);
+			this.m_CellEditTipPanel.Location = new System.Drawing.Point(761, 58);
+			this.m_CellEditTipPanel.Name = "m_CellEditTipPanel";
+			this.m_CellEditTipPanel.Size = new System.Drawing.Size(100, 100);
+			this.m_CellEditTipPanel.TabIndex = 0;
+			// 
+			// m_CellEditTipLabel
+			// 
+			this.m_CellEditTipLabel.AutoSize = true;
+			this.m_CellEditTipLabel.Location = new System.Drawing.Point(12, 14);
+			this.m_CellEditTipLabel.Name = "m_CellEditTipLabel";
+			this.m_CellEditTipLabel.Size = new System.Drawing.Size(23, 12);
+			this.m_CellEditTipLabel.TabIndex = 0;
+			this.m_CellEditTipLabel.Text = "Tip";
 			// 
 			// m_MenuStrip
 			// 
@@ -73,7 +102,7 @@ partial class MainForm
             this.m_EditToolStripMenuItem});
 			this.m_MenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.m_MenuStrip.Name = "m_MenuStrip";
-			this.m_MenuStrip.Size = new System.Drawing.Size(767, 25);
+			this.m_MenuStrip.Size = new System.Drawing.Size(794, 25);
 			this.m_MenuStrip.TabIndex = 1;
 			this.m_MenuStrip.Text = "EenuStrip";
 			// 
@@ -230,11 +259,27 @@ partial class MainForm
 			this.m_SaveCsvFileDialog.FileName = "NewCsvFile";
 			this.m_SaveCsvFileDialog.Filter = "*.csv|*.csv";
 			// 
+			// m_CellEditPanel
+			// 
+			this.m_CellEditPanel.Controls.Add(this.m_CellEditTextBox);
+			this.m_CellEditPanel.Location = new System.Drawing.Point(152, 24);
+			this.m_CellEditPanel.Name = "m_CellEditPanel";
+			this.m_CellEditPanel.Size = new System.Drawing.Size(200, 100);
+			this.m_CellEditPanel.TabIndex = 1;
+			// 
+			// m_CellEditTextBox
+			// 
+			this.m_CellEditTextBox.Location = new System.Drawing.Point(12, 14);
+			this.m_CellEditTextBox.Multiline = true;
+			this.m_CellEditTextBox.Name = "m_CellEditTextBox";
+			this.m_CellEditTextBox.Size = new System.Drawing.Size(770, 65);
+			this.m_CellEditTextBox.TabIndex = 0;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(767, 420);
+			this.ClientSize = new System.Drawing.Size(794, 479);
 			this.Controls.Add(this.m_SplitContainer);
 			this.Controls.Add(this.m_MenuStrip);
 			this.MainMenuStrip = this.m_MenuStrip;
@@ -242,10 +287,15 @@ partial class MainForm
 			this.Text = "Csv编辑器";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnForm_FormClosing);
 			this.Load += new System.EventHandler(this.OnMainForm_Load);
+			this.m_SplitContainer.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.m_SplitContainer)).EndInit();
 			this.m_SplitContainer.ResumeLayout(false);
+			this.m_CellEditTipPanel.ResumeLayout(false);
+			this.m_CellEditTipPanel.PerformLayout();
 			this.m_MenuStrip.ResumeLayout(false);
 			this.m_MenuStrip.PerformLayout();
+			this.m_CellEditPanel.ResumeLayout(false);
+			this.m_CellEditPanel.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -273,4 +323,8 @@ partial class MainForm
     private System.Windows.Forms.ToolStripMenuItem m_RedoEditToolStripMenuItem;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 	private System.Windows.Forms.SplitContainer m_SplitContainer;
+	private System.Windows.Forms.Panel m_CellEditTipPanel;
+	private System.Windows.Forms.Label m_CellEditTipLabel;
+	private System.Windows.Forms.Panel m_CellEditPanel;
+	private System.Windows.Forms.TextBox m_CellEditTextBox;
 }

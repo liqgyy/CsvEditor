@@ -192,6 +192,7 @@ public partial class CsvForm : Form
 
             UpdateGridHeader();
 			LoadCsvSetting();
+			MainForm.Instance.UpdateCellEdit();
 
 			m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
             EditManager.DoSomething += OnRedoUndo_DoSomethingChange;
@@ -657,6 +658,11 @@ public partial class CsvForm : Form
 	private void OnEditNoteToolStripMenuItem_Click(object sender, EventArgs e)
 	{
 
+	}
+
+	private void OnDataGridView_SelectionChanged(object sender, EventArgs e)
+	{
+		MainForm.Instance.UpdateCellEdit();
 	}
 	#endregion UIEvent	
 }
