@@ -35,7 +35,13 @@ public class Debug
 	/// <param name="ex">异常</param>
     public static DialogResult ShowExceptionMessageBox(string text, Exception ex, MessageBoxButtons buttons, MessageBoxIcon icon)
     {
-        Console.WriteLine(ex.ToString());
-        return MessageBox.Show(text + "\n" + ex.ToString(), "Exception!", buttons, icon);
+		string caption = "";
+#if DEBUG
+		caption = string.Format("{0}\n\n{1}", text , ex.ToString());
+		Console.WriteLine(caption);
+#else
+		caption = string.Format("{0}\n\n{1}", text , ex.Message);
+#endif
+		return MessageBox.Show(caption, "Exception!", buttons, icon);
     }
 }
