@@ -19,8 +19,8 @@ public class CsvEditManager
         m_RedoStack = new Stack<IUndoRedo>();
     }
 
-    #region Copy\Cut\Paste
-    public void Copy()
+	#region Copy\Cut\Paste
+	public void Copy()
     {
         if (!CanCopy())
         {
@@ -48,6 +48,7 @@ public class CsvEditManager
 
 		m_CsvForm.BeforeChangeCellValue();
 
+		// Cell内的文本
 		if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
 		{
 			TextBox textBox = m_CsvForm.MainDataGridView.EditingControl as TextBox;
@@ -74,6 +75,7 @@ public class CsvEditManager
 				m_CsvForm.AfterChangeCellValue();
 			}
 		}
+		// 多个Cell
 		else
 		{
 			List<CellValueChangeItem> changeList = new List<CellValueChangeItem>();
@@ -103,7 +105,6 @@ public class CsvEditManager
             return;
         }
 		
-
 		string clipboardStr = null;
 		// 获取剪切板的数据
 		try
@@ -123,42 +124,53 @@ public class CsvEditManager
 
 		DataGridView dataGridView = m_CsvForm.MainDataGridView;
 
-		// 粘贴剪切板的数据到DataGridViewCell
+		// 粘贴到Cell
 		if (dataGridView.IsCurrentCellInEditMode)
 		{
-			m_CsvForm.BeforeChangeCellValue();
-			TextBox textBox = dataGridView.EditingControl as TextBox;
-			CellValueChangeItem change = new CellValueChangeItem();
-			try
-			{
-				change.OldValue = textBox.Text;
-				change.Row = dataGridView.CurrentCell.RowIndex;
-				change.Column = dataGridView.CurrentCell.ColumnIndex;
-
-				int selectionStart = textBox.SelectionStart;
-				string newValue = textBox.Text;
-				newValue = newValue.Remove(selectionStart, textBox.SelectionLength);
-				newValue = newValue.Insert(selectionStart, clipboardStr);
-				// 在这之后不会抛出异常
-				textBox.Text = newValue;
-				textBox.SelectionStart = selectionStart;
-
-				change.NewValue = newValue;
-				DidCellValueChange(change);
-			}
-			catch (Exception ex)
-			{
-				textBox.Text = change.OldValue;
-				Debug.ShowExceptionMessageBox("粘贴剪切板的数据到DataGridViewCell失败", ex);
-			}
-			finally
-			{
-				m_CsvForm.AfterChangeCellValue();
-			}
-			return;
+			PasteCell(dataGridView, clipboardStr);
 		}
+		else
+		{
+			PasetCells(dataGridView, clipboardStr);
+		}
+	}
 
-		// 粘贴剪切板的数据到DataGridView
+	private void PasteCell(DataGridView dataGridView, string clipboardStr)
+	{
+		m_CsvForm.BeforeChangeCellValue();
+		TextBox textBox = dataGridView.EditingControl as TextBox;
+		CellValueChangeItem change = new CellValueChangeItem();
+		try
+		{
+			change.OldValue = textBox.Text;
+			change.Row = dataGridView.CurrentCell.RowIndex;
+			change.Column = dataGridView.CurrentCell.ColumnIndex;
+
+			int selectionStart = textBox.SelectionStart;
+			string newValue = textBox.Text;
+			newValue = newValue.Remove(selectionStart, textBox.SelectionLength);
+			newValue = newValue.Insert(selectionStart, clipboardStr);
+			// 在这之后不会抛出异常
+			textBox.Text = newValue;
+			textBox.SelectionStart = selectionStart + clipboardStr.Length;
+
+			change.NewValue = newValue;
+			DidCellValueChange(change);
+		}
+		catch (Exception ex)
+		{
+			textBox.Text = change.OldValue;
+			Debug.ShowExceptionMessageBox("粘贴到Cell失败", ex);
+		}
+		finally
+		{
+			m_CsvForm.AfterChangeCellValue();
+		}
+	}
+
+	private void PasetCells(DataGridView dataGridView, string clipboardStr)
+	{
+		// 粘贴到DataGridView
 		// 引用下面两个链接
 		// https://stackoverflow.com/questions/22833327/pasting-excel-data-into-a-blank-datagridview-index-out-of-range-exception
 		// https://stackoverflow.com/questions/1679778/is-it-possible-to-paste-excel-csv-data-from-clipboard-to-datagridview-in-c
@@ -178,7 +190,7 @@ public class CsvEditManager
 				// 行超过表格限制，默认不添加新行
 				if (currentRow >= dataGridView.RowCount)
 				{
-					break;
+					throw (new ArgumentOutOfRangeException("currentRow", "粘贴的行超出范围"));
 				}
 				// 忽略空行
 				if (string.IsNullOrEmpty(line))
@@ -191,7 +203,7 @@ public class CsvEditManager
 					// 列超过表格限制，默认不添加新列
 					if (currentCol + cellIdx >= dataGridView.ColumnCount)
 					{
-						break;
+						throw (new ArgumentOutOfRangeException("currentCol", "粘贴的列超出范围"));
 					}
 					currentCell = dataGridView.Rows[currentRow].Cells[currentCol + cellIdx];
 					// 当前的设计需求不会出现ReadOnly = true的情况
@@ -220,10 +232,22 @@ public class CsvEditManager
 				currentRow++;
 			}
 		}
+		catch (ArgumentOutOfRangeException ex)
+		{
+			MessageBox.Show(ex.Message, "提示", MessageBoxButtons.OK);
+			if (changeList.Count > 0)
+			{
+				DoCellsValueChangeEvent doCellsValueChangeEvent = new DoCellsValueChangeEvent
+				{
+					ChangeList = changeList
+				};
+				doCellsValueChangeEvent.Undo(dataGridView, null);
+			}
+			changeList = null;
+		}
 		catch (Exception ex)
 		{
-			Debug.ShowExceptionMessageBox("粘贴剪切板的数据到DataGridView失败", ex);
-			return;
+			Debug.ShowExceptionMessageBox("粘贴到DataGridView失败", ex);
 		}
 		finally
 		{
