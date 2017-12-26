@@ -165,6 +165,7 @@
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnForm_FormClosing);
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnForm_FormClosed);
 			this.Load += new System.EventHandler(this.OnCsvForm_Load);
+			this.Shown += new System.EventHandler(this.OnForm_Shown);
 			this.m_GridContextMenuStrip.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.m_DataGridView)).EndInit();
 			this.ResumeLayout(false);

@@ -340,6 +340,14 @@ public partial class CsvForm : Form
         Initialized = LoadFileToDataTable(SourcePath);
 	}
 
+	private void OnForm_Shown(object sender, EventArgs e)
+	{
+		if (!Initialized)
+		{
+			Close();
+		}
+	}
+
 	/// <summary>
 	/// RedoUndo触发  
 	/// 因为(Re\Un)Do时要取消DataGridView的监听, 所以在这里进行 数据改变 & 更新标题
@@ -625,7 +633,7 @@ public partial class CsvForm : Form
 
 	private void OnForm_FormClosing(object sender, FormClosingEventArgs e)
 	{
-		if (DataChanged)
+		if (Initialized && DataChanged)
 		{
 			DialogResult dialogResult = MessageBox.Show(string.Format("是否保存对\"{0}\"的更改?", m_SourceFile), "提示", MessageBoxButtons.YesNoCancel);
 			switch (dialogResult)
@@ -644,12 +652,16 @@ public partial class CsvForm : Form
 
 	private void OnForm_FormClosed(object sender, FormClosedEventArgs e)
 	{
-		if (!FileUtility.FilesAreEqual_Hash(SourcePath, m_SourceCopyPath))
+		if (Initialized)
 		{
-			BeyondCompare.Instance.Compare(SourcePath, m_SourceCopyPath, "源文件", "副本");
-			CodeCompare.Instance.Compare(SourcePath, m_SourceCopyPath, "源文件", "副本");
+			if (!FileUtility.FilesAreEqual_Hash(SourcePath, m_SourceCopyPath))
+			{
+				BeyondCompare.Instance.Compare(SourcePath, m_SourceCopyPath, "源文件", "副本");
+				CodeCompare.Instance.Compare(SourcePath, m_SourceCopyPath, "源文件", "副本");
+			}
+			SaveLayout();
 		}
-		SaveLayout();
+
 		Dispose();
 		MainForm.Instance.OnCsvForm_FormClosed();
 	}
