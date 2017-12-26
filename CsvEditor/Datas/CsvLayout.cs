@@ -3,7 +3,7 @@
 [Serializable]
 public class CsvLayout
 {
-	public string Path;
+	public string Key;
 	public int[] ColumnWidths;
 
 	/// <summary>
@@ -15,8 +15,8 @@ public class CsvLayout
 	/// </summary>
 	public int FrozenRow = -1;
 
-	public CsvLayout(string path)
+	public CsvLayout(string key)
 	{
-		Path = path;
+		Key = key;
 	}
 }

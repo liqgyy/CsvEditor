@@ -1,77 +1,107 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
+/// <summary>
+/// TODO 优化内存
+/// 不要每次Load都读取整个文件
+/// </summary>
 public class CsvLayoutManager
 {
-	/// <summary>
-	/// csv文件保存的目录 结尾是\
-	/// </summary>
-	private static string ms_SavePath;
-
-	public static CsvLayout Load(string path)
+	private static CsvLayoutManager ms_Instance;
+	public static CsvLayoutManager Instance
 	{
-		LoadOrCreateSavePath();
-
-		string layoutPath = ms_SavePath + GetLayoutFileName(path);
-		// 保存路径加载失败或文件不存在
-		if (string.IsNullOrEmpty(ms_SavePath) || !File.Exists(layoutPath))
+		get
 		{
-			return new CsvLayout(path);
-		}
-
-		try
-		{
-			return (CsvLayout)SerializeUtility.ReadFile(layoutPath);
-		}
-		catch (Exception ex)
-		{
-			Debug.ShowExceptionMessageBox("加载CsvLayout失败\n" + layoutPath, ex);
-			return new CsvLayout(path);
-		}
-	}
-
-	public static void Save(CsvLayout layout)
-	{
-		// 保存路径加载失败
-		if (string.IsNullOrEmpty(ms_SavePath))
-		{
-			return;
-		}
-
-		string layoutPath = ms_SavePath + GetLayoutFileName(layout.Path);
-		try
-		{
-			SerializeUtility.WriteFile(layoutPath, layout);
-		}
-		catch (Exception ex)
-		{
-			Debug.ShowExceptionMessageBox("保存CsvLayout失败\n" + layoutPath, ex);
-		}
-	}
-
-	private static string GetLayoutFileName(string path)
-	{
-		return ConvertUtility.StringToMD5(path) + ".bin";
-	}
-
-	private static void LoadOrCreateSavePath()
-	{
-		if (ms_SavePath != null)
-		{
-			return;
-		}
-		try
-		{
-			ms_SavePath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase + GlobalData.CSVLAYOUT_SAVE_DIRECTORY + "\\";
-			if (!Directory.Exists(ms_SavePath))
+			if (ms_Instance == null)
 			{
-				Directory.CreateDirectory(ms_SavePath);
+				ms_Instance = new CsvLayoutManager();
+			}
+			return ms_Instance;
+		}
+	}
+
+	private string m_SavePath;
+	private string m_SpecificSavePath;
+
+	private List<CsvLayout> m_LayoutList;
+	private List<CsvLayout> m_SpecificLayoutList;
+
+	public CsvLayout Load(string key)
+	{
+		return Load(m_LayoutList , key);
+	}
+
+	public void Save()
+	{
+		Save(m_SavePath, m_LayoutList);
+	}
+
+	public CsvLayout LoadSpecific(string key)
+	{
+		return Load(m_SpecificLayoutList, key);
+	}
+
+	public void SaveSpecific()
+	{
+		Save(m_SpecificSavePath, m_SpecificLayoutList);
+	}
+
+	private CsvLayoutManager()
+	{
+		m_SavePath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase + GlobalData.CSVLAYOUT_FILE_NAME;
+		m_SpecificSavePath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase + GlobalData.SPECIFIC_CSVLAYOUT_FILE_NAME;
+
+		m_LayoutList = LoadLayoutList(m_SavePath);
+		m_SpecificLayoutList = LoadLayoutList(m_SpecificSavePath);
+	}
+
+	private List<CsvLayout> LoadLayoutList(string path)
+	{
+		if (string.IsNullOrEmpty(path) || !File.Exists(path))
+		{
+			return new List<CsvLayout>();
+		}
+
+		try
+		{
+			return (List<CsvLayout>)SerializeUtility.ReadFile(path);
+		}
+		catch (Exception ex)
+		{
+			Debug.ShowExceptionMessageBox("加载CsvLayout失败\n" + path, ex);
+			return new List<CsvLayout>();
+		}
+	}
+
+	private CsvLayout Load(List<CsvLayout> list, string key)
+	{
+		for (int layoutIdx = 0; layoutIdx < list.Count; layoutIdx++)
+		{
+			if (list[layoutIdx].Key == key)
+			{
+				return list[layoutIdx];
 			}
 		}
+
+		CsvLayout newCsvLayout = new CsvLayout(key);
+		list.Add(newCsvLayout);
+		return newCsvLayout;
+	}
+
+	/// <summary>
+	/// TODO 不要每次都保存到文件, 只在进程关闭的时候保存
+	/// 现在考虑到多个进程之间可能会冲突,暂时这样处理
+	/// </summary>
+	private void Save(string path, List<CsvLayout> list)
+	{
+		try
+		{
+			SerializeUtility.WriteFile(path, list);
+		}
 		catch (Exception ex)
 		{
-			Debug.ShowExceptionMessageBox("加载CsvLayout文件保存路径失败", ex);
-			ms_SavePath = "";
+			Debug.ShowExceptionMessageBox("保存CsvLayout失败\n" + path, ex);
 		}
 	}
 }

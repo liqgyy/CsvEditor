@@ -22,7 +22,7 @@ public partial class CsvForm : Form
     public DataTable MainDataTable;
     public DataTable CopyDataTable;
 
-	private CsvLayout m_Setting;
+	private CsvLayout m_Layout;
 
     /// <summary>
     /// 源文件 文件名 如: a.csv
@@ -39,7 +39,6 @@ public partial class CsvForm : Form
 		InitializeComponent();
 
         SourcePath = path;
-		m_Setting = CsvLayoutManager.Load(SourcePath);
 
 		EditManager = new CsvEditManager(this);
 	}	
@@ -71,7 +70,7 @@ public partial class CsvForm : Form
 
     public bool SaveFile(string path)
     {
-		SaveCsvSetting();
+		SaveLayout();
 
 		// 保存文件
 		CsvExport myExport = new CsvExport(",", false);
@@ -191,7 +190,7 @@ public partial class CsvForm : Form
             MainDataTable.AcceptChanges();
 
             UpdateGridHeader();
-			LoadCsvSetting();
+			LoadLayout();
 			MainForm.Instance.UpdateCellEdit();
 
 			m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
@@ -205,19 +204,18 @@ public partial class CsvForm : Form
         return true;
     }
 
-	#region CsvSetting
-	/// <summary>
-	/// 保存CsvSetting
-	/// </summary>
-	private void SaveCsvSetting()
+	#region Layout
+	private void SaveLayout()
 	{
 		SaveCellSize();
 		SaveFrozen();
-		CsvLayoutManager.Save(m_Setting);
+		CsvLayoutManager.Instance.Save();
 	}
 
-	private void LoadCsvSetting()
+	private void LoadLayout()
 	{
+		m_Layout = CsvLayoutManager.Instance.Load(SourcePath);
+
 		LoadCellSize();
 		LoadFrozen();
 	}
@@ -225,89 +223,64 @@ public partial class CsvForm : Form
 	private void LoadCellSize()
 	{
 		// Column
-		if (m_Setting.ColumnWidths != null)
+		if (m_Layout.ColumnWidths != null)
 		{
-			for (int colIdx = 0; colIdx < m_Setting.ColumnWidths.Length; colIdx++)
+			for (int colIdx = 0; colIdx < m_Layout.ColumnWidths.Length; colIdx++)
 			{
 				if (colIdx == m_DataGridView.Columns.Count)
 				{
 					break;
 				}
-				m_DataGridView.Columns[colIdx].Width = m_Setting.ColumnWidths[colIdx];
+				m_DataGridView.Columns[colIdx].Width = m_Layout.ColumnWidths[colIdx];
 			}			
 		}
-
-		// Row
-		//if (m_Setting.RowHeadersWidth > 0)
-		//{
-		//	m_DataGridView.RowHeadersWidth = m_Setting.RowHeadersWidth;
-		//}
-		//if (m_Setting.RowHeights != null)
-		//{
-		//	for (int rowIdx = 0; rowIdx < m_Setting.RowHeights.Length; rowIdx++)
-		//	{
-		//		if (rowIdx == m_DataGridView.Rows.Count)
-		//		{
-		//			break;
-		//		}
-		//		m_DataGridView.Rows[rowIdx].Height = m_Setting.RowHeights[rowIdx];
-		//	}
-		//}
 	}
 
 	private void SaveCellSize()
 	{
 		// Column
-		m_Setting.ColumnWidths = new int[m_DataGridView.Columns.Count];
+		m_Layout.ColumnWidths = new int[m_DataGridView.Columns.Count];
 		for (int colIdx = 0; colIdx < m_DataGridView.Columns.Count; colIdx++)
 		{
-			m_Setting.ColumnWidths[colIdx] = m_DataGridView.Columns[colIdx].Width;
+			m_Layout.ColumnWidths[colIdx] = m_DataGridView.Columns[colIdx].Width;
 		}
-
-		// Row
-		//m_Setting.RowHeadersWidth = m_DataGridView.RowHeadersWidth;
-		//m_Setting.RowHeights = new int[m_DataGridView.Rows.Count];
-		//for (int rowIdx = 0; rowIdx < m_DataGridView.Rows.Count; rowIdx++)
-		//{
-		//	m_Setting.RowHeights[rowIdx] = m_DataGridView.Rows[rowIdx].Height;
-		//}
 	}
 	
 	private void LoadFrozen()
 	{
-		if (m_Setting.FrozenRow >= 0)
+		if (m_Layout.FrozenRow >= 0)
 		{
-			m_DataGridView.Rows[m_Setting.FrozenRow >= m_DataGridView.RowCount ? m_DataGridView.RowCount - 1 : m_Setting.FrozenRow].Frozen = true;
+			m_DataGridView.Rows[m_Layout.FrozenRow >= m_DataGridView.RowCount ? m_DataGridView.RowCount - 1 : m_Layout.FrozenRow].Frozen = true;
 		}
-		if (m_Setting.FrozenColumn >= 0)
+		if (m_Layout.FrozenColumn >= 0)
 		{
-			m_DataGridView.Columns[m_Setting.FrozenColumn >= m_DataGridView.ColumnCount ? m_DataGridView.ColumnCount - 1 : m_Setting.FrozenColumn].Frozen = true;
+			m_DataGridView.Columns[m_Layout.FrozenColumn >= m_DataGridView.ColumnCount ? m_DataGridView.ColumnCount - 1 : m_Layout.FrozenColumn].Frozen = true;
 		}
 	}
 
 	private void SaveFrozen()
 	{
-		m_Setting.FrozenRow = -1;
+		m_Layout.FrozenRow = -1;
 		for (int rowIdx = 0; rowIdx < m_DataGridView.RowCount; rowIdx++)
 		{
 			if (!m_DataGridView.Rows[rowIdx].Frozen)
 			{
 				break;
 			}
-			m_Setting.FrozenRow = rowIdx;
+			m_Layout.FrozenRow = rowIdx;
 		}
 
-		m_Setting.FrozenColumn = -1;
+		m_Layout.FrozenColumn = -1;
 		for (int colIdx = 0; colIdx < m_DataGridView.ColumnCount; colIdx++)
 		{
 			if (!m_DataGridView.Columns[colIdx].Frozen)
 			{
 				break;
 			}
-			m_Setting.FrozenColumn = colIdx;
+			m_Layout.FrozenColumn = colIdx;
 		}
-	}	
-	#endregion // End CsvSetting
+	}
+	#endregion // End Layout
 
 	/// <summary>
 	/// 更新标题
@@ -676,7 +649,7 @@ public partial class CsvForm : Form
 			BeyondCompare.Instance.Compare(SourcePath, m_SourceCopyPath, "源文件", "副本");
 			CodeCompare.Instance.Compare(SourcePath, m_SourceCopyPath, "源文件", "副本");
 		}
-		SaveCsvSetting();
+		SaveLayout();
 		Dispose();
 		MainForm.Instance.OnCsvForm_FormClosed();
 	}

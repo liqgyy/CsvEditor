@@ -36,6 +36,6 @@ public class Debug
     public static DialogResult ShowExceptionMessageBox(string text, Exception ex, MessageBoxButtons buttons, MessageBoxIcon icon)
     {
         Console.WriteLine(ex.ToString());
-        return MessageBox.Show(text + "\n" + ex.ToString(), "Throw Exception!", buttons, icon);
+        return MessageBox.Show(text + "\n" + ex.ToString(), "Exception!", buttons, icon);
     }
 }
