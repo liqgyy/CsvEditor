@@ -551,12 +551,41 @@ public partial class CsvForm : Form
 		{
 			return;
 		}
+		OnDataGridView_CellPainting_Multiline(cell, e);
+		OnDataGridView_CellPainting_Note(cell, e);
+	}
+
+	/// <summary>
+	/// 绘制单元格时, 显示批注标记
+	/// </summary>
+	private void OnDataGridView_CellPainting_Note(DataGridViewCell cell, DataGridViewCellPaintingEventArgs e)
+	{
 		if (string.IsNullOrEmpty(cell.ToolTipText))
 		{
 			return;
 		}
 
-		// 批注提示
+		using (Brush gridBrush = new SolidBrush(Color.Red))
+		{
+			Point[] polygonPoints = new Point[3];
+			polygonPoints[0] = new Point(e.CellBounds.Right - 1, e.CellBounds.Bottom - 1);
+			polygonPoints[1] = new Point(e.CellBounds.Right - 1, e.CellBounds.Bottom - 1 - GlobalData.CSV_NOTE_POLYGON_SIZE);
+			polygonPoints[2] = new Point(e.CellBounds.Right - 1 - GlobalData.CSV_NOTE_POLYGON_SIZE, e.CellBounds.Bottom - 1);
+			e.Graphics.FillPolygon(gridBrush, polygonPoints);
+			e.Handled = true;
+		}
+	}
+
+	/// <summary>
+	/// 绘制单元格时, 单元格内容为多行时添加标记
+	/// </summary>
+	private void OnDataGridView_CellPainting_Multiline(DataGridViewCell cell, DataGridViewCellPaintingEventArgs e)
+	{
+		if (!cell.Value.ToString().Contains("\n"))
+		{
+			return;
+		}
+
 		using (Brush gridBrush = new SolidBrush(Color.Red))
 		{
 			Point[] polygonPoints = new Point[3];
