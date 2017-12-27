@@ -70,6 +70,7 @@ public partial class SettingForm : Form
 			}
 		}
 		Close();
+		Dispose();
     }
 
     private void OnForm_FormClosing(object sender, FormClosingEventArgs e)
