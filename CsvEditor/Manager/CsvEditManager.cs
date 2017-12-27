@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -123,7 +124,7 @@ public class CsvEditManager
 			{
 				return;
 			}
-			clipboardStr = clipboardData.GetData(DataFormats.Text).ToString();
+			clipboardStr = clipboardData.GetText();
 		}
 		catch (Exception ex)
 		{
