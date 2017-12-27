@@ -5,9 +5,10 @@ public partial class LayoutNameForm : Form
 {
 	public Func<string, bool> OnApply;
 
-	public LayoutNameForm()
+	public LayoutNameForm(string layoutName = "New CsvLayout")
 	{
 		InitializeComponent();
+		m_LayoutTextBox.Text = layoutName;
 	}
 
 	#region UIEvent

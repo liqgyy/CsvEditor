@@ -205,14 +205,15 @@ public partial class MainForm : Form
 		m_ApplyLayoutToolStripMenuItem.Enabled = false;
 		m_ManagerLayoutToolStripMenuItem.Enabled = false;
 
+		string[] specificLayoutKeys = CsvLayoutManager.Instance.GetSpecificKeys();
+		m_ManagerLayoutToolStripMenuItem.Enabled = specificLayoutKeys.Length > 0;
+
 		if (SelCsvFormInitialized())
 		{
 			m_SaveLayoutToolStripMenuItem.Enabled = true;
-			string[] specificLayoutKeys = CsvLayoutManager.Instance.GetSpecificKeys();
 			if (specificLayoutKeys.Length > 0)
 			{
 				m_ApplyLayoutToolStripMenuItem.Enabled = true;
-				m_ManagerLayoutToolStripMenuItem.Enabled = true;
 
 				m_ApplyLayoutToolStripMenuItem.DropDownItems.Clear();
 				for(int keyIdx = 0; keyIdx < specificLayoutKeys.Length; keyIdx++)
@@ -444,12 +445,15 @@ public partial class MainForm : Form
 		{
 			LayoutNameForm layoutNameForm = new LayoutNameForm();
 			layoutNameForm.StartPosition = FormStartPosition.CenterParent;
+			layoutNameForm.Text = "保存布局";
 			layoutNameForm.OnApply = OnSaveLayout;
 			layoutNameForm.ShowDialog();
 		}
 		else if (item == m_ManagerLayoutToolStripMenuItem)
 		{
-
+			LayoutManagerForm layoutManagerForm = new LayoutManagerForm();
+			layoutManagerForm.StartPosition = FormStartPosition.CenterParent;
+			layoutManagerForm.ShowDialog();
 		}
 	}
 
@@ -481,7 +485,7 @@ public partial class MainForm : Form
 				return false;
 			}
 		}
-		MainForm.Instance.SelCsvForm.SaveLayout();
+		SelCsvForm.SaveLayout();
 		CsvLayout csvLayout = SerializeUtility.ObjectCopy(MainForm.Instance.SelCsvForm.GetLayout());
 		csvLayout.Key = layoutName;
 		CsvLayoutManager.Instance.AddSpecific(csvLayout);

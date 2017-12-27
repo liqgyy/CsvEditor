@@ -101,6 +101,29 @@ public class CsvLayoutManager
 		}
 		m_SpecificLayoutList.Add(layout);
 	}
+
+	public void SwapSpecific(int index1, int index2)
+	{
+		if (index1 < 0 || index2 < 0 || index1 > m_SpecificLayoutList.Count - 1 || index2 > m_SpecificLayoutList.Count - 1)
+		{
+			return;
+		}
+
+		CsvLayout layout1 = m_SpecificLayoutList[index1];
+		CsvLayout layout2 = m_SpecificLayoutList[index2];
+		m_SpecificLayoutList[index1] = layout2;
+		m_SpecificLayoutList[index2] = layout1;
+	}
+	
+	public void DeleteSpecific(int index)
+	{
+		if (index < 0 || index > m_SpecificLayoutList.Count - 1)
+		{
+			return;
+		}
+
+		m_SpecificLayoutList.RemoveAt(index);
+	}
 	#endregion // End Specific
 
 	private CsvLayoutManager()

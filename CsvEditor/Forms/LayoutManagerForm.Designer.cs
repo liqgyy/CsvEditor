@@ -53,6 +53,7 @@
 			this.m_SavedLayoutListBox.Name = "m_SavedLayoutListBox";
 			this.m_SavedLayoutListBox.Size = new System.Drawing.Size(291, 316);
 			this.m_SavedLayoutListBox.TabIndex = 1;
+			this.m_SavedLayoutListBox.SelectedValueChanged += new System.EventHandler(this.OnSavedLayoutListBox_SelectedValueChanged);
 			// 
 			// m_RenameButton
 			// 
@@ -62,6 +63,7 @@
 			this.m_RenameButton.TabIndex = 2;
 			this.m_RenameButton.Text = "重命名";
 			this.m_RenameButton.UseVisualStyleBackColor = true;
+			this.m_RenameButton.Click += new System.EventHandler(this.OnRenameButton_Click);
 			// 
 			// m_DeleteButton
 			// 
@@ -71,6 +73,7 @@
 			this.m_DeleteButton.TabIndex = 3;
 			this.m_DeleteButton.Text = "删除";
 			this.m_DeleteButton.UseVisualStyleBackColor = true;
+			this.m_DeleteButton.Click += new System.EventHandler(this.OnDeleteButton_Click);
 			// 
 			// m_CloseButton
 			// 
@@ -80,6 +83,7 @@
 			this.m_CloseButton.TabIndex = 4;
 			this.m_CloseButton.Text = "关闭";
 			this.m_CloseButton.UseVisualStyleBackColor = true;
+			this.m_CloseButton.Click += new System.EventHandler(this.OnCloseButton_Click);
 			// 
 			// m_UpButton
 			// 
@@ -89,6 +93,7 @@
 			this.m_UpButton.TabIndex = 5;
 			this.m_UpButton.Text = "↑";
 			this.m_UpButton.UseVisualStyleBackColor = true;
+			this.m_UpButton.Click += new System.EventHandler(this.OnRearrangeButton_Click);
 			// 
 			// m_DownButton
 			// 
@@ -98,6 +103,7 @@
 			this.m_DownButton.TabIndex = 6;
 			this.m_DownButton.Text = "↓";
 			this.m_DownButton.UseVisualStyleBackColor = true;
+			this.m_DownButton.Click += new System.EventHandler(this.OnRearrangeButton_Click);
 			// 
 			// LayoutManagerForm
 			// 
