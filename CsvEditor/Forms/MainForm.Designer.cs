@@ -29,6 +29,7 @@ partial class MainForm
     private void InitializeComponent()
     {
 			this.m_ToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.m_MergeLocalizationToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_SplitContainer = new System.Windows.Forms.SplitContainer();
 			this.m_CellEditPanel = new System.Windows.Forms.Panel();
 			this.m_CellEditTextBox = new System.Windows.Forms.TextBox();
@@ -57,7 +58,6 @@ partial class MainForm
 			this.m_SettingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_OpenCsvFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.m_SaveCsvFileDialog = new System.Windows.Forms.SaveFileDialog();
-			this.m_MergeLocalizationToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.m_SplitContainer)).BeginInit();
 			this.m_SplitContainer.Panel2.SuspendLayout();
 			this.m_SplitContainer.SuspendLayout();
@@ -74,6 +74,13 @@ partial class MainForm
 			this.m_ToolsToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
 			this.m_ToolsToolStripMenuItem.Text = "工具";
 			this.m_ToolsToolStripMenuItem.DropDownOpening += new System.EventHandler(this.OnTopToolStripMenuItem_DropDownOpening);
+			// 
+			// m_MergeLocalizationToolsToolStripMenuItem
+			// 
+			this.m_MergeLocalizationToolsToolStripMenuItem.Name = "m_MergeLocalizationToolsToolStripMenuItem";
+			this.m_MergeLocalizationToolsToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.m_MergeLocalizationToolsToolStripMenuItem.Text = "本地化合并";
+			this.m_MergeLocalizationToolsToolStripMenuItem.Click += new System.EventHandler(this.OnMergeLocalizationToolsToolStripMenuItem_Click);
 			// 
 			// m_SplitContainer
 			// 
@@ -94,17 +101,20 @@ partial class MainForm
 			// m_CellEditPanel
 			// 
 			this.m_CellEditPanel.Controls.Add(this.m_CellEditTextBox);
-			this.m_CellEditPanel.Location = new System.Drawing.Point(152, 24);
+			this.m_CellEditPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.m_CellEditPanel.Location = new System.Drawing.Point(0, 0);
 			this.m_CellEditPanel.Name = "m_CellEditPanel";
-			this.m_CellEditPanel.Size = new System.Drawing.Size(200, 100);
+			this.m_CellEditPanel.Size = new System.Drawing.Size(794, 91);
 			this.m_CellEditPanel.TabIndex = 1;
 			// 
 			// m_CellEditTextBox
 			// 
-			this.m_CellEditTextBox.Location = new System.Drawing.Point(12, 14);
+			this.m_CellEditTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.m_CellEditTextBox.Location = new System.Drawing.Point(0, 0);
+			this.m_CellEditTextBox.Margin = new System.Windows.Forms.Padding(10);
 			this.m_CellEditTextBox.Multiline = true;
 			this.m_CellEditTextBox.Name = "m_CellEditTextBox";
-			this.m_CellEditTextBox.Size = new System.Drawing.Size(770, 65);
+			this.m_CellEditTextBox.Size = new System.Drawing.Size(794, 91);
 			this.m_CellEditTextBox.TabIndex = 0;
 			// 
 			// m_CellEditTipPanel
@@ -156,27 +166,27 @@ partial class MainForm
 			// 
 			this.m_OpenFIleToolStripMenuItem.Name = "m_OpenFIleToolStripMenuItem";
 			this.m_OpenFIleToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.m_OpenFIleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_OpenFIleToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
 			this.m_OpenFIleToolStripMenuItem.Text = "打开";
 			this.m_OpenFIleToolStripMenuItem.Click += new System.EventHandler(this.OnOpenFileToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(144, 6);
 			// 
 			// m_SaveFileToolStripMenuItem
 			// 
 			this.m_SaveFileToolStripMenuItem.Name = "m_SaveFileToolStripMenuItem";
 			this.m_SaveFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.m_SaveFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_SaveFileToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
 			this.m_SaveFileToolStripMenuItem.Text = "保存";
 			this.m_SaveFileToolStripMenuItem.Click += new System.EventHandler(this.OnSaveFileToolStripMenuItem_Click);
 			// 
 			// m_SaveToFileToolStripMenuItem
 			// 
 			this.m_SaveToFileToolStripMenuItem.Name = "m_SaveToFileToolStripMenuItem";
-			this.m_SaveToFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_SaveToFileToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
 			this.m_SaveToFileToolStripMenuItem.Text = "保存为";
 			this.m_SaveToFileToolStripMenuItem.Click += new System.EventHandler(this.OnSaveFileToolStripMenuItem_Click);
 			// 
@@ -278,20 +288,20 @@ partial class MainForm
 			// m_SaveLayoutToolStripMenuItem
 			// 
 			this.m_SaveLayoutToolStripMenuItem.Name = "m_SaveLayoutToolStripMenuItem";
-			this.m_SaveLayoutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_SaveLayoutToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
 			this.m_SaveLayoutToolStripMenuItem.Text = "保存布局";
 			this.m_SaveLayoutToolStripMenuItem.Click += new System.EventHandler(this.OnLayoutToolStripMenuItem_Click);
 			// 
 			// m_ApplyLayoutToolStripMenuItem
 			// 
 			this.m_ApplyLayoutToolStripMenuItem.Name = "m_ApplyLayoutToolStripMenuItem";
-			this.m_ApplyLayoutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_ApplyLayoutToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
 			this.m_ApplyLayoutToolStripMenuItem.Text = "应用布局";
 			// 
 			// m_ManagerLayoutToolStripMenuItem
 			// 
 			this.m_ManagerLayoutToolStripMenuItem.Name = "m_ManagerLayoutToolStripMenuItem";
-			this.m_ManagerLayoutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.m_ManagerLayoutToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
 			this.m_ManagerLayoutToolStripMenuItem.Text = "管理布局";
 			this.m_ManagerLayoutToolStripMenuItem.Click += new System.EventHandler(this.OnLayoutToolStripMenuItem_Click);
 			// 
@@ -315,13 +325,6 @@ partial class MainForm
 			this.m_SaveCsvFileDialog.DefaultExt = "csv";
 			this.m_SaveCsvFileDialog.FileName = "NewCsvFile";
 			this.m_SaveCsvFileDialog.Filter = "*.csv|*.csv";
-			// 
-			// m_MergeLocalizationToolsToolStripMenuItem
-			// 
-			this.m_MergeLocalizationToolsToolStripMenuItem.Name = "m_MergeLocalizationToolsToolStripMenuItem";
-			this.m_MergeLocalizationToolsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.m_MergeLocalizationToolsToolStripMenuItem.Text = "本地化合并";
-			this.m_MergeLocalizationToolsToolStripMenuItem.Click += new System.EventHandler(this.OnMergeLocalizationToolsToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 

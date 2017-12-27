@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 public partial class MergeLocalizationForm : Form
@@ -14,4 +7,27 @@ public partial class MergeLocalizationForm : Form
 	{
 		InitializeComponent();
 	}
+
+	#region UIEvent
+	private void m_OkButton_Click(object sender, EventArgs e)
+	{
+
+	}
+
+	private void OnCancelButton_Click(object sender, EventArgs e)
+	{
+		Close();
+		Dispose();
+	}
+
+	private void OnOpenCsvFileDialogButton_Click(object sender, EventArgs e)
+	{
+
+	}
+
+	private void OnCsvPathTextBox_TextChanged(object sender, EventArgs e)
+	{
+
+	}
+	#endregion // END UIEvent
 }

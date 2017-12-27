@@ -35,11 +35,6 @@
 			csvPathLabel = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
-			// m_OpenCsvFileDialog
-			// 
-			this.m_OpenCsvFileDialog.FileName = "openFileDialog1";
-			this.m_OpenCsvFileDialog.Filter = "*.csv|*.csv";
-			// 
 			// csvPathLabel
 			// 
 			csvPathLabel.AutoSize = true;
@@ -49,12 +44,18 @@
 			csvPathLabel.TabIndex = 0;
 			csvPathLabel.Text = "Csv文件路径：";
 			// 
+			// m_OpenCsvFileDialog
+			// 
+			this.m_OpenCsvFileDialog.FileName = "openFileDialog1";
+			this.m_OpenCsvFileDialog.Filter = "*.csv|*.csv";
+			// 
 			// m_CsvPathTextBox
 			// 
 			this.m_CsvPathTextBox.Location = new System.Drawing.Point(13, 29);
 			this.m_CsvPathTextBox.Name = "m_CsvPathTextBox";
 			this.m_CsvPathTextBox.Size = new System.Drawing.Size(447, 21);
 			this.m_CsvPathTextBox.TabIndex = 1;
+			this.m_CsvPathTextBox.TextChanged += new System.EventHandler(this.OnCsvPathTextBox_TextChanged);
 			// 
 			// m_OpenCsvFileDialogButton
 			// 
@@ -64,6 +65,7 @@
 			this.m_OpenCsvFileDialogButton.TabIndex = 2;
 			this.m_OpenCsvFileDialogButton.Text = "...";
 			this.m_OpenCsvFileDialogButton.UseVisualStyleBackColor = true;
+			this.m_OpenCsvFileDialogButton.Click += new System.EventHandler(this.OnOpenCsvFileDialogButton_Click);
 			// 
 			// m_CancelButton
 			// 
@@ -73,6 +75,7 @@
 			this.m_CancelButton.TabIndex = 3;
 			this.m_CancelButton.Text = "取消";
 			this.m_CancelButton.UseVisualStyleBackColor = true;
+			this.m_CancelButton.Click += new System.EventHandler(this.OnCancelButton_Click);
 			// 
 			// m_OkButton
 			// 
@@ -82,8 +85,9 @@
 			this.m_OkButton.TabIndex = 4;
 			this.m_OkButton.Text = "确定";
 			this.m_OkButton.UseVisualStyleBackColor = true;
+			this.m_OkButton.Click += new System.EventHandler(this.m_OkButton_Click);
 			// 
-			// MergeLocalization
+			// MergeLocalizationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -95,7 +99,7 @@
 			this.Controls.Add(csvPathLabel);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "MergeLocalization";
+			this.Name = "MergeLocalizationForm";
 			this.Text = "本地化合并";
 			this.ResumeLayout(false);
 			this.PerformLayout();
