@@ -75,13 +75,16 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(273, 94);
-			this.ControlBox = false;
+			this.ClientSize = new System.Drawing.Size(273, 87);
 			this.Controls.Add(this.m_CancelButton);
 			this.Controls.Add(this.m_OkButton);
 			this.Controls.Add(this.m_LayoutTextBox);
 			this.Controls.Add(layoutLabel);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "SaveLayoutForm";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "保存布局";
 			this.ResumeLayout(false);
 			this.PerformLayout();

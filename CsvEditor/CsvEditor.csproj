@@ -75,6 +75,12 @@
     <Compile Include="Forms\GotoForm.Designer.cs">
       <DependentUpon>GotoForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\LayoutManagerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LayoutManagerForm.Designer.cs">
+      <DependentUpon>LayoutManagerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SaveLayoutForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -124,6 +130,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GotoForm.resx">
       <DependentUpon>GotoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\LayoutManagerForm.resx">
+      <DependentUpon>LayoutManagerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
