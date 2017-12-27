@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-public partial class MergeLocalization : Form
+public partial class MergeLocalizationForm : Form
 {
-	public MergeLocalization()
+	public MergeLocalizationForm()
 	{
 		InitializeComponent();
 	}

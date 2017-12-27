@@ -1,4 +1,4 @@
-﻿partial class MergeLocalization
+﻿partial class MergeLocalizationForm
 {
 	/// <summary>
 	/// Required designer variable.

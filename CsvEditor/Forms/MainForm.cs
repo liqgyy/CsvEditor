@@ -486,6 +486,16 @@ public partial class MainForm : Form
 	{
 		SelCsvForm.MainDataGridView.SelectedCells[0].Value = m_CellEditTextBox.Text;
 	}
+
+	/// <summary>
+	/// 本地化合并
+	/// </summary>
+	private void OnMergeLocalizationToolsToolStripMenuItem_Click(object sender, EventArgs e)
+	{
+		MergeLocalizationForm mergeLocalizationForm = new MergeLocalizationForm();
+		mergeLocalizationForm.StartPosition = FormStartPosition.CenterParent;
+		mergeLocalizationForm.ShowDialog();
+	}
 	#endregion // END UIEvent
 
 	private bool OnSaveLayout(string layoutName)
@@ -513,13 +523,5 @@ public partial class MainForm : Form
 		None,
 		OpenFile,
 		CloseForm
-	}
-
-	/// <summary>
-	/// 本地化合并
-	/// </summary>
-	private void OnMergeLocalizationToolsToolStripMenuItem_Click(object sender, EventArgs e)
-	{
-
-	}
+	}	
 }
