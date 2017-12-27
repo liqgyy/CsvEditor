@@ -228,6 +228,15 @@ public partial class MainForm : Form
 			}
 		}
 	}	
+	
+	private void UpdateToolsToolStripMenu()
+	{
+		m_MergeLocalizationToolsToolStripMenuItem.Enabled = false;
+		if (SelCsvFormInitialized())
+		{
+			m_MergeLocalizationToolsToolStripMenuItem.Enabled = true;
+		}
+	}
 	#endregion // End Update ToolStripMenu
 
 	#region UIEvent
@@ -274,7 +283,6 @@ public partial class MainForm : Form
 
 	/// <summary>
 	/// 顶层菜单打开时，更新菜单里的菜单项状态
-	/// TODO 优化逻辑
 	/// </summary>
 	private void OnTopToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
 	{
@@ -291,11 +299,15 @@ public partial class MainForm : Form
 		{
 			UpdateLayoutToolStripMenu();
 		}
+		else if (item == m_ToolsToolStripMenuItem)
+		{
+			UpdateToolsToolStripMenu();
+		}
 	}
 
 	/// <summary>
 	/// 顶层菜单关闭时，启用菜单里的所有菜单项
-	/// TODO 优化逻辑
+	/// 不启用不支持快捷键的菜单项
 	/// </summary>
 	private void OnTopToolStripMenuItem_DropDownClosed(object sender, EventArgs e)
 	{
@@ -501,5 +513,13 @@ public partial class MainForm : Form
 		None,
 		OpenFile,
 		CloseForm
-	}	
+	}
+
+	/// <summary>
+	/// 本地化合并
+	/// </summary>
+	private void OnMergeLocalizationToolsToolStripMenuItem_Click(object sender, EventArgs e)
+	{
+
+	}
 }

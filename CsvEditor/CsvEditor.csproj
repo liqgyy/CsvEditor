@@ -121,6 +121,7 @@
     <Compile Include="Plugins\Debug.cs" />
     <Compile Include="Plugins\DiffCompare\BaseDiffCompare.cs" />
     <Compile Include="Plugins\FileUtility.cs" />
+    <Compile Include="Plugins\ProcessUtility.cs" />
     <Compile Include="Plugins\RegistryUtility.cs" />
     <Compile Include="Plugins\SerializeUtility.cs" />
     <Compile Include="Program.cs" />
