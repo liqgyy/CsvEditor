@@ -85,7 +85,11 @@ public partial class MainForm : Form
 			else if (SelCsvForm.MainDataGridView.SelectedCells.Count == 1)
 			{
 				m_CellEditPanel.Visible = true;
-				m_CellEditTextBox.Text = (string)SelCsvForm.MainDataGridView.SelectedCells[0].Value;
+				object value = SelCsvForm.MainDataGridView.SelectedCells[0].Value;
+				if (value.GetType() != typeof(DBNull))
+				{
+					m_CellEditTextBox.Text = (string)value;
+				}
 				m_CellEditTextBox.TextChanged += OnCellEditTextBox_TextChanged;
 			}
 			else if (SelCsvForm.MainDataGridView.SelectedCells.Count > 1)
