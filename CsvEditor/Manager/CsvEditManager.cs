@@ -226,12 +226,12 @@ public class CsvEditManager
 				// 行超过表格限制，默认不添加新行
 				if (currentRow >= dataGridView.RowCount)
 				{
-					throw (new ArgumentOutOfRangeException("currentRow", "粘贴的行超出范围"));
-				}
-				// 忽略空行
-				if (string.IsNullOrEmpty(line))
-				{
-					continue;
+					throw (new ArgumentOutOfRangeException(null, 
+						string.Format("粘贴数据({0})行的第({1})行到表中第({2})行失败\n表一共有({3})行",
+						lines.Length,
+						lineIdx + 1, 
+						currentRow, 
+						dataGridView.RowCount)));
 				}
 				string[] cells = line.Split('\t');
 				for (int cellIdx = 0; cellIdx < cells.Length; ++cellIdx)
@@ -239,24 +239,35 @@ public class CsvEditManager
 					// 列超过表格限制，默认不添加新列
 					if (currentCol + cellIdx >= dataGridView.ColumnCount)
 					{
-						throw (new ArgumentOutOfRangeException("currentCol", "粘贴的列超出范围"));
+						throw (new ArgumentOutOfRangeException(null,
+							string.Format("粘贴数据({0})列的第({1})列到表中第({2})列失败\n表一共有({3})列",
+								cells.Length,
+								cellIdx + 1,
+								currentCol + cellIdx,
+								dataGridView.ColumnCount)));
 					}
 					currentCell = dataGridView.Rows[currentRow].Cells[currentCol + cellIdx];
 					string cell = cells[cellIdx];
-					// 忽略空值
-					if (string.IsNullOrEmpty(cell))
+					if (currentCell.Value == null || currentCell.Value.ToString() != cell)
 					{
-						continue;
-					}
-					if (currentCell.Value == null || currentCell.Value.ToString() != cells[cellIdx])
-					{
+						// 如果cell是多行数据，去除两侧的引号
+						if (cell.Contains("\n"))
+						{
+							if (cell[0] == '"' && cell[cell.Length - 1] == '"')
+							{
+								cell = cell.Substring(1, cell.Length - 2);
+								// 参考：https://social.msdn.microsoft.com/Forums/vstudio/en-US/47df5e57-44bf-4199-98ed-8d015b931282/how-to-replace-n-with-rn?forum=csharpgeneral
+								cell = Regex.Replace(cell, "(?<!\r)\n", "\r\n");
+							}
+						}
+						
 						CellValueChangeItem change = new CellValueChangeItem();
 						change.Row = currentCell.RowIndex;
 						change.Column = currentCell.ColumnIndex;
 						change.OldValue = (string)currentCell.Value;
-						change.NewValue = cells[cellIdx];
+						change.NewValue = cell;
 
-						currentCell.Value = cells[cellIdx];
+						currentCell.Value = cell;
 						changeList.Add(change);
 					}
 				}
