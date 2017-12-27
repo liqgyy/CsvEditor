@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -89,21 +91,26 @@ public class CsvEditManager
 		else if (m_CsvForm.MainDataGridView.SelectedCells.Count > 0)
 		{
 			m_CsvForm.BeforeChangeCellValue();
-			List<CellValueChangeItem> changeList = new List<CellValueChangeItem>();
-			for (int cellIdx = 0; cellIdx < m_CsvForm.MainDataGridView.SelectedCells.Count; cellIdx++)
+
+			IList selectedCellList = m_CsvForm.MainDataGridView.SelectedCells;
+			DataGridViewCell[] selectedCells = new DataGridViewCell[selectedCellList.Count];
+			selectedCellList.CopyTo(selectedCells, 0);
+			CellValueChangeItem[] changes = new CellValueChangeItem[selectedCells.Length];
+
+			for (int cellIdx = 0; cellIdx < selectedCells.Length; cellIdx++)
 			{
-				DataGridViewCell cell = m_CsvForm.MainDataGridView.SelectedCells[cellIdx];
+				DataGridViewCell cell = selectedCells[cellIdx];
 
 				CellValueChangeItem change = new CellValueChangeItem();
 				change.Row = cell.RowIndex;
 				change.Column = cell.ColumnIndex;
 				change.OldValue = (string)cell.Value;
 				change.NewValue = "";
-				changeList.Add(change);
+				changes[cellIdx] = change;
 
 				cell.Value = "";
 			}
-			DidCellsValueChange(changeList);
+			DidCellsValueChange(changes.ToList());
 			m_CsvForm.AfterChangeCellValue();
 		}		
 	}
