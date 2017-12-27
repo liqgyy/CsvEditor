@@ -93,6 +93,12 @@
     <Compile Include="Forms\SettingForm.Designer.cs">
       <DependentUpon>SettingForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Tools\MergeLocalization.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Tools\MergeLocalization.Designer.cs">
+      <DependentUpon>MergeLocalization.cs</DependentUpon>
+    </Compile>
     <Compile Include="Manager\CsvLayoutManager.cs" />
     <Compile Include="Plugins\DiffCompare\BeyondCompare.cs" />
     <Compile Include="Plugins\DiffCompare\CodeCompare.cs" />
@@ -126,6 +132,7 @@
     <Compile Include="Plugins\SerializeUtility.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Test.cs" />
     <EmbeddedResource Include="Forms\CsvForm.resx">
       <DependentUpon>CsvForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -146,6 +153,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingForm.resx">
       <DependentUpon>SettingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Tools\MergeLocalization.resx">
+      <DependentUpon>MergeLocalization.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
