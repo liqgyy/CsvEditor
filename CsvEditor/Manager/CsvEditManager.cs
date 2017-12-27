@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -22,6 +23,12 @@ public class CsvEditManager
         m_RedoStack = new Stack<IUndoRedo>();
     }
 
+	/*
+	Excel复制粘贴的格式 "1\t5\r\n\"2\n3\"\t6\r\n4\t7\r\n"
+	1       5
+	2\n3    6
+	4       7
+	*/
 	#region Copy\Cut\Paste
 	public void Copy()
     {
@@ -41,7 +48,55 @@ public class CsvEditManager
 		}
 		else if (m_CsvForm.MainDataGridView.SelectedCells.Count > 0)
 		{
-			Clipboard.SetDataObject(m_CsvForm.MainDataGridView.GetClipboardContent());
+			try
+			{
+				// 转换为Array
+				IList selectedCellList = m_CsvForm.MainDataGridView.SelectedCells;
+				DataGridViewCell[] selectedCells = new DataGridViewCell[selectedCellList.Count];
+				selectedCellList.CopyTo(selectedCells, 0);
+
+				// x = Row, y = Col
+				Point leftUp = new Point(int.MaxValue, int.MaxValue);
+				Point rightDown = new Point(-1, -1);
+
+				// 计算leftUp、rightDown
+				for (int cellIdx = 0; cellIdx < selectedCells.Length; cellIdx++)
+				{
+					DataGridViewCell cell = selectedCells[cellIdx];
+					if (cell.RowIndex < leftUp.X)
+					{
+						leftUp.X = cell.RowIndex;
+					}
+					if (cell.ColumnIndex < leftUp.Y)
+					{
+						leftUp.Y = cell.ColumnIndex;
+					}
+
+					if (cell.RowIndex > rightDown.X)
+					{
+						rightDown.X = cell.RowIndex;
+					}
+					if (cell.ColumnIndex > rightDown.Y)
+					{
+						rightDown.Y = cell.ColumnIndex;
+					}
+				}
+
+				int cellCount = (rightDown.X - leftUp.X) * (rightDown.Y - leftUp.Y);
+				if (cellCount != selectedCells.Length)
+				{
+					MessageBox.Show("不能对多重选择区域执行此操作.\n请选择单个区域,然后再试.", "提示");
+				}
+				else
+				{
+					// TODO
+				}
+			}
+			catch (System.Exception ex)
+			{
+				Debug.ShowExceptionMessageBox("从表格粘贴数据失败", ex);
+			}
+			//Clipboard.SetDataObject(m_CsvForm.MainDataGridView.GetClipboardContent());
 		}
 	}
 
@@ -92,6 +147,7 @@ public class CsvEditManager
 		{
 			m_CsvForm.BeforeChangeCellValue();
 
+			// 转换为Array
 			IList selectedCellList = m_CsvForm.MainDataGridView.SelectedCells;
 			DataGridViewCell[] selectedCells = new DataGridViewCell[selectedCellList.Count];
 			selectedCellList.CopyTo(selectedCells, 0);
@@ -172,6 +228,53 @@ public class CsvEditManager
 		MainForm.Instance.UpdateCellEdit();
 	}
 
+	public bool CanCopy()
+	{
+		// 编辑模式中没有选中文本
+		if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
+		{
+			TextBox textBox = m_CsvForm.MainDataGridView.EditingControl as TextBox;
+			if (textBox.SelectionLength > 0)
+			{
+				return true;
+			}
+		}
+		if (m_CsvForm.MainDataGridView.SelectedCells.Count > 0)
+		{
+			return true;
+		}
+		if (MainForm.Instance.CellEditTextBox.Focused)
+		{
+			if (MainForm.Instance.CellEditTextBox.SelectionLength > 0)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public bool CanCut()
+    {
+        return CanCopy();
+    }
+
+    public bool CanPaste()
+    {
+		if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
+		{
+			return true;
+		}
+		if (m_CsvForm.MainDataGridView.SelectedCells.Count > 0)
+		{
+			return true;
+		}
+		if (MainForm.Instance.CellEditTextBox.Focused)
+		{
+			return true;
+		}
+		return false;
+    }
+
 	private void PasteCell(DataGridView dataGridView, string clipboardStr)
 	{
 		m_CsvForm.BeforeChangeCellValue();
@@ -226,11 +329,11 @@ public class CsvEditManager
 				// 行超过表格限制，默认不添加新行
 				if (currentRow >= dataGridView.RowCount)
 				{
-					throw (new ArgumentOutOfRangeException(null, 
+					throw (new ArgumentOutOfRangeException(null,
 						string.Format("粘贴数据({0})行的第({1})行到表中第({2})行失败\n表一共有({3})行",
 						lines.Length,
-						lineIdx + 1, 
-						currentRow, 
+						lineIdx + 1,
+						currentRow,
 						dataGridView.RowCount)));
 				}
 				string[] cells = line.Split('\t');
@@ -260,7 +363,7 @@ public class CsvEditManager
 								cell = Regex.Replace(cell, "(?<!\r)\n", "\r\n");
 							}
 						}
-						
+
 						CellValueChangeItem change = new CellValueChangeItem();
 						change.Row = currentCell.RowIndex;
 						change.Column = currentCell.ColumnIndex;
@@ -297,57 +400,10 @@ public class CsvEditManager
 			m_CsvForm.AfterChangeCellValue();
 		}
 	}
+	#endregion // End Copy\Cut\Paste
 
-	public bool CanCopy()
-	{
-		// 编辑模式中没有选中文本
-		if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
-		{
-			TextBox textBox = m_CsvForm.MainDataGridView.EditingControl as TextBox;
-			if (textBox.SelectionLength > 0)
-			{
-				return true;
-			}
-		}
-		if (m_CsvForm.MainDataGridView.SelectedCells.Count > 0)
-		{
-			return true;
-		}
-		if (MainForm.Instance.CellEditTextBox.Focused)
-		{
-			if (MainForm.Instance.CellEditTextBox.SelectionLength > 0)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public bool CanCut()
-    {
-        return CanCopy();
-    }
-
-    public bool CanPaste()
-    {
-		if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
-		{
-			return true;
-		}
-		if (m_CsvForm.MainDataGridView.SelectedCells.Count > 0)
-		{
-			return true;
-		}
-		if (MainForm.Instance.CellEditTextBox.Focused)
-		{
-			return true;
-		}
-		return false;
-    }
-    #endregion // End Copy\Cut\Paste
-
-    #region Undo\Redo
-    public delegate void DoSomethingEventHandler(object sender, DoSomethingEventArgs e);
+	#region Undo\Redo
+	public delegate void DoSomethingEventHandler(object sender, DoSomethingEventArgs e);
     public event DoSomethingEventHandler DoSomething;
 
     private Stack<IUndoRedo> m_UndoStack;
