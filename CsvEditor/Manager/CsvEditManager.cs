@@ -162,6 +162,7 @@ public class CsvEditManager
 				MessageBox.Show("选中多个单元格时不能粘贴", "提示", MessageBoxButtons.OK);
 			}
 		}
+		MainForm.Instance.UpdateCellEdit();
 	}
 
 	private void PasteCell(DataGridView dataGridView, string clipboardStr)
