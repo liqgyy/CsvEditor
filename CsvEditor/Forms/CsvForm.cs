@@ -58,13 +58,30 @@ public partial class CsvForm : Form
         m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
     }
 
-	public CsvLayout GetCsvLayoutCopy()
+	#region Layout
+	public CsvLayout GetLayout()
 	{
-		return SerializeUtility.ObjectCopy(m_Layout);
+		return m_Layout;
 	}
 
+	public void SaveLayout()
+	{
+		SaveCellSize();
+		SaveFrozen();
+		CsvLayoutManager.Instance.Save();
+	}
+
+	public void LoadLayout()
+	{
+		m_Layout = CsvLayoutManager.Instance.LoadOrCreate(SourcePath);
+
+		LoadCellSize();
+		LoadFrozen();
+	}
+	#endregion // End Layout
+
 	#region File
-    public void SaveFile()
+	public void SaveFile()
     {
         if (SaveFile(SourcePath))
         {
@@ -210,21 +227,6 @@ public partial class CsvForm : Form
     }
 
 	#region Layout
-	private void SaveLayout()
-	{
-		SaveCellSize();
-		SaveFrozen();
-		CsvLayoutManager.Instance.Save();
-	}
-
-	private void LoadLayout()
-	{
-		m_Layout = CsvLayoutManager.Instance.LoadOrCreate(SourcePath);
-
-		LoadCellSize();
-		LoadFrozen();
-	}
-
 	private void LoadCellSize()
 	{
 		// Column

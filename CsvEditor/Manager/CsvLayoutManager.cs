@@ -29,7 +29,7 @@ public class CsvLayoutManager
 
 	public CsvLayout LoadOrCreate(string key)
 	{
-		return LoadOrCreate(m_LayoutList , key);
+		return LoadOrCreate(m_LayoutList, key);
 	}
 
 	public void Save()
@@ -37,6 +37,21 @@ public class CsvLayoutManager
 		Save(m_SavePath, m_LayoutList);
 	}
 
+	public void Replace(CsvLayout oldLayout, CsvLayout newLayout)
+	{
+		CsvLayout newLayoutCopy = SerializeUtility.ObjectCopy(newLayout);
+		newLayoutCopy.Key = oldLayout.Key;
+		for (int layoutIdx = 0; layoutIdx < m_LayoutList.Count; layoutIdx++)
+		{
+			if (oldLayout == m_LayoutList[layoutIdx])
+			{
+				m_LayoutList[layoutIdx] = newLayoutCopy;
+				return;
+			}
+		}
+	}
+
+	#region Specific
 	public CsvLayout LoadOrCreateSpecific(string key)
 	{
 		return LoadOrCreate(m_SpecificLayoutList, key);
@@ -73,6 +88,20 @@ public class CsvLayoutManager
 		}
 		return false;
 	}
+
+	public void AddSpecific(CsvLayout layout)
+	{
+		for (int layoutIdx = 0; layoutIdx < m_SpecificLayoutList.Count; layoutIdx++)
+		{
+			if (layout.Key == m_SpecificLayoutList[layoutIdx].Key)
+			{
+				m_SpecificLayoutList[layoutIdx] = layout;
+				return;
+			}
+		}
+		m_SpecificLayoutList.Add(layout);
+	}
+	#endregion // End Specific
 
 	private CsvLayoutManager()
 	{

@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 public partial class SaveLayoutForm : Form
@@ -27,10 +20,16 @@ public partial class SaveLayoutForm : Form
 
 		if (CsvLayoutManager.Instance.ExistSpecific(layoutName))
 		{
-			MessageBox.Show(string.Format("名为\"{0}\"的布局已存在。\n是否要替换？", layoutName), "提示");
+			if (MessageBox.Show(string.Format("名为\"{0}\"的布局已存在。\n是否要替换？", layoutName), "提示",MessageBoxButtons.YesNo) == DialogResult.No)
+			{
+				return;
+			}
 		}
-		CsvLayout csvLayout = MainForm.Instance.SelCsvForm.GetCsvLayoutCopy();
+		MainForm.Instance.SelCsvForm.SaveLayout();
+		CsvLayout csvLayout = SerializeUtility.ObjectCopy(MainForm.Instance.SelCsvForm.GetLayout());
 		csvLayout.Key = layoutName;
+		CsvLayoutManager.Instance.AddSpecific(csvLayout);
+		CsvLayoutManager.Instance.SaveSpecific();
 		Close();
 	}
 

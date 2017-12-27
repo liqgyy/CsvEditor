@@ -457,7 +457,12 @@ public partial class MainForm : Form
 	/// </summary>
 	private void OnApplyLayoutToolStripMenuItem_Click(object sender, EventArgs e)
 	{
-		// TODO
+		ToolStripMenuItem item = (ToolStripMenuItem)sender;
+		CsvLayout layout = CsvLayoutManager.Instance.LoadOrCreateSpecific(item.Name);
+
+		CsvLayoutManager.Instance.Replace(SelCsvForm.GetLayout(), layout);
+		CsvLayoutManager.Instance.Save();
+		SelCsvForm.LoadLayout();
 	}
 
 	private void OnCellEditTextBox_TextChanged(object sender, EventArgs e)
