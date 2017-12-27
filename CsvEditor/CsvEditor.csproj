@@ -81,11 +81,11 @@
     <Compile Include="Forms\LayoutManagerForm.Designer.cs">
       <DependentUpon>LayoutManagerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\SaveLayoutForm.cs">
+    <Compile Include="Forms\LayoutNameForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SaveLayoutForm.Designer.cs">
-      <DependentUpon>SaveLayoutForm.cs</DependentUpon>
+    <Compile Include="Forms\LayoutNameForm.Designer.cs">
+      <DependentUpon>LayoutNameForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\SettingForm.cs">
       <SubType>Form</SubType>
@@ -137,8 +137,8 @@
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SaveLayoutForm.resx">
-      <DependentUpon>SaveLayoutForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\LayoutNameForm.resx">
+      <DependentUpon>LayoutNameForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SearchForm.resx">
       <DependentUpon>SearchForm.cs</DependentUpon>

@@ -1,4 +1,4 @@
-﻿partial class SaveLayoutForm
+﻿partial class LayoutNameForm
 {
 	/// <summary>
 	/// Required designer variable.

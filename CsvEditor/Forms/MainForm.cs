@@ -442,9 +442,10 @@ public partial class MainForm : Form
 		ToolStripMenuItem item = (ToolStripMenuItem)sender;
 		if (item == m_SaveLayoutToolStripMenuItem)
 		{
-			SaveLayoutForm saveLayoutForm = new SaveLayoutForm();
-			saveLayoutForm.StartPosition = FormStartPosition.CenterParent;
-			saveLayoutForm.ShowDialog();
+			LayoutNameForm layoutNameForm = new LayoutNameForm();
+			layoutNameForm.StartPosition = FormStartPosition.CenterParent;
+			layoutNameForm.OnApply = OnSaveLayout;
+			layoutNameForm.ShowDialog();
 		}
 		else if (item == m_ManagerLayoutToolStripMenuItem)
 		{
@@ -470,6 +471,23 @@ public partial class MainForm : Form
 		SelCsvForm.MainDataGridView.SelectedCells[0].Value = m_CellEditTextBox.Text;
 	}
 	#endregion // END UIEvent
+
+	private bool OnSaveLayout(string layoutName)
+	{
+		if (CsvLayoutManager.Instance.ExistSpecific(layoutName))
+		{
+			if (MessageBox.Show(string.Format("名为\"{0}\"的布局已存在。\n是否要替换？", layoutName), "提示", MessageBoxButtons.YesNo) == DialogResult.No)
+			{
+				return false;
+			}
+		}
+		MainForm.Instance.SelCsvForm.SaveLayout();
+		CsvLayout csvLayout = SerializeUtility.ObjectCopy(MainForm.Instance.SelCsvForm.GetLayout());
+		csvLayout.Key = layoutName;
+		CsvLayoutManager.Instance.AddSpecific(csvLayout);
+		CsvLayoutManager.Instance.SaveSpecific();
+		return true;
+	}
 
 	/// <summary>
 	/// 关闭csv窗口前的事件
