@@ -330,12 +330,15 @@ public class CsvEditManager
 				}
 
 				cellContent = (string)dataGridView.Rows.SharedRow(rowIndex).Cells[dataGridViewColumn.Index].Value;
-				// TODO 对\t做特殊处理
-				if (!string.IsNullOrEmpty(cellContent) 
-					&& (cellContent.Contains("\n") || cellContent.Contains("\t")))
+
+				if (!string.IsNullOrEmpty(cellContent))
 				{
-					cellContent = cellContent.Replace("\r\n", "\n");
-					cellContent = "\"" + cellContent + "\"";
+					cellContent.Replace("\t", "");
+					if (cellContent.Contains("\n"))
+					{
+						cellContent = cellContent.Replace("\r\n", "\n");
+						cellContent = "\"" + cellContent + "\"";
+					}
 				}
 
 				if (nextDataGridViewColumn == null)
