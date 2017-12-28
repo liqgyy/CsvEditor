@@ -108,8 +108,21 @@ public partial class CsvForm : Form
                 DataRow dataRow = MainDataTable.Rows[rowIdx];
                 for (int colIdx = 0; colIdx < MainDataTable.Columns.Count; colIdx++)
                 {
-                    myExport[colIdx.ToString()] = dataRow[colIdx];
-                }
+					string value = "";
+					if (dataRow[colIdx].GetType() != typeof(DBNull))
+					{
+						value = (string)dataRow[colIdx];
+						if (value.Contains("\t") || value.Contains("\r\n"))
+						{
+							throw (new InvalidDataException(string.Format("第{0}行第{1}列包含非法字符(\"\\t\", \"\\r\\n\")\n请在保存前运行({2})工具",
+								rowIdx + 1,
+								ConvertUtility.NumberToLetter(colIdx + 1),
+								"去除所有制表符切转换所有换行")));
+						}
+					}
+					myExport[colIdx.ToString()] = value;
+
+				}
             }
 
             myExport.ExportToFile(path);
