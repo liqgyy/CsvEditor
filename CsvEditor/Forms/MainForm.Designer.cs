@@ -256,6 +256,7 @@ partial class MainForm
 			this.m_CutEditToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
 			this.m_CutEditToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
 			this.m_CutEditToolStripMenuItem.Text = "剪切";
+			this.m_CutEditToolStripMenuItem.Visible = false;
 			this.m_CutEditToolStripMenuItem.Click += new System.EventHandler(this.OnEditToolStripMenuItem_Click);
 			// 
 			// m_CopyEditToolStripMenuItem

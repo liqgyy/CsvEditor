@@ -366,7 +366,8 @@ public partial class MainForm : Form
 		}
 		else if (item == m_CutEditToolStripMenuItem)
 		{
-			SelCsvForm.EditManager.Cut();
+			// 不需要支持Cut
+			//SelCsvForm.EditManager.Cut();
 		}
 		else if (item == m_PasteEditToolStripMenuItem)
 		{
