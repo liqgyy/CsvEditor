@@ -245,9 +245,12 @@ public partial class MainForm : Form
 	private void UpdateToolsToolStripMenu()
 	{
 		m_MergeLocalizationToolsToolStripMenuItem.Enabled = false;
+		m_RemoveAllTabAndConvertAllLineBreaksToolsToolStripMenuItem.Enabled = false;
+
 		if (SelCsvFormInitialized())
 		{
 			m_MergeLocalizationToolsToolStripMenuItem.Enabled = true;
+			m_RemoveAllTabAndConvertAllLineBreaksToolsToolStripMenuItem.Enabled = true;
 		}
 	}
 	#endregion // End Update ToolStripMenu
@@ -516,7 +519,7 @@ public partial class MainForm : Form
 	/// <summary>
 	/// 移除所有制表符并转换所有换行符
 	/// </summary>
-	private void OnRemoveAllTabAndConvertAllLineBreaksToolStripMenuItem_Click(object sender, EventArgs e)
+	private void OnRemoveAllTabAndConvertAllLineBreaksToolsToolStripMenuItem_Click(object sender, EventArgs e)
 	{
 		if (SelCsvFormInitialized())
 		{

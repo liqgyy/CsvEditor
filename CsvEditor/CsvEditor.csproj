@@ -69,6 +69,12 @@
     <Compile Include="Datas\CsvLayout.cs" />
     <Compile Include="Datas\GlobalData.cs" />
     <Compile Include="Datas\Setting.cs" />
+    <Compile Include="Forms\DataGridViewConsoleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DataGridViewConsoleForm.Designer.cs">
+      <DependentUpon>DataGridViewConsoleForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\GotoForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,6 +140,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\CsvForm.resx">
       <DependentUpon>CsvForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DataGridViewConsoleForm.resx">
+      <DependentUpon>DataGridViewConsoleForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GotoForm.resx">
       <DependentUpon>GotoForm.cs</DependentUpon>

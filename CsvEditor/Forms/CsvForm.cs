@@ -41,6 +41,9 @@ public partial class CsvForm : Form
         SourcePath = path;
 
 		EditManager = new CsvEditManager(this);
+
+		DataGridViewConsoleForm testForm = new DataGridViewConsoleForm();
+		testForm.Show();
 	}
 
 	public DataGridView GetDataGridView()
