@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Text;
 
 /// <summary>
 /// TODO 添加m_UndoStack/m_RedoStack的上限
@@ -25,9 +26,9 @@ public class CsvEditManager
 
 	/*
 	Excel复制粘贴的格式 "1\t5\r\n\"2\n3\"\t6\r\n4\t7\r\n"
-	1       5
-	2\n3    6
-	4       7
+	1         5
+	2\r\n3    6
+	4         7
 	*/
 	#region Copy\Cut\Paste
 	public void Copy()
@@ -92,14 +93,13 @@ public class CsvEditManager
 				}
 				else
 				{
-
+					CopyCells(dataGridView, leftUp, rightDown);
 				}
 			}
 			catch (Exception ex)
 			{
 				DebugUtility.ShowExceptionMessageBox("从表格粘贴数据失败", ex);
 			}
-			Clipboard.SetDataObject(m_CsvForm.MainDataGridView.GetClipboardContent());
 		}
 	}
 
@@ -278,6 +278,87 @@ public class CsvEditManager
 		return false;
     }
 
+	private void CopyCells(DataGridView dataGridView, Point leftUp, Point rightDown)
+	{
+		// 这里是参考DataGridView.GetClipboardContent()
+		DataObject dataObject = new DataObject();
+		string cellContent = null;
+		DataGridViewColumn dataGridViewColumn, nextDataGridViewColumn;
+		StringBuilder sbContent = new StringBuilder(1024);
+
+		int lRowIndex = leftUp.X;
+		int uRowIndex = rightDown.X;
+		DataGridViewColumn lColumn = dataGridView.Columns[leftUp.Y];
+		DataGridViewColumn uColumn = dataGridView.Columns[rightDown.Y];
+
+		Debug.Assert(lRowIndex != -1);
+		Debug.Assert(uRowIndex != -1);
+		Debug.Assert(lColumn != null);
+		Debug.Assert(uColumn != null);
+		Debug.Assert(lColumn.Index <= uColumn.Index);
+		Debug.Assert(lRowIndex <= uRowIndex);
+
+		// Cycle through the visible rows from lRowIndex to uRowIndex.
+		int rowIndex = lRowIndex;
+		int nextRowIndex = -1;
+		Debug.Assert(rowIndex != -1);
+		while (rowIndex != -1)
+		{
+			if (rowIndex != uRowIndex)
+			{
+				nextRowIndex = dataGridView.Rows.GetNextRow(rowIndex, DataGridViewElementStates.Visible);
+				Debug.Assert(nextRowIndex != -1);
+			}
+			else
+			{
+				nextRowIndex = -1;
+			}
+
+			// Cycle through the visible columns from lColumn to uColumn
+			dataGridViewColumn = lColumn;
+			Debug.Assert(dataGridViewColumn != null);
+			while (dataGridViewColumn != null)
+			{
+				if (dataGridViewColumn != uColumn)
+				{
+					nextDataGridViewColumn = dataGridView.Columns.GetNextColumn(dataGridViewColumn, DataGridViewElementStates.Visible, DataGridViewElementStates.None);
+					Debug.Assert(nextDataGridViewColumn != null);
+				}
+				else
+				{
+					nextDataGridViewColumn = null;
+				}
+
+				cellContent = (string)dataGridView.Rows.SharedRow(rowIndex).Cells[dataGridViewColumn.Index].Value;
+				// TODO 对\t做特殊处理
+				if (!string.IsNullOrEmpty(cellContent) 
+					&& (cellContent.Contains("\n") || cellContent.Contains("\t")))
+				{
+					cellContent = cellContent.Replace("\r\n", "\n");
+					cellContent = "\"" + cellContent + "\"";
+				}
+
+				if (nextDataGridViewColumn == null)
+				{
+					if (nextRowIndex != -1)
+					{
+						cellContent = cellContent + "\r\n";
+					}
+				}
+				else
+				{
+					cellContent = cellContent + "\t";
+				}
+
+				sbContent.Append(cellContent);
+				dataGridViewColumn = nextDataGridViewColumn;
+			}
+			rowIndex = nextRowIndex;
+		}
+
+		Clipboard.SetDataObject(sbContent.ToString());
+	}
+
 	private void PasteCell(DataGridView dataGridView, string clipboardStr)
 	{
 		m_CsvForm.BeforeChangeCellValue();
@@ -339,6 +420,7 @@ public class CsvEditManager
 						currentRow,
 						dataGridView.RowCount)));
 				}
+
 				string[] cells = line.Split('\t');
 				for (int cellIdx = 0; cellIdx < cells.Length; ++cellIdx)
 				{
@@ -357,14 +439,12 @@ public class CsvEditManager
 					if (currentCell.Value == null || currentCell.Value.ToString() != cell)
 					{
 						// 如果cell是多行数据，去除两侧的引号
-						if (cell.Contains("\n"))
+						// TODO 对\t做特殊处理
+						if (cell.Contains("\n") && cell[0] == '"' && cell[cell.Length - 1] == '"')
 						{
-							if (cell[0] == '"' && cell[cell.Length - 1] == '"')
-							{
-								cell = cell.Substring(1, cell.Length - 2);
-								// 参考：https://social.msdn.microsoft.com/Forums/vstudio/en-US/47df5e57-44bf-4199-98ed-8d015b931282/how-to-replace-n-with-rn?forum=csharpgeneral
-								cell = Regex.Replace(cell, "(?<!\r)\n", "\r\n");
-							}
+							cell = cell.Substring(1, cell.Length - 2);
+							// 参考：https://social.msdn.microsoft.com/Forums/vstudio/en-US/47df5e57-44bf-4199-98ed-8d015b931282/how-to-replace-n-with-rn?forum=csharpgeneral
+							cell = Regex.Replace(cell, "(?<!\r)\n", "\r\n");
 						}
 
 						CellValueChangeItem change = new CellValueChangeItem();
@@ -383,6 +463,8 @@ public class CsvEditManager
 		catch (ArgumentOutOfRangeException ex)
 		{
 			MessageBox.Show(ex.Message, "提示", MessageBoxButtons.OK);
+			// 粘贴失败，还原到粘贴前
+#if !DEBUG
 			if (changeList.Count > 0)
 			{
 				DoCellsValueChangeEvent doCellsValueChangeEvent = new DoCellsValueChangeEvent
@@ -392,6 +474,7 @@ public class CsvEditManager
 				doCellsValueChangeEvent.Undo(dataGridView, null);
 			}
 			changeList = null;
+#endif
 		}
 		catch (Exception ex)
 		{
