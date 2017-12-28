@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Text;
+using System.Collections.Generic;
 
 public partial class CsvForm : Form
 {
@@ -67,6 +68,9 @@ public partial class CsvForm : Form
 	/// </summary>
 	public void RemoveAllTabAndConvertAllLineBreaks()
 	{
+		BeforeChangeCellValue();
+
+		List<CsvEditManager.CellValueChangeItem> changeList = new List<CsvEditManager.CellValueChangeItem>();
 		for(int rowIdx = 0; rowIdx < m_DataGridView.Rows.Count; rowIdx++)
 		{
 			DataGridViewRow iterRow = m_DataGridView.Rows[rowIdx];
@@ -80,11 +84,21 @@ public partial class CsvForm : Form
 					iterValue = iterValue.Replace("\r\n", "\n");
 					if (iterValue != (string)iterCell.Value)
 					{
+						CsvEditManager.CellValueChangeItem change = new CsvEditManager.CellValueChangeItem();
+						change.Row = rowIdx;
+						change.Column = colIdx;
+						change.OldValue = (string)iterCell.Value;
+						change.NewValue = iterValue;
+						changeList.Add(change);
+
 						iterCell.Value = iterValue;
 					}
 				}
 			}
 		}
+		EditManager.DidCellsValueChange(changeList);
+
+		AfterChangeCellValue();
 	}
 
 	#region Layout
