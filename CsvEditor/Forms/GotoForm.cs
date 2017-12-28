@@ -39,7 +39,7 @@ public partial class GotoForm : Form
             col = ConvertUtility.LetterToNumber(m_ColTextBox.Text);
         }
 
-        DataGridView dataGridView = MainForm.Instance.SelCsvForm.MainDataGridView;
+        DataGridView dataGridView = MainForm.Instance.GetCsvForm().GetDataGridView();
 
         if (col < 1 || col > dataGridView.ColumnCount || row < 1 || row > dataGridView.RowCount)
         {

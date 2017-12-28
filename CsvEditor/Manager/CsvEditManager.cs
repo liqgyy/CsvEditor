@@ -38,24 +38,24 @@ public class CsvEditManager
             return;
         }
 
-		DataGridView dataGridView = m_CsvForm.MainDataGridView;
+		DataGridView dataGridView = m_CsvForm.GetDataGridView();
 		Debug.Assert(dataGridView != null);
 
-		if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
+		if (m_CsvForm.GetDataGridView().IsCurrentCellInEditMode)
 		{
-			TextBox textBox = m_CsvForm.MainDataGridView.EditingControl as TextBox;
+			TextBox textBox = m_CsvForm.GetDataGridView().EditingControl as TextBox;
 			Clipboard.SetDataObject(textBox.SelectedText);
 		}
-		else if (MainForm.Instance.CellEditTextBox.Focused)
+		else if (MainForm.Instance.GetCellEditTextBox().Focused)
 		{
-			Clipboard.SetDataObject(MainForm.Instance.CellEditTextBox.SelectedText);
+			Clipboard.SetDataObject(MainForm.Instance.GetCellEditTextBox().SelectedText);
 		}
-		else if (m_CsvForm.MainDataGridView.SelectedCells.Count > 0)
+		else if (m_CsvForm.GetDataGridView().SelectedCells.Count > 0)
 		{
 			try
 			{
 				// 转换为Array
-				IList selectedCellList = m_CsvForm.MainDataGridView.SelectedCells;
+				IList selectedCellList = m_CsvForm.GetDataGridView().SelectedCells;
 				DataGridViewCell[] selectedCells = new DataGridViewCell[selectedCellList.Count];
 				selectedCellList.CopyTo(selectedCells, 0);
 
@@ -112,17 +112,17 @@ public class CsvEditManager
 		Copy();
 
 
-		if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
+		if (m_CsvForm.GetDataGridView().IsCurrentCellInEditMode)
 		{
 			m_CsvForm.BeforeChangeCellValue();
-			TextBox textBox = m_CsvForm.MainDataGridView.EditingControl as TextBox;
+			TextBox textBox = m_CsvForm.GetDataGridView().EditingControl as TextBox;
 			CellValueChangeItem change = new CellValueChangeItem();
 			try
 			{
 				int selectionStart = textBox.SelectionStart;
 				change.OldValue = textBox.Text;
-				change.Row = m_CsvForm.MainDataGridView.CurrentCell.RowIndex;
-				change.Column = m_CsvForm.MainDataGridView.CurrentCell.ColumnIndex;
+				change.Row = m_CsvForm.GetDataGridView().CurrentCell.RowIndex;
+				change.Column = m_CsvForm.GetDataGridView().CurrentCell.ColumnIndex;
 				change.NewValue = change.OldValue.Remove(textBox.SelectionStart, textBox.SelectionLength);
 
 				textBox.Text = change.NewValue;
@@ -139,19 +139,19 @@ public class CsvEditManager
 				m_CsvForm.AfterChangeCellValue();
 			}
 		}
-		else if (MainForm.Instance.CellEditTextBox.Focused)
+		else if (MainForm.Instance.GetCellEditTextBox().Focused)
 		{
-			TextBox textBox = MainForm.Instance.CellEditTextBox;
+			TextBox textBox = MainForm.Instance.GetCellEditTextBox();
 			int selectionStart = textBox.SelectionStart;
 			textBox.Text = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength);
 			textBox.SelectionStart = selectionStart;
 		}
-		else if (m_CsvForm.MainDataGridView.SelectedCells.Count > 0)
+		else if (m_CsvForm.GetDataGridView().SelectedCells.Count > 0)
 		{
 			m_CsvForm.BeforeChangeCellValue();
 
 			// 转换为Array
-			IList selectedCellList = m_CsvForm.MainDataGridView.SelectedCells;
+			IList selectedCellList = m_CsvForm.GetDataGridView().SelectedCells;
 			DataGridViewCell[] selectedCells = new DataGridViewCell[selectedCellList.Count];
 			selectedCellList.CopyTo(selectedCells, 0);
 			CellValueChangeItem[] changes = new CellValueChangeItem[selectedCells.Length];
@@ -198,16 +198,16 @@ public class CsvEditManager
 			return;
 		}
 
-		DataGridView dataGridView = m_CsvForm.MainDataGridView;
+		DataGridView dataGridView = m_CsvForm.GetDataGridView();
 
 		// 粘贴到Cell
 		if (dataGridView.IsCurrentCellInEditMode)
 		{
 			PasteCell(dataGridView, clipboardStr);
 		}
-		else if (MainForm.Instance.CellEditTextBox.Focused)
+		else if (MainForm.Instance.GetCellEditTextBox().Focused)
 		{
-			TextBox textBox = MainForm.Instance.CellEditTextBox;
+			TextBox textBox = MainForm.Instance.GetCellEditTextBox();
 			int selectionStart = textBox.SelectionStart;
 			string newValue = textBox.Text;
 			newValue = newValue.Remove(selectionStart, textBox.SelectionLength);
@@ -234,21 +234,21 @@ public class CsvEditManager
 	public bool CanCopy()
 	{
 		// 编辑模式中没有选中文本
-		if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
+		if (m_CsvForm.GetDataGridView().IsCurrentCellInEditMode)
 		{
-			TextBox textBox = m_CsvForm.MainDataGridView.EditingControl as TextBox;
+			TextBox textBox = m_CsvForm.GetDataGridView().EditingControl as TextBox;
 			if (textBox.SelectionLength > 0)
 			{
 				return true;
 			}
 		}
-		if (m_CsvForm.MainDataGridView.SelectedCells.Count > 0)
+		if (m_CsvForm.GetDataGridView().SelectedCells.Count > 0)
 		{
 			return true;
 		}
-		if (MainForm.Instance.CellEditTextBox.Focused)
+		if (MainForm.Instance.GetCellEditTextBox().Focused)
 		{
-			if (MainForm.Instance.CellEditTextBox.SelectionLength > 0)
+			if (MainForm.Instance.GetCellEditTextBox().SelectionLength > 0)
 			{
 				return true;
 			}
@@ -263,15 +263,15 @@ public class CsvEditManager
 
     public bool CanPaste()
     {
-		if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
+		if (m_CsvForm.GetDataGridView().IsCurrentCellInEditMode)
 		{
 			return true;
 		}
-		if (m_CsvForm.MainDataGridView.SelectedCells.Count > 0)
+		if (m_CsvForm.GetDataGridView().SelectedCells.Count > 0)
 		{
 			return true;
 		}
-		if (MainForm.Instance.CellEditTextBox.Focused)
+		if (MainForm.Instance.GetCellEditTextBox().Focused)
 		{
 			return true;
 		}
@@ -553,7 +553,7 @@ public class CsvEditManager
         }
         m_CsvForm.BeforeChangeCellValue();
         IUndoRedo iur = m_UndoStack.Pop();
-        iur.Undo(m_CsvForm.MainDataGridView, m_CsvForm.MainDataTable);
+        iur.Undo(m_CsvForm.GetDataGridView(), m_CsvForm.MainDataTable);
         m_RedoStack.Push(iur);
         DoSomething(this, new DoSomethingEventArgs(DoEventType.Undo, iur.GetDoType()));
         m_CsvForm.AfterChangeCellValue();
@@ -569,7 +569,7 @@ public class CsvEditManager
         }
         m_CsvForm.BeforeChangeCellValue();
         IUndoRedo iur = m_RedoStack.Pop();
-        iur.Redo(m_CsvForm.MainDataGridView, m_CsvForm.MainDataTable);
+        iur.Redo(m_CsvForm.GetDataGridView(), m_CsvForm.MainDataTable);
         m_UndoStack.Push(iur);
         DoSomething(this, new DoSomethingEventArgs(DoEventType.Redo, iur.GetDoType()));
         m_CsvForm.AfterChangeCellValue();

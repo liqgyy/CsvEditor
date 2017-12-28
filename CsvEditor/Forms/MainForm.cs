@@ -14,16 +14,18 @@ public partial class MainForm : Form
 {
     public static MainForm Instance;
 
-    /// <summary>
-    /// 当前Csv窗口，只能通过SetSelCsvForm赋值
-    /// </summary>
-    public CsvForm SelCsvForm { get; private set; }
+	/// <summary>
+	/// 当前Csv窗口
+	/// </summary>
+	private CsvForm m_CsvForm;
 
-	public TextBox CellEditTextBox { get { return m_CellEditTextBox; } }
-
-    private GotoForm m_GotoForm;
+	private GotoForm m_GotoForm;
     private SearchForm m_SearchForm;
 
+	/// <summary>
+	/// 关闭csv窗口之前的事件
+	/// 某些操作需要先关闭当前csv窗口后才能执行，但是关闭窗口是异步的，所以要记录关闭窗口前的操作，在窗口关闭后继续之前的操作
+	/// </summary>
 	private BeforeCloseCsvFormEventType m_BeforeCloseCsvFormEventType = BeforeCloseCsvFormEventType.None;
 
 	public MainForm()
@@ -40,17 +42,27 @@ public partial class MainForm : Form
 		m_CellEditTipPanel.Dock = DockStyle.Fill;
 	}
 
+	public CsvForm GetCsvForm()
+	{
+		return m_CsvForm;
+	}
+
+	public TextBox GetCellEditTextBox()
+	{
+		return m_CellEditTextBox;
+	}
+
 	/// <summary>
 	/// 当前选中的csv是否存在且完成初始化
 	/// </summary>
 	/// <returns></returns>
 	public bool SelCsvFormInitialized()
     {
-        if (SelCsvForm == null || SelCsvForm.IsDisposed)
+        if (m_CsvForm == null || m_CsvForm.IsDisposed)
         {
             return false;
         }
-        return SelCsvForm.Initialized;
+        return m_CsvForm.Initialized;
     }
 
 	/// <summary>
@@ -61,7 +73,7 @@ public partial class MainForm : Form
     {
 		if (SelCsvFormInitialized())
 		{
-			Text = SelCsvForm.Text;
+			Text = m_CsvForm.Text;
 		}
 		else
 		{
@@ -77,22 +89,22 @@ public partial class MainForm : Form
 
 		if (SelCsvFormInitialized())
 		{
-			if(SelCsvForm.MainDataGridView.SelectedCells.Count == 0)
+			if(m_CsvForm.GetDataGridView().SelectedCells.Count == 0)
 			{
 				m_CellEditTipPanel.Visible = true;
 				m_CellEditTipLabel.Text = "当前未选中单元格";
 			}
-			else if (SelCsvForm.MainDataGridView.SelectedCells.Count == 1)
+			else if (m_CsvForm.GetDataGridView().SelectedCells.Count == 1)
 			{
 				m_CellEditPanel.Visible = true;
-				object value = SelCsvForm.MainDataGridView.SelectedCells[0].Value;
+				object value = m_CsvForm.GetDataGridView().SelectedCells[0].Value;
 				if (value.GetType() != typeof(DBNull))
 				{
 					m_CellEditTextBox.Text = (string)value;
 				}
 				m_CellEditTextBox.TextChanged += OnCellEditTextBox_TextChanged;
 			}
-			else if (SelCsvForm.MainDataGridView.SelectedCells.Count > 1)
+			else if (m_CsvForm.GetDataGridView().SelectedCells.Count > 1)
 			{
 				m_CellEditTipPanel.Visible = true;
 				m_CellEditTipLabel.Text = "不支持编辑多个单元格";
@@ -107,10 +119,10 @@ public partial class MainForm : Form
 
 	private void OpenFile()
 	{
-		if (SelCsvForm != null && !SelCsvForm.IsDisposed)
+		if (m_CsvForm != null && !m_CsvForm.IsDisposed)
 		{
 			m_BeforeCloseCsvFormEventType = BeforeCloseCsvFormEventType.OpenFile;
-			SelCsvForm.Close();
+			m_CsvForm.Close();
 			return;
 		}
 
@@ -144,15 +156,15 @@ public partial class MainForm : Form
         newCsvForm.Dock = DockStyle.Fill;
 		newCsvForm.Show();
 		m_SplitContainer.Panel1.Controls.Add(newCsvForm);
-        SetSelCsvForm(newCsvForm);
+        SetCsvForm(newCsvForm);
     }
 
-    private void SetSelCsvForm(CsvForm csvForm)
+    private void SetCsvForm(CsvForm csvForm)
     {
-        SelCsvForm = csvForm;
+		m_CsvForm = csvForm;
 
 		// 所有Csv窗口都被关闭
-		if (SelCsvForm == null)
+		if (m_CsvForm == null)
 		{
 			if (m_GotoForm != null && !m_GotoForm.IsDisposed)
 			{
@@ -174,7 +186,7 @@ public partial class MainForm : Form
         {
             return;
         }
-        m_SaveFileToolStripMenuItem.Enabled = SelCsvForm.DataChanged;
+        m_SaveFileToolStripMenuItem.Enabled = m_CsvForm.DataChanged;
         m_SaveToFileToolStripMenuItem.Enabled = true;
     }
    
@@ -195,12 +207,12 @@ public partial class MainForm : Form
         m_GotoEditToolStripMenuItem.Enabled = true;
         m_SearchEditStripMenuItem.Enabled = true;
 
-        m_CopyEditToolStripMenuItem.Enabled = SelCsvForm.EditManager.CanCopy();
-        m_CutEditToolStripMenuItem.Enabled = SelCsvForm.EditManager.CanCut();
-        m_PasteEditToolStripMenuItem.Enabled = SelCsvForm.EditManager.CanPaste();
+        m_CopyEditToolStripMenuItem.Enabled = m_CsvForm.EditManager.CanCopy();
+        m_CutEditToolStripMenuItem.Enabled = m_CsvForm.EditManager.CanCut();
+        m_PasteEditToolStripMenuItem.Enabled = m_CsvForm.EditManager.CanPaste();
 
-        m_UndoEditToolStripMenuItem.Enabled = SelCsvForm.EditManager.CanUndo();
-        m_RedoEditToolStripMenuItem.Enabled = SelCsvForm.EditManager.CanRedo();
+        m_UndoEditToolStripMenuItem.Enabled = m_CsvForm.EditManager.CanUndo();
+        m_RedoEditToolStripMenuItem.Enabled = m_CsvForm.EditManager.CanRedo();
     }
 	
 	private void UpdateLayoutToolStripMenu()
@@ -264,7 +276,7 @@ public partial class MainForm : Form
 	/// </summary>
 	private void OnMainForm_Load(object sender, EventArgs e)
     {
-        SetSelCsvForm(null);
+        SetCsvForm(null);
 		UpdateCellEdit();
 
 		string[] commands = Environment.GetCommandLineArgs();
@@ -277,10 +289,10 @@ public partial class MainForm : Form
 
 	private void OnForm_FormClosing(object sender, FormClosingEventArgs e)
 	{
-		if (SelCsvForm != null && !SelCsvForm.IsDisposed)
+		if (m_CsvForm != null && !m_CsvForm.IsDisposed)
 		{
 			m_BeforeCloseCsvFormEventType = BeforeCloseCsvFormEventType.CloseForm;
-			SelCsvForm.Close();
+			m_CsvForm.Close();
 			e.Cancel = true;
 		}
 	}
@@ -354,15 +366,15 @@ public partial class MainForm : Form
 		ToolStripMenuItem item = (ToolStripMenuItem)sender;
 		if (item == m_UndoEditToolStripMenuItem)
 		{
-			SelCsvForm.EditManager.Undo();
+			m_CsvForm.EditManager.Undo();
 		}
 		else if (item == m_RedoEditToolStripMenuItem)
 		{
-			SelCsvForm.EditManager.Redo();
+			m_CsvForm.EditManager.Redo();
 		}
 		else if (item == m_CopyEditToolStripMenuItem)
 		{
-			SelCsvForm.EditManager.Copy();
+			m_CsvForm.EditManager.Copy();
 		}
 		else if (item == m_CutEditToolStripMenuItem)
 		{
@@ -371,7 +383,7 @@ public partial class MainForm : Form
 		}
 		else if (item == m_PasteEditToolStripMenuItem)
 		{
-			SelCsvForm.EditManager.Paste();
+			m_CsvForm.EditManager.Paste();
 		}
 	}
 
@@ -386,9 +398,9 @@ public partial class MainForm : Form
 		}
 
 		ToolStripMenuItem item = (ToolStripMenuItem)sender;
-        if (SelCsvForm.DataChanged && item == m_SaveFileToolStripMenuItem)
+        if (m_CsvForm.DataChanged && item == m_SaveFileToolStripMenuItem)
         {
-            SelCsvForm.SaveFile();
+            m_CsvForm.SaveFile();
         }
         else if (item == m_SaveToFileToolStripMenuItem)
         {
@@ -400,7 +412,7 @@ public partial class MainForm : Form
             {
                 return;
             }
-            SelCsvForm.SaveFile(m_SaveCsvFileDialog.FileName);
+            m_CsvForm.SaveFile(m_SaveCsvFileDialog.FileName);
         }
     }
 
@@ -482,14 +494,14 @@ public partial class MainForm : Form
 		ToolStripMenuItem item = (ToolStripMenuItem)sender;
 		CsvLayout layout = CsvLayoutManager.Instance.LoadOrCreateSpecific(item.Name);
 
-		CsvLayoutManager.Instance.Replace(SelCsvForm.GetLayout(), layout);
+		CsvLayoutManager.Instance.Replace(m_CsvForm.GetLayout(), layout);
 		CsvLayoutManager.Instance.Save();
-		SelCsvForm.LoadLayout();
+		m_CsvForm.LoadLayout();
 	}
 
 	private void OnCellEditTextBox_TextChanged(object sender, EventArgs e)
 	{
-		SelCsvForm.MainDataGridView.SelectedCells[0].Value = m_CellEditTextBox.Text;
+		m_CsvForm.GetDataGridView().SelectedCells[0].Value = m_CellEditTextBox.Text;
 	}
 
 	/// <summary>
@@ -512,8 +524,8 @@ public partial class MainForm : Form
 				return false;
 			}
 		}
-		SelCsvForm.SaveLayout();
-		CsvLayout csvLayout = SerializeUtility.ObjectCopy(MainForm.Instance.SelCsvForm.GetLayout());
+		m_CsvForm.SaveLayout();
+		CsvLayout csvLayout = SerializeUtility.ObjectCopy(MainForm.Instance.m_CsvForm.GetLayout());
 		csvLayout.Key = layoutName;
 		CsvLayoutManager.Instance.AddSpecific(csvLayout);
 		CsvLayoutManager.Instance.SaveSpecific();

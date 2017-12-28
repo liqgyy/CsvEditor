@@ -128,7 +128,7 @@ public partial class SearchForm : Form
             return;
         }
 
-        DataGridView dataGridView = MainForm.Instance.SelCsvForm.MainDataGridView;
+        DataGridView dataGridView = MainForm.Instance.GetCsvForm().GetDataGridView();
 
         int startRow = 0;
         int startCol = 0;
@@ -154,21 +154,21 @@ public partial class SearchForm : Form
             return;
         }
 
-        DataGridView dataGridView = MainForm.Instance.SelCsvForm.MainDataGridView;
+        DataGridView dataGridView = MainForm.Instance.GetCsvForm().GetDataGridView();
 
         // 当前单元格
         if (dataGridView.CurrentCell != null && Matching((string)dataGridView.CurrentCell.Value))
         {
             string oldValue = (string)dataGridView.CurrentCell.Value;
             string newValue = Replacing(oldValue);
-            MainForm.Instance.SelCsvForm.EditManager.DidCellValueChange(dataGridView.CurrentCell.ColumnIndex,
+            MainForm.Instance.GetCsvForm().EditManager.DidCellValueChange(dataGridView.CurrentCell.ColumnIndex,
                dataGridView.CurrentCell.RowIndex,
                oldValue,
                newValue);
 
-            MainForm.Instance.SelCsvForm.BeforeChangeCellValue();
+            MainForm.Instance.GetCsvForm().BeforeChangeCellValue();
             dataGridView.CurrentCell.Value = newValue;
-            MainForm.Instance.SelCsvForm.AfterChangeCellValue();
+            MainForm.Instance.GetCsvForm().AfterChangeCellValue();
             return;
         }
 
@@ -180,19 +180,19 @@ public partial class SearchForm : Form
             startCol = dataGridView.CurrentCell.ColumnIndex;
         }
 
-        MainForm.Instance.SelCsvForm.BeforeChangeCellValue();
+        MainForm.Instance.GetCsvForm().BeforeChangeCellValue();
         DataGridViewCell cell = Searching(dataGridView, startRow, startCol);
         if (cell != null)
         {
             string oldValue = (string)cell.Value;
             string newValue = Replacing(oldValue);
-            MainForm.Instance.SelCsvForm.EditManager.DidCellValueChange(cell.ColumnIndex, cell.RowIndex, oldValue, newValue);
+            MainForm.Instance.GetCsvForm().EditManager.DidCellValueChange(cell.ColumnIndex, cell.RowIndex, oldValue, newValue);
 
             cell.Value = Replacing(oldValue);
             dataGridView.ClearSelection();
             dataGridView.CurrentCell = cell;
         }
-        MainForm.Instance.SelCsvForm.AfterChangeCellValue();
+        MainForm.Instance.GetCsvForm().AfterChangeCellValue();
     }
 
     private void OnReplaceAllButton_Click(object sender, EventArgs e)
@@ -203,9 +203,9 @@ public partial class SearchForm : Form
             return;
         }
 
-        DataGridView dataGridView = MainForm.Instance.SelCsvForm.MainDataGridView;
+        DataGridView dataGridView = MainForm.Instance.GetCsvForm().GetDataGridView();
 
-        MainForm.Instance.SelCsvForm.BeforeChangeCellValue();
+        MainForm.Instance.GetCsvForm().BeforeChangeCellValue();
         List<CellValueChangeItem> ChangeList = new List<CellValueChangeItem>();
         DataGridViewCell cell = Searching(dataGridView, 0, 0);
         while(cell != null)
@@ -220,8 +220,8 @@ public partial class SearchForm : Form
             cell.Value = changeItem.NewValue;
             cell = Searching(dataGridView, cell.RowIndex, cell.ColumnIndex);
         }
-        MainForm.Instance.SelCsvForm.EditManager.DidCellsValueChange(ChangeList);
-        MainForm.Instance.SelCsvForm.AfterChangeCellValue();
+        MainForm.Instance.GetCsvForm().EditManager.DidCellsValueChange(ChangeList);
+        MainForm.Instance.GetCsvForm().AfterChangeCellValue();
     }
 
     private void OnValueChanged(object sender, EventArgs e)

@@ -18,8 +18,7 @@ public partial class CsvForm : Form
 
     public bool DataChanged = false;
 
-    public DataGridView MainDataGridView { get { return m_DataGridView; } }
-    public DataTable MainDataTable;
+	public DataTable MainDataTable;
     public DataTable CopyDataTable;
 
 	private CsvLayout m_Layout;
@@ -41,7 +40,12 @@ public partial class CsvForm : Form
         SourcePath = path;
 
 		EditManager = new CsvEditManager(this);
-	}	
+	}
+
+	public DataGridView GetDataGridView()
+	{
+		return m_DataGridView;
+	}
 
 	public void BeforeChangeCellValue()
     {
