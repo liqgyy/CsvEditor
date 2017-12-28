@@ -603,9 +603,15 @@ public class CsvEditManager
         public void Redo(DataGridView dataGridView, DataTable dataTable)
         {
             DataRow newRowData = dataTable.NewRow();
-            dataTable.Rows.InsertAt(newRowData, Row);
+			dataTable.Rows.InsertAt(newRowData, Row);
 
-            dataGridView.ClearSelection();
+			DataGridViewRow newRow = dataGridView.Rows[Row];
+			for (int colIdx = 0; colIdx < newRow.Cells.Count; colIdx++)
+			{
+				newRow.Cells[colIdx].Value = "";
+			}
+
+			dataGridView.ClearSelection();
             dataGridView.Rows[Row].Selected = true;
         }
 

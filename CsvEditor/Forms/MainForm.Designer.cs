@@ -30,6 +30,7 @@ partial class MainForm
     {
 			this.m_ToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_MergeLocalizationToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.m_RemoveAllTabAndConvertAllLineBreaksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.m_SplitContainer = new System.Windows.Forms.SplitContainer();
 			this.m_CellEditPanel = new System.Windows.Forms.Panel();
 			this.m_CellEditTextBox = new System.Windows.Forms.TextBox();
@@ -69,7 +70,8 @@ partial class MainForm
 			// m_ToolsToolStripMenuItem
 			// 
 			this.m_ToolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.m_MergeLocalizationToolsToolStripMenuItem});
+            this.m_MergeLocalizationToolsToolStripMenuItem,
+            this.m_RemoveAllTabAndConvertAllLineBreaksToolStripMenuItem});
 			this.m_ToolsToolStripMenuItem.Name = "m_ToolsToolStripMenuItem";
 			this.m_ToolsToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
 			this.m_ToolsToolStripMenuItem.Text = "工具";
@@ -78,9 +80,16 @@ partial class MainForm
 			// m_MergeLocalizationToolsToolStripMenuItem
 			// 
 			this.m_MergeLocalizationToolsToolStripMenuItem.Name = "m_MergeLocalizationToolsToolStripMenuItem";
-			this.m_MergeLocalizationToolsToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.m_MergeLocalizationToolsToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
 			this.m_MergeLocalizationToolsToolStripMenuItem.Text = "本地化合并";
 			this.m_MergeLocalizationToolsToolStripMenuItem.Click += new System.EventHandler(this.OnMergeLocalizationToolsToolStripMenuItem_Click);
+			// 
+			// m_RemoveAllTabAndConvertAllLineBreaksToolStripMenuItem
+			// 
+			this.m_RemoveAllTabAndConvertAllLineBreaksToolStripMenuItem.Name = "m_RemoveAllTabAndConvertAllLineBreaksToolStripMenuItem";
+			this.m_RemoveAllTabAndConvertAllLineBreaksToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
+			this.m_RemoveAllTabAndConvertAllLineBreaksToolStripMenuItem.Text = "移除所有制表符并转换所有换行符";
+			this.m_RemoveAllTabAndConvertAllLineBreaksToolStripMenuItem.Click += new System.EventHandler(this.OnRemoveAllTabAndConvertAllLineBreaksToolStripMenuItem_Click);
 			// 
 			// m_SplitContainer
 			// 
@@ -384,4 +393,5 @@ partial class MainForm
 	private System.Windows.Forms.ToolStripMenuItem m_ManagerLayoutToolStripMenuItem;
 	private System.Windows.Forms.ToolStripMenuItem m_MergeLocalizationToolsToolStripMenuItem;
 	private System.Windows.Forms.ToolStripMenuItem m_ToolsToolStripMenuItem;
+	private System.Windows.Forms.ToolStripMenuItem m_RemoveAllTabAndConvertAllLineBreaksToolStripMenuItem;
 }

@@ -140,6 +140,7 @@
 			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
 			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
 			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+		dataGridViewCellStyle1.NullValue = System.String.Empty;
 			this.m_DataGridView.DefaultCellStyle = dataGridViewCellStyle1;
 			this.m_DataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.m_DataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;

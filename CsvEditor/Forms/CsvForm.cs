@@ -62,6 +62,31 @@ public partial class CsvForm : Form
         m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
     }
 
+	/// <summary>
+	/// 移除所有制表符并转换所有换行符
+	/// </summary>
+	public void RemoveAllTabAndConvertAllLineBreaks()
+	{
+		for(int rowIdx = 0; rowIdx < m_DataGridView.Rows.Count; rowIdx++)
+		{
+			DataGridViewRow iterRow = m_DataGridView.Rows[rowIdx];
+			for(int colIdx = 0; colIdx < iterRow.Cells.Count; colIdx++)
+			{
+				DataGridViewCell iterCell = iterRow.Cells[colIdx];
+				string iterValue = (string) iterCell.Value;
+				if (!string.IsNullOrEmpty(iterValue))
+				{
+					iterValue = iterValue.Replace("\t", "");
+					iterValue = iterValue.Replace("\r\n", "\n");
+					if (iterValue != (string)iterCell.Value)
+					{
+						iterCell.Value = iterValue;
+					}
+				}
+			}
+		}
+	}
+
 	#region Layout
 	public CsvLayout GetLayout()
 	{
@@ -108,17 +133,13 @@ public partial class CsvForm : Form
                 DataRow dataRow = MainDataTable.Rows[rowIdx];
                 for (int colIdx = 0; colIdx < MainDataTable.Columns.Count; colIdx++)
                 {
-					string value = "";
-					if (dataRow[colIdx].GetType() != typeof(DBNull))
+					string value = (string)dataRow[colIdx];
+					if (value.Contains("\t") || value.Contains("\r\n"))
 					{
-						value = (string)dataRow[colIdx];
-						if (value.Contains("\t") || value.Contains("\r\n"))
-						{
-							throw (new InvalidDataException(string.Format("第{0}行第{1}列包含非法字符(\"\\t\", \"\\r\\n\")\n请在保存前运行({2})工具",
-								rowIdx + 1,
-								ConvertUtility.NumberToLetter(colIdx + 1),
-								"去除所有制表符切转换所有换行")));
-						}
+						throw (new InvalidDataException(string.Format("第{0}行{1}列包含非法字符(\"\\t\", \"\\r\\n\")\n请在保存前运行({2})工具",
+							rowIdx + 1,
+							ConvertUtility.NumberToLetter(colIdx + 1),
+							"移除所有制表符并转换所有换行符")));
 					}
 					myExport[colIdx.ToString()] = value;
 
@@ -514,7 +535,13 @@ public partial class CsvForm : Form
         DataRow newRowData = MainDataTable.NewRow();
         MainDataTable.Rows.InsertAt(newRowData, index);
 
-        m_DataGridView.ClearSelection();
+		DataGridViewRow newRow = m_DataGridView.Rows[index];
+		for(int colIdx = 0; colIdx < newRow.Cells.Count; colIdx++)
+		{
+			newRow.Cells[colIdx].Value = "";
+		}
+
+		m_DataGridView.ClearSelection();
         m_DataGridView.Rows[index].Selected = true;
         CopyDataTable = MainDataTable.Copy();
         EditManager.DidAddRow(index);
@@ -524,10 +551,10 @@ public partial class CsvForm : Form
         m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
     }
 
-    /// <summary>
-    /// 单元格值改变时添加Did事件
-    /// </summary>
-    private void OnDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+	/// <summary>
+	/// 单元格值改变时添加Did事件
+	/// </summary>
+	private void OnDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
     {
 		if (e.RowIndex < 0 || e.ColumnIndex < 0)
 		{

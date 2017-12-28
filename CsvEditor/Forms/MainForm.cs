@@ -98,14 +98,7 @@ public partial class MainForm : Form
 			{
 				m_CellEditPanel.Visible = true;
 				object value = m_CsvForm.GetDataGridView().SelectedCells[0].Value;
-				if (value.GetType() != typeof(DBNull))
-				{
-					m_CellEditTextBox.Text = ((string)value).Replace("\n", "\r\n");
-				}
-				else
-				{
-					m_CellEditTextBox.Text = "";
-				}
+				m_CellEditTextBox.Text = ((string)value).Replace("\n", "\r\n");
 				m_CellEditTextBox.TextChanged += OnCellEditTextBox_TextChanged;
 			}
 			else if (m_CsvForm.GetDataGridView().SelectedCells.Count > 1)
@@ -519,6 +512,17 @@ public partial class MainForm : Form
 		mergeLocalizationForm.StartPosition = FormStartPosition.CenterParent;
 		mergeLocalizationForm.ShowDialog();
 	}
+
+	/// <summary>
+	/// 移除所有制表符并转换所有换行符
+	/// </summary>
+	private void OnRemoveAllTabAndConvertAllLineBreaksToolStripMenuItem_Click(object sender, EventArgs e)
+	{
+		if (SelCsvFormInitialized())
+		{
+			m_CsvForm.RemoveAllTabAndConvertAllLineBreaks();
+		}
+	}
 	#endregion // END UIEvent
 
 	private bool OnSaveLayout(string layoutName)
@@ -546,5 +550,5 @@ public partial class MainForm : Form
 		None,
 		OpenFile,
 		CloseForm
-	}	
+	}
 }
