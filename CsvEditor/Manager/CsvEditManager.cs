@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 /// <summary>
 /// TODO 添加m_UndoStack/m_RedoStack的上限
@@ -36,6 +36,9 @@ public class CsvEditManager
         {
             return;
         }
+
+		DataGridView dataGridView = m_CsvForm.MainDataGridView;
+		Debug.Assert(dataGridView != null);
 
 		if (m_CsvForm.MainDataGridView.IsCurrentCellInEditMode)
 		{
@@ -82,21 +85,21 @@ public class CsvEditManager
 					}
 				}
 
-				int cellCount = (rightDown.X - leftUp.X) * (rightDown.Y - leftUp.Y);
+				int cellCount = (rightDown.X - leftUp.X + 1) * (rightDown.Y - leftUp.Y + 1);
 				if (cellCount != selectedCells.Length)
 				{
 					MessageBox.Show("不能对多重选择区域执行此操作.\n请选择单个区域,然后再试.", "提示");
 				}
 				else
 				{
-					// TODO
+
 				}
 			}
-			catch (System.Exception ex)
+			catch (Exception ex)
 			{
-				Debug.ShowExceptionMessageBox("从表格粘贴数据失败", ex);
+				DebugUtility.ShowExceptionMessageBox("从表格粘贴数据失败", ex);
 			}
-			//Clipboard.SetDataObject(m_CsvForm.MainDataGridView.GetClipboardContent());
+			Clipboard.SetDataObject(m_CsvForm.MainDataGridView.GetClipboardContent());
 		}
 	}
 
@@ -129,7 +132,7 @@ public class CsvEditManager
 			catch (Exception ex)
 			{
 				textBox.Text = change.OldValue;
-				Debug.ShowExceptionMessageBox("剪切DataGridViewCell数据到剪切板失败", ex);
+				DebugUtility.ShowExceptionMessageBox("剪切DataGridViewCell数据到剪切板失败", ex);
 			}
 			finally
 			{
@@ -191,7 +194,7 @@ public class CsvEditManager
 		}
 		catch (Exception ex)
 		{
-			Debug.ShowExceptionMessageBox("获取剪切板数据失败", ex);
+			DebugUtility.ShowExceptionMessageBox("获取剪切板数据失败", ex);
 			return;
 		}
 
@@ -300,7 +303,7 @@ public class CsvEditManager
 		catch (Exception ex)
 		{
 			textBox.Text = change.OldValue;
-			Debug.ShowExceptionMessageBox("粘贴到Cell失败", ex);
+			DebugUtility.ShowExceptionMessageBox("粘贴到Cell失败", ex);
 		}
 		finally
 		{
@@ -392,7 +395,7 @@ public class CsvEditManager
 		}
 		catch (Exception ex)
 		{
-			Debug.ShowExceptionMessageBox("粘贴到DataGridView失败", ex);
+			DebugUtility.ShowExceptionMessageBox("粘贴到DataGridView失败", ex);
 		}
 		finally
 		{

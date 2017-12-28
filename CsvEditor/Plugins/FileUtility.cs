@@ -40,7 +40,7 @@ public class FileUtility
 		}
 		catch (Exception ex)
 		{
-			Debug.ShowExceptionMessageBox(string.Format("对比\n文件:({0})\n文件:({1})\n内容失败", path1, path2), ex);
+			DebugUtility.ShowExceptionMessageBox(string.Format("对比\n文件:({0})\n文件:({1})\n内容失败", path1, path2), ex);
 			return false;
 		}
 

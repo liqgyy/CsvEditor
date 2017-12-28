@@ -51,7 +51,7 @@ public class RegistryUtility
 		}
 		catch (Exception ex)
 		{
-			Debug.ShowExceptionMessageBox("创建ProgID：" + progID + "失败", ex);
+			DebugUtility.ShowExceptionMessageBox("创建ProgID：" + progID + "失败", ex);
 			CloseKey(classesRootKey);
 			return;
 		}
@@ -82,7 +82,7 @@ public class RegistryUtility
 		}
 		catch (Exception ex)
 		{
-			Debug.ShowExceptionMessageBox("修改文件: " + fileExtend + " 关联程序失败", ex);
+			DebugUtility.ShowExceptionMessageBox("修改文件: " + fileExtend + " 关联程序失败", ex);
 			return;
 		}
 		finally
@@ -104,7 +104,7 @@ public class RegistryUtility
 		}
 		catch (Exception ex)
 		{
-			Debug.ShowExceptionMessageBox("获取注册表值失败\n"
+			DebugUtility.ShowExceptionMessageBox("获取注册表值失败\n"
 				+ hKey.ToString() + "\t"
 				+ view.ToString() + "\t"
 				+ subName + "\t"

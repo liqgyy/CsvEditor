@@ -102,7 +102,7 @@ public class ConvertUtility
 		}
 		catch (Exception ex)
 		{
-			Debug.ShowExceptionMessageBox("转Md5失败\n" + str, ex);
+			DebugUtility.ShowExceptionMessageBox("转Md5失败\n" + str, ex);
 			return Guid.NewGuid().ToString();
 		}
 	}

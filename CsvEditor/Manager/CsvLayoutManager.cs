@@ -148,7 +148,7 @@ public class CsvLayoutManager
 		}
 		catch (Exception ex)
 		{
-			Debug.ShowExceptionMessageBox("加载CsvLayout失败\n" + path, ex);
+			DebugUtility.ShowExceptionMessageBox("加载CsvLayout失败\n" + path, ex);
 			return new List<CsvLayout>();
 		}
 	}
@@ -180,7 +180,7 @@ public class CsvLayoutManager
 		}
 		catch (Exception ex)
 		{
-			Debug.ShowExceptionMessageBox("保存CsvLayout失败\n" + path, ex);
+			DebugUtility.ShowExceptionMessageBox("保存CsvLayout失败\n" + path, ex);
 		}
 	}
 }

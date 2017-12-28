@@ -40,7 +40,7 @@ public class BaseDiffCompare
 			}
 			catch (Exception ex)
 			{
-				Debug.ShowExceptionMessageBox("拷贝副本: " + fileFullName1 + " - " + fileFullName2 + " 失败", ex);
+				DebugUtility.ShowExceptionMessageBox("拷贝副本: " + fileFullName1 + " - " + fileFullName2 + " 失败", ex);
 				return false;
 			}
 		}
@@ -78,7 +78,7 @@ public class BaseDiffCompare
 		}
 		catch (Exception ex)
 		{
-			Debug.ShowExceptionMessageBox("比较文件: " + fileFullName1 + " - " + fileFullName2 + " 失败", ex);
+			DebugUtility.ShowExceptionMessageBox("比较文件: " + fileFullName1 + " - " + fileFullName2 + " 失败", ex);
 			return false;
 		}
 		return true;

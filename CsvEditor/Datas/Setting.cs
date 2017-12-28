@@ -51,7 +51,7 @@ public class Setting
         }
         catch (Exception ex)
         {
-            Debug.ShowExceptionMessageBox("保存设置失败\n" + ms_SavePath, ex);
+            DebugUtility.ShowExceptionMessageBox("保存设置失败\n" + ms_SavePath, ex);
         }
     }
 
@@ -73,7 +73,7 @@ public class Setting
         }
         catch (Exception ex)
         {
-            if (Debug.ShowExceptionMessageBox("读取设置失败\n是否删除设置文件重新读取?\n" + ms_SavePath, ex, MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (DebugUtility.ShowExceptionMessageBox("读取设置失败\n是否删除设置文件重新读取?\n" + ms_SavePath, ex, MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 ms_Instance = DeleteAndLoad();
             }
@@ -91,7 +91,7 @@ public class Setting
         }
         catch (Exception ex)
         {
-			Debug.ShowExceptionMessageBox("删除设置文件失败,使用默认设置.", ex);
+			DebugUtility.ShowExceptionMessageBox("删除设置文件失败,使用默认设置.", ex);
         }
         
         if (ms_Instance == null)

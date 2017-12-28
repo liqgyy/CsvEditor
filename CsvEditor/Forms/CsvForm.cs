@@ -112,7 +112,7 @@ public partial class CsvForm : Form
         }
         catch (Exception ex)
         {
-            Debug.ShowExceptionMessageBox("保存文件失败:" + path, ex);
+            DebugUtility.ShowExceptionMessageBox("保存文件失败:" + path, ex);
             return false;
         }
         return true;
@@ -145,7 +145,7 @@ public partial class CsvForm : Form
 		}
 		catch (Exception ex)
 		{
-			Debug.ShowExceptionMessageBox("插入换行符失败", ex);
+			DebugUtility.ShowExceptionMessageBox("插入换行符失败", ex);
 		}
 		return base.ProcessCmdKey(ref msg, keyData);
 	}
@@ -169,7 +169,7 @@ public partial class CsvForm : Form
         }
         catch (Exception ex)
         {
-            Debug.ShowExceptionMessageBox("读取文件失败:" + fileFullName, ex);
+            DebugUtility.ShowExceptionMessageBox("读取文件失败:" + fileFullName, ex);
             return false;
         }
 
@@ -181,7 +181,7 @@ public partial class CsvForm : Form
         }
         catch (Exception ex)
         {
-            Debug.ShowExceptionMessageBox("转csv失败:" + fileFullName, ex);
+            DebugUtility.ShowExceptionMessageBox("转csv失败:" + fileFullName, ex);
             return false;
         }
 
@@ -220,7 +220,7 @@ public partial class CsvForm : Form
         }
         catch (Exception ex)
         {
-            Debug.ShowExceptionMessageBox("csv转DataTable失败:" + fileFullName, ex);
+            DebugUtility.ShowExceptionMessageBox("csv转DataTable失败:" + fileFullName, ex);
             return false;
         }
         return true;
@@ -340,7 +340,7 @@ public partial class CsvForm : Form
         }
         catch (Exception ex)
         {
-            Debug.ShowExceptionMessageBox("初始化文件失败:" + SourcePath, ex);
+            DebugUtility.ShowExceptionMessageBox("初始化文件失败:" + SourcePath, ex);
             return;
         }
 

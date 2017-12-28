@@ -124,7 +124,7 @@
       <DependentUpon>SearchForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Manager\CsvEditManager.cs" />
-    <Compile Include="Plugins\Debug.cs" />
+    <Compile Include="Plugins\DebugUtility.cs" />
     <Compile Include="Plugins\DiffCompare\BaseDiffCompare.cs" />
     <Compile Include="Plugins\FileUtility.cs" />
     <Compile Include="Plugins\ProcessUtility.cs" />
