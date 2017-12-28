@@ -100,7 +100,11 @@ public partial class MainForm : Form
 				object value = m_CsvForm.GetDataGridView().SelectedCells[0].Value;
 				if (value.GetType() != typeof(DBNull))
 				{
-					m_CellEditTextBox.Text = (string)value;
+					m_CellEditTextBox.Text = ((string)value).Replace("\n", "\r\n");
+				}
+				else
+				{
+					m_CellEditTextBox.Text = "";
 				}
 				m_CellEditTextBox.TextChanged += OnCellEditTextBox_TextChanged;
 			}
@@ -501,7 +505,9 @@ public partial class MainForm : Form
 
 	private void OnCellEditTextBox_TextChanged(object sender, EventArgs e)
 	{
-		m_CsvForm.GetDataGridView().SelectedCells[0].Value = m_CellEditTextBox.Text;
+		string value = m_CellEditTextBox.Text;
+		value = value.Replace("\r\n", "\n");
+		m_CsvForm.GetDataGridView().SelectedCells[0].Value = value;
 	}
 
 	/// <summary>

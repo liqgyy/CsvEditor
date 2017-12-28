@@ -218,10 +218,19 @@ public class CsvParser
 	public static string[][] Parse(string input)
 	{
 		CsvParser parser = new CsvParser();
-		
 		using (StringReader reader = new StringReader(input))
 		{
-			return parser.Parse(reader);
+			// HACK 把解析结果单元格内的"\r\n"转换为"\n" [12/28/2017 huangwenmiao]
+			string[][] cells = parser.Parse(reader);
+			for(int iRow = 0; iRow < cells.Length; iRow++)
+			{
+				string[] iterRow = cells[iRow];
+				for(int iCol = 0; iCol < iterRow.Length; iCol++)
+				{
+					iterRow[iCol] = iterRow[iCol].Replace("\r\n", "\n");
+				}
+			}
+			return cells;
 		}
 	}
 }

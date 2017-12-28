@@ -572,7 +572,7 @@ public partial class CsvForm : Form
 	/// </summary>
 	private void OnDataGridView_CellPainting_Multiline(DataGridViewCell cell, DataGridViewCellPaintingEventArgs e)
 	{
-		if (!cell.Value.ToString().Contains("\r\n"))
+		if (!cell.Value.ToString().Contains("\n"))
 		{
 			return;
 		}
