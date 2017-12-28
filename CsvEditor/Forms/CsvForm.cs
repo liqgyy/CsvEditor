@@ -120,34 +120,33 @@ public partial class CsvForm : Form
 	#endregion // End File
 
 	/// <summary>
-	/// 监听回车键  
+	/// 监听Alt+回车键  
 	/// 如果单元格正在被编辑, 就在光标处添加换行(\r\n)
 	/// </summary>
 	protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 	{
-		if (keyData != Keys.Enter)
+		if (keyData == (Keys.Enter | Keys.Alt)
+			&& m_DataGridView.IsCurrentCellInEditMode)
+		{
+			try
+			{
+				TextBox textBox = m_DataGridView.EditingControl as TextBox;
+				int nStart = textBox.SelectionStart;
+				string oldValue = textBox.Text;
+				string newValue = oldValue.Insert(nStart, "\r\n");
+				textBox.Text = newValue;
+				EditManager.DidCellValueChange(m_DataGridView.CurrentCell.ColumnIndex, m_DataGridView.CurrentCell.RowIndex, oldValue, newValue);
+			}
+			catch (Exception ex)
+			{
+				DebugUtility.ShowExceptionMessageBox("插入换行符失败", ex);
+			}
+			return true;
+		}
+		else
 		{
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
-		if (!m_DataGridView.IsCurrentCellInEditMode)
-		{
-			return base.ProcessCmdKey(ref msg, keyData);
-		}
-
-		try
-		{
-			TextBox textBox = m_DataGridView.EditingControl as TextBox;
-			int nStart = textBox.SelectionStart;
-			string oldValue = textBox.Text;
-			string newValue = oldValue.Insert(nStart, "\r\n");
-			textBox.Text = newValue;
-			EditManager.DidCellValueChange(m_DataGridView.CurrentCell.ColumnIndex, m_DataGridView.CurrentCell.RowIndex, oldValue, newValue);
-		}
-		catch (Exception ex)
-		{
-			DebugUtility.ShowExceptionMessageBox("插入换行符失败", ex);
-		}
-		return base.ProcessCmdKey(ref msg, keyData);
 	}
 
 	/// <summary>
