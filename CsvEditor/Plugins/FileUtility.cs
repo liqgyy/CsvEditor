@@ -8,6 +8,33 @@ using System.Security.Cryptography;
 
 public class FileUtility
 {
+	public static string[][] LoadFileToCsv(string path)
+	{
+		string fileText;
+		try
+		{
+			fileText = File.ReadAllText(path, Encoding.UTF8);
+		}
+		catch (Exception ex)
+		{
+			DebugUtility.ShowExceptionMessageBox("读取文件失败:" + path, ex);
+			return null;
+		}
+
+		// 读取文件 -> csv
+		string[][] csvTable;
+		try
+		{
+			csvTable = CsvParser.Parse(fileText);
+			return csvTable;
+		}
+		catch (Exception ex)
+		{
+			DebugUtility.ShowExceptionMessageBox("转csv失败:" + path, ex);
+			return null;
+		}
+	}
+
 	public static bool FilesAreEqual_Hash(string path1, string path2)
 	{
 		if (string.IsNullOrEmpty(path1) || string.IsNullOrEmpty(path2))

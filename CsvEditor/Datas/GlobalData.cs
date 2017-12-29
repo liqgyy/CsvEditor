@@ -6,12 +6,6 @@
     #endregion // End Registry
 
     #region Setting
-    /// <summary>
-    /// 为true时强制初始化
-    /// TODO 发布时改为false
-    /// </summary>
-    public const bool SETTING_FORCE_INITIALIZE = false;
-
     public const string SETTING_FILE_NAME = "Setting.bin";
 
 	public const string CSVLAYOUT_FILE_NAME = "Layout.bin";
@@ -20,4 +14,8 @@
 	#endregion // End Setting
 
 	public const int CSV_NOTE_POLYGON_SIZE = 6;
+
+	#if DEBUG
+	public const bool DIFF_ON_CLOSED_FILE = false;
+	#endif
 }

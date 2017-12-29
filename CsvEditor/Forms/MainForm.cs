@@ -540,9 +540,17 @@ public partial class MainForm : Form
 	/// </summary>
 	private void OnMergeLocalizationToolsToolStripMenuItem_Click(object sender, EventArgs e)
 	{
-		MergeLocalizationForm mergeLocalizationForm = new MergeLocalizationForm();
-		mergeLocalizationForm.StartPosition = FormStartPosition.CenterParent;
-		mergeLocalizationForm.ShowDialog();
+		DataGridView dataGridView = m_CsvForm.GetDataGridView();
+		if (dataGridView.RowCount > 0 && dataGridView.ColumnCount > 0 && (string)dataGridView.Rows[0].Cells[0].Value == "String ID")
+		{
+			MergeLocalizationForm mergeLocalizationForm = new MergeLocalizationForm();
+			mergeLocalizationForm.StartPosition = FormStartPosition.CenterParent;
+			mergeLocalizationForm.ShowDialog();
+		}
+		else
+		{
+			MessageBox.Show("当前打开的表可能不是本地化表", "提示");
+		}
 	}
 
 	/// <summary>

@@ -19,8 +19,8 @@ public partial class CsvForm : Form
 
     public bool DataChanged = false;
 
-	public DataTable MainDataTable;
-    public DataTable CopyDataTable;
+	private DataTable m_DataTable;
+	private DataTable m_CopyDataTable;
 
 	private CsvLayout m_Layout;
 
@@ -48,6 +48,11 @@ public partial class CsvForm : Form
 		return m_DataGridView;
 	}
 
+	public DataTable GetDataTable()
+	{
+		return m_DataTable;
+	}
+
 	public void BeforeChangeCellValue()
     {
         m_DataGridView.CellValueChanged -= OnDataGridView_CellValueChanged;
@@ -59,7 +64,7 @@ public partial class CsvForm : Form
 		DataChanged = true;
 		UpdateFormText();
 
-        CopyDataTable = MainDataTable.Copy();
+        m_CopyDataTable = m_DataTable.Copy();
         m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
     }
 
@@ -115,41 +120,8 @@ public partial class CsvForm : Form
 
 		AfterChangeCellValue();
 
-		DataGridViewConsoleForm.ShowForm(messageList, "移除所有制表符并转换所有换行符");
-	}
-
-	/// <summary>
-	/// 选中单元格
-	/// TODO 跳转到单元格
-	/// </summary>
-	public bool SelectDataGridViewCell(int row,int column)
-	{
-		// 超出范围
-		if (row >= m_DataGridView.RowCount || column >= m_DataGridView.ColumnCount)
-		{
-			return false;
-		}
-
-		m_DataGridView.ClearSelection();
-		if (row >= 0 && column >= 0)
-		{
-			m_DataGridView.CurrentCell = m_DataGridView.Rows[row].Cells[column];
-		}
-		else if (row < 0 && column >= 0)
-		{
-			m_DataGridView.CurrentCell = m_DataGridView.Rows[0].Cells[column];
-			m_DataGridView.Columns[column].Selected = true;
-		}
-		else if (row >= 0 && column < 0)
-		{
-			m_DataGridView.CurrentCell = m_DataGridView.Rows[row].Cells[0];
-			m_DataGridView.Rows[row].Selected = true;
-		}
-		else if (row < 0 && column < 0)
-		{
-			m_DataGridView.SelectAll();
-		}
-		return true;
+		DataGridViewConsoleForm.ShowForm(messageList, m_DataGridView, "移除所有制表符并转换所有换行符");
+		MessageBox.Show(string.Format("移除所有制表符并转换所有换行符完成, 转换了({0})个单元格", messageList.Count), "提示");
 	}
 
 	/// <summary>
@@ -168,6 +140,26 @@ public partial class CsvForm : Form
 		{
 			Text = newFormText;
 			MainForm.Instance.UpdateFormText();
+		}
+	}
+
+	/// <summary>
+	/// 更新标题
+	/// 行:数字1~x
+	/// 列:字母A~Z
+	/// </summary>
+	public void UpdateGridHeader()
+	{
+		for (int colIdx = 0; colIdx < m_DataGridView.Columns.Count; colIdx++)
+		{
+			// 列数不能超过26
+			m_DataGridView.Columns[colIdx].HeaderText = ConvertUtility.NumberToLetter(colIdx + 1);
+			m_DataGridView.Columns[colIdx].SortMode = DataGridViewColumnSortMode.Programmatic;
+		}
+		// 更新行号
+		for (int rowIdx = 0; rowIdx < m_DataGridView.RowCount; rowIdx++)
+		{
+			m_DataGridView.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
 		}
 	}
 
@@ -209,7 +201,7 @@ public partial class CsvForm : Form
 
 		List<DataGridViewConsoleForm.Message> messageList;
 		DataGridViewConsoleForm.Level verifyLevel = VerifierUtility.VerifyWithVerifier(m_Layout.Verifier, m_DataGridView, out messageList);
-		DataGridViewConsoleForm.ShowForm(messageList, "保存文件");
+		DataGridViewConsoleForm.ShowForm(messageList, m_DataGridView, "保存文件");
 
 		bool canSave = false;
 		if (verifyLevel == DataGridViewConsoleForm.Level.None || verifyLevel == DataGridViewConsoleForm.Level.Info)
@@ -230,11 +222,11 @@ public partial class CsvForm : Form
 			CsvExport myExport = new CsvExport(",", false);
 			try
 			{
-				for (int rowIdx = 0; rowIdx < MainDataTable.Rows.Count; rowIdx++)
+				for (int rowIdx = 0; rowIdx < m_DataTable.Rows.Count; rowIdx++)
 				{
 					myExport.AddRow();
-					DataRow dataRow = MainDataTable.Rows[rowIdx];
-					for (int colIdx = 0; colIdx < MainDataTable.Columns.Count; colIdx++)
+					DataRow dataRow = m_DataTable.Rows[rowIdx];
+					for (int colIdx = 0; colIdx < m_DataTable.Columns.Count; colIdx++)
 					{
 						string value = (string)dataRow[colIdx];
 						myExport[colIdx.ToString()] = value;
@@ -252,7 +244,7 @@ public partial class CsvForm : Form
 		}
 		else
 		{
-			MessageBox.Show(string.Format("保存文件({0})失败", "提示", path));
+			MessageBox.Show(string.Format("保存文件({0})失败", path), "提示");
 			return false;
 		}
     }
@@ -298,56 +290,21 @@ public partial class CsvForm : Form
 		File.Copy(SourcePath, m_SourceCopyPath);
     }
 
-    private bool LoadFileToDataTable(string fileFullName)
+    private bool LoadFileToDataTable(string path)
     {
-        string fileText;
-        try
-        {
-            fileText = File.ReadAllText(fileFullName, Encoding.UTF8);
-        }
-        catch (Exception ex)
-        {
-            DebugUtility.ShowExceptionMessageBox("读取文件失败:" + fileFullName, ex);
-            return false;
-        }
+		string[][] csvTable = FileUtility.LoadFileToCsv(path);
+		if (csvTable == null)
+		{
+			return false;
+		}
 
-        // 读取文件 -> csv
-        string[][] csvTable;
-        try
+		// csv->DataTable
+		try
         {
-            csvTable = CsvParser.Parse(fileText);
-        }
-        catch (Exception ex)
-        {
-            DebugUtility.ShowExceptionMessageBox("转csv失败:" + fileFullName, ex);
-            return false;
-        }
+			m_DataTable = ConvertUtility.CsvToDataTable(csvTable);
+			m_CopyDataTable = m_DataTable.Copy();
 
-        // csv->DataTable
-        try
-        {
-            MainDataTable = new DataTable();
-            int rowCount = csvTable.GetLength(0);
-            int colCount = -1;
-            for (int rowIdx = 0; rowIdx < rowCount; rowIdx++)
-            {
-                DataRow newRowData = MainDataTable.NewRow();
-                string[] csvRow = csvTable[rowIdx];
-                for (int colIdx = 0; colIdx < csvRow.Length; colIdx++)
-                {
-                    if (colIdx > colCount)
-                    {
-                        MainDataTable.Columns.Add(colIdx.ToString(), typeof(string));
-                        colCount = colIdx;
-                    }
-                    newRowData[colIdx] = csvRow[colIdx];
-                }
-                MainDataTable.Rows.Add(newRowData);
-            }
-
-            m_DataGridView.DataSource = MainDataTable;
-            CopyDataTable = MainDataTable.Copy();
-            MainDataTable.AcceptChanges();
+			m_DataGridView.DataSource = m_DataTable;
 
             UpdateGridHeader();
 			LoadLayout();
@@ -358,7 +315,7 @@ public partial class CsvForm : Form
         }
         catch (Exception ex)
         {
-            DebugUtility.ShowExceptionMessageBox("csv转DataTable失败:" + fileFullName, ex);
+            DebugUtility.ShowExceptionMessageBox("csv转DataTable失败:" + path, ex);
             return false;
         }
         return true;
@@ -427,26 +384,6 @@ public partial class CsvForm : Form
 	}
 	#endregion // End Layout
 
-	/// <summary>
-	/// 更新标题
-	/// 行:数字1~x
-	/// 列:字母A~Z
-	/// </summary>
-	private void UpdateGridHeader()
-    {
-        for (int colIdx = 0; colIdx < m_DataGridView.Columns.Count; colIdx++)
-        {
-            // 列数不能超过26
-            m_DataGridView.Columns[colIdx].HeaderText = ConvertUtility.NumberToLetter(colIdx + 1);
-            m_DataGridView.Columns[colIdx].SortMode = DataGridViewColumnSortMode.Programmatic;
-        }
-        // 更新行号
-        for (int rowIdx = 0; rowIdx < m_DataGridView.RowCount; rowIdx++)
-        {
-            m_DataGridView.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
-        }
-    }
-
 	private bool DataGridViewCellPaintingNeedNote(DataGridViewCell cell)
 	{
 		return !string.IsNullOrEmpty(cell.ToolTipText);
@@ -506,6 +443,11 @@ public partial class CsvForm : Form
             OnDataGridViewData_Change();
             UpdateGridHeader();
         }
+		else if(e.MyDoType == CsvEditManager.DoType.ManyThings)
+		{
+			OnDataGridViewData_Change();
+			UpdateGridHeader();
+		}
     }
 
     /// <summary>
@@ -631,8 +573,8 @@ public partial class CsvForm : Form
         }
 
         int index = m_DataGridView.SelectedRows[0].Index + offset;
-        DataRow newRowData = MainDataTable.NewRow();
-        MainDataTable.Rows.InsertAt(newRowData, index);
+        DataRow newRowData = m_DataTable.NewRow();
+        m_DataTable.Rows.InsertAt(newRowData, index);
 
 		DataGridViewRow newRow = m_DataGridView.Rows[index];
 		for(int colIdx = 0; colIdx < newRow.Cells.Count; colIdx++)
@@ -642,7 +584,7 @@ public partial class CsvForm : Form
 
 		m_DataGridView.ClearSelection();
         m_DataGridView.Rows[index].Selected = true;
-        CopyDataTable = MainDataTable.Copy();
+        m_CopyDataTable = m_DataTable.Copy();
         EditManager.DidAddRow(index);
 
         OnDataGridViewData_Change();
@@ -659,8 +601,8 @@ public partial class CsvForm : Form
 		{
 			return;
 		}
-        EditManager.DidCellValueChange(e.ColumnIndex, e.RowIndex, CopyDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString(), MainDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString());
-        CopyDataTable = MainDataTable.Copy();
+        EditManager.DidCellValueChange(e.ColumnIndex, e.RowIndex, m_CopyDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString(), m_DataTable.Rows[e.RowIndex][e.ColumnIndex].ToString());
+        m_CopyDataTable = m_DataTable.Copy();
         OnDataGridViewData_Change();
     }
 
@@ -805,8 +747,17 @@ public partial class CsvForm : Form
 		{
 			if (!FileUtility.FilesAreEqual_Hash(SourcePath, m_SourceCopyPath))
 			{
+#if DEBUG
+				if (GlobalData.DIFF_ON_CLOSED_FILE)
+				{
+					BeyondCompare.Instance.Compare(SourcePath, m_SourceCopyPath, "源文件", "副本");
+					CodeCompare.Instance.Compare(SourcePath, m_SourceCopyPath, "源文件", "副本");
+				}
+#else
 				BeyondCompare.Instance.Compare(SourcePath, m_SourceCopyPath, "源文件", "副本");
 				CodeCompare.Instance.Compare(SourcePath, m_SourceCopyPath, "源文件", "副本");
+#endif
+
 			}
 			SaveLayout();
 		}

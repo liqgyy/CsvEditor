@@ -116,7 +116,7 @@ public class CsvExport
                 return ((DateTime)value).ToString("yyyy-MM-dd");
             return ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
         }
-        string output = value.ToString().Trim();
+        string output = value.ToString();
 
         if (output.Length > 30000) //cropping value for stupid Excel
             output = output.Substring(0, 30000);

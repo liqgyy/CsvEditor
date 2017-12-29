@@ -12,7 +12,9 @@ public partial class DataGridViewConsoleForm : Form
 	private List<int> m_MessageIndexList;
 	private int m_ListBoxSelectedIndex = -1;
 
-	public static void ShowForm(List<Message> messageList , string formText)
+	private DataGridView m_DataGridView;
+
+	public static void ShowForm(List<Message> messageList, DataGridView dataGridView, string formText)
 	{
 		if (messageList == null || messageList.Count < 1)
 		{
@@ -20,18 +22,20 @@ public partial class DataGridViewConsoleForm : Form
 		}
 		else
 		{
-			DataGridViewConsoleForm form = new DataGridViewConsoleForm(messageList);
+			DataGridViewConsoleForm form = new DataGridViewConsoleForm(messageList, dataGridView);
 			form.Text = "控制台 - " + formText;
 			form.Show();
 		}
 	}
 
-	private DataGridViewConsoleForm(List<Message> messageList)
+	private DataGridViewConsoleForm(List<Message> messageList, DataGridView dataGridView)
 	{
 		InitializeComponent();
-		UpdateListBoxSize();
 
 		m_MessageList = messageList;
+		m_DataGridView = dataGridView;
+
+		UpdateListBoxSize();
 		UpdateListBox();
 	}
 
@@ -186,7 +190,7 @@ public partial class DataGridViewConsoleForm : Form
 			return;
 		}
 
-		MainForm.Instance.GetCsvForm().SelectDataGridViewCell(message.Row, message.Column);
+		DataGridViewUtility.SelectDataGridViewCell(m_DataGridView, message.Row, message.Column);
 	}
 	#endregion //End UIEvent
 

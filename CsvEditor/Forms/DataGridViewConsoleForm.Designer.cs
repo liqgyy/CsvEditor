@@ -120,6 +120,7 @@
 			this.m_DetailTextBox.Multiline = true;
 			this.m_DetailTextBox.Name = "m_DetailTextBox";
 			this.m_DetailTextBox.ReadOnly = true;
+			this.m_DetailTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.m_DetailTextBox.Size = new System.Drawing.Size(926, 194);
 			this.m_DetailTextBox.TabIndex = 0;
 			// 

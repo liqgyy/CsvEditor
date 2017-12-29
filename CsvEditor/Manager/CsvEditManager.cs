@@ -535,7 +535,20 @@ public class CsvEditManager
         m_UndoStack.Push(doCellsValueChangeEvent);
     }
 
-    public bool CanUndo()
+	public void DidManyThings(List<IUndoRedo> thingList)
+	{
+		if (thingList == null || thingList.Count == 0)
+		{
+			return;
+		}
+		DoManyThingsEvent doManyThings = new DoManyThingsEvent
+		{
+			ThingsList = thingList
+		};
+		m_UndoStack.Push(doManyThings);
+	}
+
+	public bool CanUndo()
     {
         return m_UndoStack.Count > 0;
     }
@@ -553,7 +566,7 @@ public class CsvEditManager
         }
         m_CsvForm.BeforeChangeCellValue();
         IUndoRedo iur = m_UndoStack.Pop();
-        iur.Undo(m_CsvForm.GetDataGridView(), m_CsvForm.MainDataTable);
+        iur.Undo(m_CsvForm.GetDataGridView(), m_CsvForm.GetDataTable());
         m_RedoStack.Push(iur);
         DoSomething(this, new DoSomethingEventArgs(DoEventType.Undo, iur.GetDoType()));
         m_CsvForm.AfterChangeCellValue();
@@ -569,7 +582,7 @@ public class CsvEditManager
         }
         m_CsvForm.BeforeChangeCellValue();
         IUndoRedo iur = m_RedoStack.Pop();
-        iur.Redo(m_CsvForm.GetDataGridView(), m_CsvForm.MainDataTable);
+        iur.Redo(m_CsvForm.GetDataGridView(), m_CsvForm.GetDataTable());
         m_UndoStack.Push(iur);
         DoSomething(this, new DoSomethingEventArgs(DoEventType.Redo, iur.GetDoType()));
         m_CsvForm.AfterChangeCellValue();
@@ -610,23 +623,12 @@ public class CsvEditManager
 			{
 				newRow.Cells[colIdx].Value = "";
 			}
-
-			dataGridView.ClearSelection();
-            dataGridView.Rows[Row].Selected = true;
         }
 
         public void Undo(DataGridView dataGridView, DataTable dataTable)
         {
             dataGridView.Rows.RemoveAt(Row);
         }
-    }
-
-    public struct CellValueChangeItem
-    {
-        public int Column;
-        public int Row;
-        public string OldValue;
-        public string NewValue;
     }
 
     public class DoCellsValueChangeEvent : IUndoRedo
@@ -657,7 +659,35 @@ public class CsvEditManager
         }
     }
 
-    public class DoSomethingEventArgs : EventArgs
+	public class DoManyThingsEvent : IUndoRedo
+	{
+		public List<IUndoRedo> ThingsList;
+
+		public DoType GetDoType()
+		{
+			return DoType.ManyThings;
+		}
+
+		public void Redo(DataGridView dataGridView, DataTable dataTable)
+		{
+			for(int thingIdx = 0; thingIdx < ThingsList.Count; thingIdx++)
+			{
+				IUndoRedo thing = ThingsList[thingIdx];
+				thing.Redo(dataGridView, dataTable);
+			}
+		}
+
+		public void Undo(DataGridView dataGridView, DataTable dataTable)
+		{
+			for (int thingIdx = ThingsList.Count - 1; thingIdx >= 0; thingIdx--)
+			{
+				IUndoRedo thing = ThingsList[thingIdx];
+				thing.Undo(dataGridView, dataTable);
+			}
+		}
+	}
+
+	public class DoSomethingEventArgs : EventArgs
     {
         public DoEventType MyEventType;
         public DoType MyDoType;
@@ -669,7 +699,15 @@ public class CsvEditManager
         }
     }
 
-    public enum DoEventType
+	public struct CellValueChangeItem
+	{
+		public int Column;
+		public int Row;
+		public string OldValue;
+		public string NewValue;
+	}
+
+	public enum DoEventType
     {
         Do,
         Redo,
@@ -679,7 +717,8 @@ public class CsvEditManager
     public enum DoType
     {
         AddRow,
-        CellsValueChange
+        CellsValueChange,
+		ManyThings
     }
     #endregion // End Undo\Redo
 }

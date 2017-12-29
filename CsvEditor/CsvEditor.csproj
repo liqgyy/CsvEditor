@@ -106,6 +106,7 @@
       <DependentUpon>MergeLocalizationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Manager\CsvLayoutManager.cs" />
+    <Compile Include="Plugins\DataGridViewUtility.cs" />
     <Compile Include="Plugins\DiffCompare\BeyondCompare.cs" />
     <Compile Include="Plugins\DiffCompare\CodeCompare.cs" />
     <Compile Include="Plugins\ConvertUtility.cs" />

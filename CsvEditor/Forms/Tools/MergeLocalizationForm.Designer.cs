@@ -85,7 +85,7 @@
 			this.m_OkButton.TabIndex = 4;
 			this.m_OkButton.Text = "确定";
 			this.m_OkButton.UseVisualStyleBackColor = true;
-			this.m_OkButton.Click += new System.EventHandler(this.m_OkButton_Click);
+			this.m_OkButton.Click += new System.EventHandler(this.OnOkButton_Click);
 			// 
 			// MergeLocalizationForm
 			// 

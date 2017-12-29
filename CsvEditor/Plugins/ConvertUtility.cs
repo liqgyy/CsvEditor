@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -105,5 +106,29 @@ public class ConvertUtility
 			DebugUtility.ShowExceptionMessageBox("转Md5失败\n" + str, ex);
 			return Guid.NewGuid().ToString();
 		}
+	}
+
+	public static DataTable CsvToDataTable(string[][] csv)
+	{
+		DataTable dataTable = new DataTable();
+		int rowCount = csv.GetLength(0);
+		int colCount = -1;
+		for (int rowIdx = 0; rowIdx < rowCount; rowIdx++)
+		{
+			DataRow newRowData = dataTable.NewRow();
+			string[] csvRow = csv[rowIdx];
+			for (int colIdx = 0; colIdx < csvRow.Length; colIdx++)
+			{
+				if (colIdx > colCount)
+				{
+					dataTable.Columns.Add(colIdx.ToString(), typeof(string));
+					colCount = colIdx;
+				}
+				newRowData[colIdx] = csvRow[colIdx];
+			}
+			dataTable.Rows.Add(newRowData);
+		}
+		dataTable.AcceptChanges();
+		return dataTable;
 	}
 }

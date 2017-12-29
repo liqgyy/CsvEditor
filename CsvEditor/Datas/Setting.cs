@@ -61,7 +61,7 @@ public class Setting
     public static void Load()
     {
         // 配置文件不存在
-        if (GlobalData.SETTING_FORCE_INITIALIZE || !File.Exists(ms_SavePath))
+        if (!File.Exists(ms_SavePath))
         {
             ms_Instance = new Setting();
 			return;
