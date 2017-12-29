@@ -59,7 +59,7 @@ public partial class MergeLocalizationForm : Form
 						message.Level = DataGridViewConsoleForm.Level.Warning;
 						message.Column = 0;
 						message.Row = iRowInOriginalCSV;
-						message.Caption = "更改表中Key的头尾有空格";
+						message.Caption = "更改后Csv中Key的头尾有空格";
 						message.Text = string.Format("我帮你去除了空格\n去空格前的Key:({0})", key);
 						m_MessageList.Add(message);
 					}
@@ -112,11 +112,16 @@ public partial class MergeLocalizationForm : Form
 			string iterCell = row[iCell];
 			string oldCell = (string)dataRow[iCell];
 
-			if (iterCell != oldCell)
+			oldSb.Append(oldCell);
+			newSb.Append(iterCell);
+			if (iCell != row.Length - 1)
 			{
-				oldSb.Append(oldCell + "\t");
-				newSb.Append(iterCell + "\t");
+				oldSb.Append("\t");
+				newSb.Append("\t");
+			}
 
+			if (iterCell != oldCell)
+			{	
 				changedCount++;
 				CsvEditManager.CellValueChangeItem changeItem = new CsvEditManager.CellValueChangeItem();
 				changeItem.Row = rowIdx;
@@ -134,7 +139,7 @@ public partial class MergeLocalizationForm : Form
 				message.Level = DataGridViewConsoleForm.Level.Warning;
 				message.Column = iCell;
 				message.Row = rowIdx;
-				message.Caption = "更改表中该值是空";
+				message.Caption = "更改后Csv中该值是空";
 				message.Text = string.Format("源值：\n({0})", oldCell.ToString());
 				m_MessageList.Add(message);
 			}
@@ -188,7 +193,7 @@ public partial class MergeLocalizationForm : Form
 				DataTable originalCsv = MainForm.Instance.GetCsvForm().GetDataTable();
 				if (changedCsv[0].Length != originalCsv.Columns.Count)
 				{
-					MessageBox.Show(string.Format("源表有({0})列，更改表有({1})列，列数不一样，请检查",
+					MessageBox.Show(string.Format("源表有({0})列，更改后Csv有({1})列，列数不一样，请检查",
 						originalCsv.Columns.Count,
 						changedCsv[0].Length), "提示");
 					return;

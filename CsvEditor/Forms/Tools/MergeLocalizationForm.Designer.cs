@@ -40,9 +40,9 @@
 			csvPathLabel.AutoSize = true;
 			csvPathLabel.Location = new System.Drawing.Point(13, 12);
 			csvPathLabel.Name = "csvPathLabel";
-			csvPathLabel.Size = new System.Drawing.Size(83, 12);
+			csvPathLabel.Size = new System.Drawing.Size(119, 12);
 			csvPathLabel.TabIndex = 0;
-			csvPathLabel.Text = "Csv文件路径：";
+			csvPathLabel.Text = "更改后Csv文件路径：";
 			// 
 			// m_OpenCsvFileDialog
 			// 
