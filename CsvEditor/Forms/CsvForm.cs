@@ -71,6 +71,7 @@ public partial class CsvForm : Form
 		BeforeChangeCellValue();
 
 		List<CsvEditManager.CellValueChangeItem> changeList = new List<CsvEditManager.CellValueChangeItem>();
+		List<DataGridViewConsoleForm.Message> messageList = new List<DataGridViewConsoleForm.Message>();
 		for(int rowIdx = 0; rowIdx < m_DataGridView.Rows.Count; rowIdx++)
 		{
 			DataGridViewRow iterRow = m_DataGridView.Rows[rowIdx];
@@ -80,18 +81,32 @@ public partial class CsvForm : Form
 				string iterValue = (string) iterCell.Value;
 				if (!string.IsNullOrEmpty(iterValue))
 				{
-					iterValue = iterValue.Replace("\t", "");
-					iterValue = iterValue.Replace("\r\n", "\n");
-					if (iterValue != (string)iterCell.Value)
+					string newValue = iterValue.Replace("\t", "");
+					newValue = newValue.Replace("\r\n", "\n");
+
+					if (iterValue != newValue)
 					{
 						CsvEditManager.CellValueChangeItem change = new CsvEditManager.CellValueChangeItem();
 						change.Row = rowIdx;
 						change.Column = colIdx;
-						change.OldValue = (string)iterCell.Value;
-						change.NewValue = iterValue;
+						change.OldValue = iterValue;
+						change.NewValue = newValue;
 						changeList.Add(change);
 
-						iterCell.Value = iterValue;
+						DataGridViewConsoleForm.Message message = new DataGridViewConsoleForm.Message();
+						message.Level = DataGridViewConsoleForm.Level.Info;
+						int indexOfTab = iterValue.IndexOf('\t');
+						if (indexOfTab > 0 && indexOfTab < iterValue.Length - 1)
+						{
+							message.Level = DataGridViewConsoleForm.Level.Warning;
+						}
+						message.Row = rowIdx;
+						message.Column = colIdx;
+						message.Caption = "移除制表符并转换换行符";
+						message.Text = string.Format("源：\n{0}\n转换后：\n{1}", iterValue, newValue);
+						messageList.Add(message);
+
+						iterCell.Value = newValue;
 					}
 				}
 			}
@@ -99,6 +114,9 @@ public partial class CsvForm : Form
 		EditManager.DidCellsValueChange(changeList);
 
 		AfterChangeCellValue();
+
+		DataGridViewConsoleForm consoleForm = new DataGridViewConsoleForm(messageList);
+		consoleForm.Show();
 	}
 
 	#region Layout

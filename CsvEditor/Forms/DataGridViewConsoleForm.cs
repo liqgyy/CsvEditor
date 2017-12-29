@@ -83,7 +83,8 @@ public partial class DataGridViewConsoleForm : Form
 			}
 		}
 
-		m_MessageListBox.SelectedIndex = listBoxSelectIndex;
+		if (listBoxSelectIndex < m_MessageListBox.Items.Count)
+			m_MessageListBox.SelectedIndex = listBoxSelectIndex;
 
 		m_InfoCheckBox.Text = string.Format("{0} - {1}", LevelToString(Level.Info), infoCount);
 		m_WarningCheckBox.Text = string.Format("{0} - {1}", LevelToString(Level.Warning), warningCount);
@@ -155,7 +156,7 @@ public partial class DataGridViewConsoleForm : Form
 			return;
 		}
 
-		m_DetailTextBox.Text = message.Text;
+		m_DetailTextBox.Text = message.Text.Replace("\n", "\r\n");
 	}
 
 	private void OnMessageListBox_MouseDoubleClick(object sender, MouseEventArgs e)
