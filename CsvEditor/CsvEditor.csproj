@@ -138,6 +138,8 @@
     <Compile Include="Plugins\SerializeUtility.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Verifier\BaseVerifier.cs" />
+    <Compile Include="Verifier\DefaultVerifier.cs" />
     <EmbeddedResource Include="Forms\CsvForm.resx">
       <DependentUpon>CsvForm.cs</DependentUpon>
     </EmbeddedResource>

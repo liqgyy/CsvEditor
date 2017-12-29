@@ -16,10 +16,10 @@ public class ConvertUtility
 
 		while (number > 0)
 		{
-			int m = number % 26;
-			if (m == 0) m = 26;
-			letter = ASCIIToChar(m + 64) + letter;
-			number = (number - m) / 26;
+			int high = number % 26;
+			if (high == 0) high = 26;
+			letter = ASCIIToChar(high + 64) + letter;
+			number = (number - high) / 26;
 		}
 		return letter;
     }
@@ -94,9 +94,9 @@ public class ConvertUtility
 			MD5CryptoServiceProvider md5provider = new MD5CryptoServiceProvider();
 			byte[] bytes = md5provider.ComputeHash(new UTF8Encoding().GetBytes(str));
 
-			for (int i = 0; i < bytes.Length; i++)
+			for (int byteIdx = 0; byteIdx < bytes.Length; byteIdx++)
 			{
-				hash.Append(bytes[i].ToString("x2"));
+				hash.Append(bytes[byteIdx].ToString("x2"));
 			}
 			return hash.ToString();
 		}
