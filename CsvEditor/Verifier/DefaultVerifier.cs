@@ -4,10 +4,12 @@ using System.Windows.Forms;
 
 class DefaultVerifier : BaseVerifier
 {
-	public override bool Verify(DataGridView dataGridView, out List<DataGridViewConsoleForm.Message> messageList)
+	public override DataGridViewConsoleForm.Level Verify(DataGridView dataGridView, out List<DataGridViewConsoleForm.Message> messageList)
 	{
 		messageList = new List<DataGridViewConsoleForm.Message>();
-		bool success = true;
+		bool hasError = false;
+		bool hasWarning = false;
+
 		for (int rowIdx = 0; rowIdx < dataGridView.Rows.Count; rowIdx++)
 		{
 			DataGridViewRow dataRow = dataGridView.Rows[rowIdx];
@@ -17,7 +19,7 @@ class DefaultVerifier : BaseVerifier
 
 				if (!VerifierUtility.VerifyTabOrLineBreak(value))
 				{
-					success = false;
+					hasError = true;
 
 					DataGridViewConsoleForm.Message message = new DataGridViewConsoleForm.Message();
 					message.Level = DataGridViewConsoleForm.Level.Error;
@@ -30,6 +32,17 @@ class DefaultVerifier : BaseVerifier
 			}
 		}
 
-		return success;
+		if (hasError)
+		{
+			return DataGridViewConsoleForm.Level.Error;
+		}
+		else if (hasWarning)
+		{
+			return DataGridViewConsoleForm.Level.Warning;
+		}
+		else
+		{
+			return DataGridViewConsoleForm.Level.None;
+		}
 	}
 }

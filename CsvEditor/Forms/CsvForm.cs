@@ -208,10 +208,23 @@ public partial class CsvForm : Form
 		SaveLayout();
 
 		List<DataGridViewConsoleForm.Message> messageList;
-		bool verifySuccess = VerifierUtility.VerifyWithVerifier(m_Layout.Verifier, m_DataGridView, out messageList);
+		DataGridViewConsoleForm.Level verifyLevel = VerifierUtility.VerifyWithVerifier(m_Layout.Verifier, m_DataGridView, out messageList);
 		DataGridViewConsoleForm.ShowForm(messageList, "保存文件");
 
-		if (verifySuccess)
+		bool canSave = false;
+		if (verifyLevel == DataGridViewConsoleForm.Level.None || verifyLevel == DataGridViewConsoleForm.Level.Info)
+		{
+			canSave = true;
+		}
+		else if (verifyLevel == DataGridViewConsoleForm.Level.Warning)
+		{
+			if (MessageBox.Show("您现在有Warning，确定存储吗?","提示",MessageBoxButtons.YesNo) == DialogResult.Yes)
+			{
+				canSave = true;
+			}
+		}
+
+		if (canSave)
 		{
 			// 保存文件
 			CsvExport myExport = new CsvExport(",", false);
@@ -239,7 +252,7 @@ public partial class CsvForm : Form
 		}
 		else
 		{
-			MessageBox.Show(string.Format("保存文件({0})失败", path));
+			MessageBox.Show(string.Format("保存文件({0})失败", "提示", path));
 			return false;
 		}
     }

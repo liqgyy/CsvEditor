@@ -27,7 +27,7 @@ public class VerifierUtility
 		}
 	}
 
-	public static bool VerifyWithVerifier(string verifierName, DataGridView dataGridView, out List<DataGridViewConsoleForm.Message> messageList)
+	public static DataGridViewConsoleForm.Level VerifyWithVerifier(string verifierName, DataGridView dataGridView, out List<DataGridViewConsoleForm.Message> messageList)
 	{
 		BaseVerifier verifier = GetVerifierWithName(verifierName);
 		return verifier.Verify(dataGridView, out messageList);
