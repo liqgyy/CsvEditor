@@ -41,9 +41,6 @@ public partial class CsvForm : Form
         SourcePath = path;
 
 		EditManager = new CsvEditManager(this);
-
-		DataGridViewConsoleForm testForm = new DataGridViewConsoleForm();
-		testForm.Show();
 	}
 
 	public DataGridView GetDataGridView()
@@ -178,7 +175,7 @@ public partial class CsvForm : Form
 	/// 监听Alt+回车键  
 	/// 如果单元格正在被编辑, 就在光标处添加换行(\r\n)
 	/// </summary>
-	protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+	protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
 	{
 		if (keyData == (Keys.Enter | Keys.Alt)
 			&& m_DataGridView.IsCurrentCellInEditMode)
