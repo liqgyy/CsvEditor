@@ -123,18 +123,18 @@ public partial class CsvForm : Form
 	/// 选中单元格
 	/// TODO 跳转到单元格
 	/// </summary>
-	public void SelectDataGridViewCell(int row,int column)
+	public bool SelectDataGridViewCell(int row,int column)
 	{
 		// 超出范围
 		if (row >= m_DataGridView.RowCount || column >= m_DataGridView.ColumnCount)
 		{
-			return;
+			return false;
 		}
 
 		m_DataGridView.ClearSelection();
 		if (row >= 0 && column >= 0)
 		{
-			m_DataGridView.Rows[row].Cells[column].Selected = true;
+			m_DataGridView.CurrentCell = m_DataGridView.Rows[row].Cells[column];
 		}
 		else if (row < 0 && column >= 0)
 		{
@@ -148,6 +148,7 @@ public partial class CsvForm : Form
 		{
 			m_DataGridView.SelectAll();
 		}
+		return true;
 	}
 
 	#region Layout

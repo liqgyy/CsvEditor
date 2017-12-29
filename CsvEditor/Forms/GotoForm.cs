@@ -41,15 +41,15 @@ public partial class GotoForm : Form
 
         DataGridView dataGridView = MainForm.Instance.GetCsvForm().GetDataGridView();
 
-        if (col < 1 || col > dataGridView.ColumnCount || row < 1 || row > dataGridView.RowCount)
-        {
-            string msgText = string.Format("输入的col或row超出范围.\n接受的范围:\n0 < col <= {0}\n0 < row <= {1}",
-                dataGridView.ColumnCount, dataGridView.RowCount);
-            MessageBox.Show(msgText, "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-        dataGridView.CurrentCell = dataGridView.Rows[row - 1].Cells[col - 1];
-        return;
+		if (col < 1 || col > dataGridView.ColumnCount || row < 1 || row > dataGridView.RowCount)
+		{
+			string msgText = string.Format("输入的col或row超出范围.\n接受的范围:\n1 <= row <= {0}\n1 <= col <= {1}\n或\nA <= col <= {2}",
+				dataGridView.RowCount, dataGridView.ColumnCount, ConvertUtility.NumberToLetter(dataGridView.ColumnCount));
+			MessageBox.Show(msgText, "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			return;
+		}
+		dataGridView.CurrentCell = dataGridView.Rows[row - 1].Cells[col - 1];
+		return;
     }
 
     #region UIEvent

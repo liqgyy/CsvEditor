@@ -13,15 +13,15 @@ public class ConvertUtility
     public static string NumberToLetter(int number)
 	{
         string letter = "";
-        
-        while(number > 26)
-        {
-            int num = (int)((double)number / 26.0);
-            number = number - num * 26;
-            letter += ASCIIToChar(num + 64);
-        }
-        letter += ASCIIToChar(number + 64);
-        return letter;
+
+		while (number > 0)
+		{
+			int m = number % 26;
+			if (m == 0) m = 26;
+			letter = ASCIIToChar(m + 64) + letter;
+			number = (number - m) / 26;
+		}
+		return letter;
     }
 
     /// <summary>
