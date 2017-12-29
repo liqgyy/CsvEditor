@@ -82,11 +82,11 @@ public class StringUtility
 		else
 		{
 			int[][] reslut = new int[allRepeatList.Count][];
-			for(int iAllRepeat = 0; iAllRepeat < allRepeatList.Count; iAllRepeat++)
+			for (int iAllRepeat = 0; iAllRepeat < allRepeatList.Count; iAllRepeat++)
 			{
 				repeatList = allRepeatList[iAllRepeat];
 				reslut[iAllRepeat] = new int[repeatList.Count];
-				for(int iRepeat = 0; iRepeat < repeatList.Count; iRepeat++)
+				for (int iRepeat = 0; iRepeat < repeatList.Count; iRepeat++)
 				{
 					reslut[iAllRepeat][iRepeat] = repeatList[iRepeat];
 				}
