@@ -17,11 +17,7 @@ public class VerifierUtility
 
 	public static string GetVerifierDisplayName(Type type)
 	{
-		if (type == typeof(DefaultVerifier))
-		{
-			return "默认";
-		}
-		else if (type == typeof(LocalizationVerifier))
+		if (type == typeof(LocalizationVerifier))
 		{
 			return "本地化";
 		}
@@ -29,12 +25,6 @@ public class VerifierUtility
 		{
 			return "默认";
 		}
-	}
-
-	public static DataGridViewConsoleForm.Level VerifyWithVerifier(string verifierName, DataGridView dataGridView, out List<DataGridViewConsoleForm.Message> messageList)
-	{
-		BaseVerifier verifier = GetVerifierWithName(verifierName);
-		return verifier.Verify(dataGridView, out messageList);
 	}
 
 	public static BaseVerifier GetVerifierWithName(string verifier)
@@ -46,6 +36,12 @@ public class VerifierUtility
 			default:
 				return new DefaultVerifier();
 		}
+	}
+
+	public static DataGridViewConsoleForm.Level VerifyWithVerifier(string verifierName, DataGridView dataGridView, out List<DataGridViewConsoleForm.Message> messageList)
+	{
+		BaseVerifier verifier = GetVerifierWithName(verifierName);
+		return verifier.Verify(dataGridView, out messageList);
 	}
 
 	public static string GetVerifyMessage(VerifyType verifyType)
