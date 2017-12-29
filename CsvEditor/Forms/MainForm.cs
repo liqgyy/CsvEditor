@@ -218,6 +218,7 @@ public partial class MainForm : Form
 		m_SaveLayoutToolStripMenuItem.Enabled = false;
 		m_ApplyLayoutToolStripMenuItem.Enabled = false;
 		m_ManagerLayoutToolStripMenuItem.Enabled = false;
+		m_ApplyVerifierLayoutToolStripMenuItem.Enabled = false;
 
 		string[] specificLayoutKeys = CsvLayoutManager.Instance.GetSpecificKeys();
 		m_ManagerLayoutToolStripMenuItem.Enabled = specificLayoutKeys.Length > 0;
@@ -225,6 +226,8 @@ public partial class MainForm : Form
 		if (SelCsvFormInitialized())
 		{
 			m_SaveLayoutToolStripMenuItem.Enabled = true;
+
+			// 应用布局
 			if (specificLayoutKeys.Length > 0)
 			{
 				m_ApplyLayoutToolStripMenuItem.Enabled = true;
@@ -240,9 +243,24 @@ public partial class MainForm : Form
 					m_ApplyLayoutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newToolStripMenuItem });
 				}
 			}
+
+			// 应用校验固规则
+			m_ApplyVerifierLayoutToolStripMenuItem.Enabled = true;
+			m_ApplyVerifierLayoutToolStripMenuItem.DropDownItems.Clear();
+			m_ApplyVerifierLayoutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
+				CreateApplyVerifierLayoutToolSpritMenuItem("Default",VerifierUtility.GetVerifierDisplayName("Default"))});
 		}
-	}	
-	
+	}
+
+	private ToolStripMenuItem CreateApplyVerifierLayoutToolSpritMenuItem(string name, string text)
+	{
+		ToolStripMenuItem newToolStripMenuItem = new ToolStripMenuItem();
+		newToolStripMenuItem.Name = name;
+		newToolStripMenuItem.Text = text;
+		newToolStripMenuItem.Click += new EventHandler(OnApplyVerifierLayoutToolStripMenuItem_Click);
+		return newToolStripMenuItem;
+	}
+
 	private void UpdateToolsToolStripMenu()
 	{
 		m_MergeLocalizationToolsToolStripMenuItem.Enabled = false;
@@ -498,6 +516,16 @@ public partial class MainForm : Form
 		CsvLayoutManager.Instance.Replace(m_CsvForm.GetLayout(), layout);
 		CsvLayoutManager.Instance.Save();
 		m_CsvForm.LoadLayout();
+	}
+
+	/// <summary>
+	/// 应用校验规则
+	/// </summary>
+	private void OnApplyVerifierLayoutToolStripMenuItem_Click(object sender, EventArgs e)
+	{
+		ToolStripMenuItem item = (ToolStripMenuItem)sender;
+		m_CsvForm.GetLayout().Verifier = item.Name;
+		m_CsvForm.UpdateFormText();
 	}
 
 	private void OnCellEditTextBox_TextChanged(object sender, EventArgs e)

@@ -5,19 +5,37 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-public class VerifilerUtility
+public class VerifierUtility
 {
 	private static string[] ms_VerifyMessages;
 
-	public static bool VerifyWithVerifiler(string verifilerName, DataGridView dataGridView, out List<DataGridViewConsoleForm.Message> messageList)
+	public static string GetVerifierDisplayName(string verifierName)
 	{
-		BaseVerifier verifiler = GetVerifierWithName(verifilerName);
-		return verifiler.Verify(dataGridView, out messageList);
+		BaseVerifier verifier = GetVerifierWithName(verifierName);
+		return GetVerifierDisplayName(verifier.GetType());
 	}
 
-	public static BaseVerifier GetVerifierWithName(string verifiler)
+	public static string GetVerifierDisplayName(Type type)
 	{
-		switch(verifiler)
+		if (type == typeof(DefaultVerifier))
+		{
+			return "默认";
+		}
+		else
+		{
+			return "默认";
+		}
+	}
+
+	public static bool VerifyWithVerifier(string verifierName, DataGridView dataGridView, out List<DataGridViewConsoleForm.Message> messageList)
+	{
+		BaseVerifier verifier = GetVerifierWithName(verifierName);
+		return verifier.Verify(dataGridView, out messageList);
+	}
+
+	public static BaseVerifier GetVerifierWithName(string verifier)
+	{
+		switch(verifier)
 		{
 			default:
 				return new DefaultVerifier();

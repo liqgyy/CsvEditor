@@ -4,11 +4,6 @@ using System.Windows.Forms;
 
 class DefaultVerifier : BaseVerifier
 {
-	public override string GetDisplayName()
-	{
-		return "默认";
-	}
-
 	public override bool Verify(DataGridView dataGridView, out List<DataGridViewConsoleForm.Message> messageList)
 	{
 		messageList = new List<DataGridViewConsoleForm.Message>();
@@ -20,7 +15,7 @@ class DefaultVerifier : BaseVerifier
 			{
 				string value = (string)dataRow.Cells[colIdx].Value;
 
-				if (!VerifilerUtility.VerifyTabOrLineBreak(value))
+				if (!VerifierUtility.VerifyTabOrLineBreak(value))
 				{
 					success = false;
 
@@ -28,7 +23,7 @@ class DefaultVerifier : BaseVerifier
 					message.Level = DataGridViewConsoleForm.Level.Error;
 					message.Row = rowIdx;
 					message.Column = colIdx;
-					message.Caption = VerifilerUtility.GetVerifyMessage(VerifilerUtility.VerifyType.TabOrLineBreak);
+					message.Caption = VerifierUtility.GetVerifyMessage(VerifierUtility.VerifyType.TabOrLineBreak);
 					message.Text = value;
 					messageList.Add(message);
 				}

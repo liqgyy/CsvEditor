@@ -15,7 +15,7 @@ public class CsvLayout
 	/// </summary>
 	public int FrozenRow = -1;
 
-	public string Verifiler = "Default";
+	public string Verifier = "Default";
 
 	public CsvLayout(string key)
 	{

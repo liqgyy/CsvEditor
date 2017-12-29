@@ -152,6 +152,25 @@ public partial class CsvForm : Form
 		return true;
 	}
 
+	/// <summary>
+	/// 更新窗口Text
+	/// 文件没有保存到源文件就在开头加 ?
+	/// 文件有改动就在结尾加 *
+	/// </summary>
+	public void UpdateFormText()
+	{
+		string newFormText = string.Format("{0}{1}  -检验规则({2})",
+			m_SourceFile,
+			(DataChanged ? "*" : ""),
+			VerifierUtility.GetVerifierDisplayName(m_Layout.Verifier));
+
+		if (Text != newFormText)
+		{
+			Text = newFormText;
+			MainForm.Instance.UpdateFormText();
+		}
+	}
+
 	#region Layout
 	public CsvLayout GetLayout()
 	{
@@ -189,7 +208,7 @@ public partial class CsvForm : Form
 		SaveLayout();
 
 		List<DataGridViewConsoleForm.Message> messageList;
-		bool verifySuccess = VerifilerUtility.VerifyWithVerifiler(m_Layout.Verifiler, m_DataGridView, out messageList);
+		bool verifySuccess = VerifierUtility.VerifyWithVerifier(m_Layout.Verifier, m_DataGridView, out messageList);
 		DataGridViewConsoleForm.ShowForm(messageList, "保存文件");
 
 		if (verifySuccess)
@@ -412,25 +431,6 @@ public partial class CsvForm : Form
         for (int rowIdx = 0; rowIdx < m_DataGridView.RowCount; rowIdx++)
         {
             m_DataGridView.Rows[rowIdx].HeaderCell.Value = (rowIdx + 1).ToString();
-        }
-    }
-
-    /// <summary>
-    /// 更新窗口Text
-    /// 文件没有保存到源文件就在开头加 ?
-    /// 文件有改动就在结尾加 *
-    /// </summary>
-    private void UpdateFormText()
-    {
-		string newFormText = string.Format("{0}{1}  -检验规则({2})",
-			m_SourceFile,
-			(DataChanged ? "*" : ""),
-			VerifilerUtility.GetVerifierWithName(m_Layout.Verifiler).GetDisplayName());
-
-        if (Text != newFormText)
-        {
-            Text = newFormText;
-            MainForm.Instance.UpdateFormText();
         }
     }
 
