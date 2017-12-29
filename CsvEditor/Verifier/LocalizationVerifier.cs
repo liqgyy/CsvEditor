@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
-class DefaultVerifier : BaseVerifier
+class LocalizationVerifier : BaseVerifier
 {
 	public override void Verify(DataGridView dataGridView, ref List<DataGridViewConsoleForm.Message> messageList, ref bool hasError, ref bool hasWarning)
 	{
@@ -17,6 +20,12 @@ class DefaultVerifier : BaseVerifier
 				{
 					hasError = true;
 					messageList.Add(VerifierUtility.CreateTabOrLineBreakMessage(DataGridViewConsoleForm.Level.Error, rowIdx, colIdx, value));
+				}
+
+				if (!VerifierUtility.VerifyHeadAndTailWhiteSpace(value))
+				{
+					hasWarning = true;
+					messageList.Add(VerifierUtility.CreateHeadAndTailWhiteSpaceMessage(DataGridViewConsoleForm.Level.Warning, rowIdx, colIdx, value));
 				}
 			}
 		}

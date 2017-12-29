@@ -249,6 +249,8 @@ public partial class MainForm : Form
 			m_ApplyVerifierLayoutToolStripMenuItem.DropDownItems.Clear();
 			m_ApplyVerifierLayoutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
 				CreateApplyVerifierLayoutToolSpritMenuItem("Default",VerifierUtility.GetVerifierDisplayName("Default"))});
+			m_ApplyVerifierLayoutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
+				CreateApplyVerifierLayoutToolSpritMenuItem("Localization",VerifierUtility.GetVerifierDisplayName("Localization"))});
 		}
 	}
 

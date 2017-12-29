@@ -16,6 +16,6 @@
 	public const int CSV_NOTE_POLYGON_SIZE = 6;
 
 	#if DEBUG
-	public const bool DIFF_ON_CLOSED_FILE = false;
+	public static bool DIFF_ON_CLOSED_FILE = false;
 	#endif
 }

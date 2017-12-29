@@ -21,6 +21,10 @@ public class VerifierUtility
 		{
 			return "默认";
 		}
+		else if (type == typeof(LocalizationVerifier))
+		{
+			return "本地化";
+		}
 		else
 		{
 			return "默认";
@@ -37,6 +41,8 @@ public class VerifierUtility
 	{
 		switch(verifier)
 		{
+			case "Localization":
+				return new LocalizationVerifier();
 			default:
 				return new DefaultVerifier();
 		}
@@ -49,10 +55,12 @@ public class VerifierUtility
 			ms_VerifyMessages = new string[(int)VerifyType.End];
 
 			ms_VerifyMessages[(int)VerifyType.TabOrLineBreak] = string.Format("包含非法字符(\"\\t\", \"\\r\\n\")\n请在保存前运行(移除所有制表符并转换所有换行符)工具");
+			ms_VerifyMessages[(int)VerifyType.HeadAndTailWhiteSpace] = string.Format("头尾有空格");
 		}
 		return ms_VerifyMessages[(int)verifyType];
 	}
 
+	#region TabOrLineBreak
 	public static bool VerifyTabOrLineBreak(string value)
 	{
 		if (value.Contains('\t') || value.Contains("\r\n"))
@@ -62,9 +70,38 @@ public class VerifierUtility
 		return true;
 	}
 
+	public static DataGridViewConsoleForm.Message CreateTabOrLineBreakMessage(DataGridViewConsoleForm.Level level, int rowIdx, int colIdx, string cellValue)
+	{
+		DataGridViewConsoleForm.Message message = new DataGridViewConsoleForm.Message();
+		message.Level = level;
+		message.Row = rowIdx;
+		message.Column = colIdx;
+		message.Caption = GetVerifyMessage(VerifyType.TabOrLineBreak);
+		message.Text = string.Format("({0})", cellValue);
+		return message;
+	}
+	#endregion
+
+	public static bool VerifyHeadAndTailWhiteSpace(string value)
+	{
+		return value.Trim() == value;
+	}
+
+	public static DataGridViewConsoleForm.Message CreateHeadAndTailWhiteSpaceMessage(DataGridViewConsoleForm.Level level, int rowIdx, int colIdx, string cellValue)
+	{
+		DataGridViewConsoleForm.Message message = new DataGridViewConsoleForm.Message();
+		message.Level = level;
+		message.Row = rowIdx;
+		message.Column = colIdx;
+		message.Caption = GetVerifyMessage(VerifyType.HeadAndTailWhiteSpace);
+		message.Text = string.Format("({0})", cellValue);
+		return message;
+	}
+
 	public enum VerifyType
 	{
 		TabOrLineBreak = 0,
+		HeadAndTailWhiteSpace,
 		End
 	}
 }
