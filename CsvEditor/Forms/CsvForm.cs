@@ -115,8 +115,7 @@ public partial class CsvForm : Form
 
 		AfterChangeCellValue();
 
-		DataGridViewConsoleForm consoleForm = new DataGridViewConsoleForm(messageList);
-		consoleForm.Show();
+		DataGridViewConsoleForm.ShowForm(messageList, "移除所有制表符并转换所有换行符");
 	}
 
 	/// <summary>
@@ -138,10 +137,12 @@ public partial class CsvForm : Form
 		}
 		else if (row < 0 && column >= 0)
 		{
+			m_DataGridView.CurrentCell = m_DataGridView.Rows[0].Cells[column];
 			m_DataGridView.Columns[column].Selected = true;
 		}
 		else if (row >= 0 && column < 0)
 		{
+			m_DataGridView.CurrentCell = m_DataGridView.Rows[row].Cells[0];
 			m_DataGridView.Rows[row].Selected = true;
 		}
 		else if (row < 0 && column < 0)
@@ -187,37 +188,41 @@ public partial class CsvForm : Form
     {
 		SaveLayout();
 
-		// 保存文件
-		CsvExport myExport = new CsvExport(",", false);
-        try
-        {
-            for (int rowIdx = 0; rowIdx < MainDataTable.Rows.Count; rowIdx++)
-            {
-                myExport.AddRow();
-                DataRow dataRow = MainDataTable.Rows[rowIdx];
-                for (int colIdx = 0; colIdx < MainDataTable.Columns.Count; colIdx++)
-                {
-					string value = (string)dataRow[colIdx];
-					if (value.Contains("\t") || value.Contains("\r\n"))
+		List<DataGridViewConsoleForm.Message> messageList;
+		bool verifySuccess = VerifilerUtility.VerifyWithVerifiler(m_Layout.Verifiler, m_DataGridView, out messageList);
+		DataGridViewConsoleForm.ShowForm(messageList, "保存文件");
+
+		if (verifySuccess)
+		{
+			// 保存文件
+			CsvExport myExport = new CsvExport(",", false);
+			try
+			{
+				for (int rowIdx = 0; rowIdx < MainDataTable.Rows.Count; rowIdx++)
+				{
+					myExport.AddRow();
+					DataRow dataRow = MainDataTable.Rows[rowIdx];
+					for (int colIdx = 0; colIdx < MainDataTable.Columns.Count; colIdx++)
 					{
-						throw (new InvalidDataException(string.Format("第{0}行{1}列包含非法字符(\"\\t\", \"\\r\\n\")\n请在保存前运行({2})工具",
-							rowIdx + 1,
-							ConvertUtility.NumberToLetter(colIdx + 1),
-							"移除所有制表符并转换所有换行符")));
+						string value = (string)dataRow[colIdx];
+						myExport[colIdx.ToString()] = value;
 					}
-					myExport[colIdx.ToString()] = value;
-
 				}
-            }
 
-            myExport.ExportToFile(path);
-        }
-        catch (Exception ex)
-        {
-            DebugUtility.ShowExceptionMessageBox("保存文件失败:" + path, ex);
-            return false;
-        }
-        return true;
+				myExport.ExportToFile(path);
+			}
+			catch (Exception ex)
+			{
+				DebugUtility.ShowExceptionMessageBox(string.Format("保存文件({0})失败", path), ex);
+				return false;
+			}
+			return true;
+		}
+		else
+		{
+			MessageBox.Show(string.Format("保存文件({0})失败", path));
+			return false;
+		}
     }
 	#endregion // End File
 
@@ -417,7 +422,11 @@ public partial class CsvForm : Form
     /// </summary>
     private void UpdateFormText()
     {
-        string newFormText = m_SourceFile + (DataChanged ? "*" : "");
+		string newFormText = string.Format("{0}{1}  -检验规则({2})",
+			m_SourceFile,
+			(DataChanged ? "*" : ""),
+			VerifilerUtility.GetVerifierWithName(m_Layout.Verifiler).GetDisplayName());
+
         if (Text != newFormText)
         {
             Text = newFormText;
@@ -425,17 +434,26 @@ public partial class CsvForm : Form
         }
     }
 
-    #region UIEvent
-    /// <summary>
-    /// 窗口加载时读取csv文件
-    /// </summary>
-    private void OnForm_Load(object sender, EventArgs e)
+	private bool DataGridViewCellPaintingNeedNote(DataGridViewCell cell)
+	{
+		return !string.IsNullOrEmpty(cell.ToolTipText);
+	}
+
+	private bool DataGridViewCellPaintingNeedMultiline(DataGridViewCell cell)
+	{
+		return cell.Value.ToString().Contains("\n");
+	}
+
+	#region UIEvent
+	/// <summary>
+	/// 窗口加载时读取csv文件
+	/// </summary>
+	private void OnForm_Load(object sender, EventArgs e)
     {
         // 初始化文件，创建文件副本
         try
         {
             m_SourceFile = Path.GetFileName(SourcePath);
-			UpdateFormText();
 			MainForm.Instance.Text = Text;
             CopySourceFile();
         }
@@ -446,6 +464,10 @@ public partial class CsvForm : Form
         }
 
         Initialized = LoadFileToDataTable(SourcePath);
+		if (Initialized)
+		{
+			UpdateFormText();
+		}
 	}
 
 	private void OnForm_Shown(object sender, EventArgs e)
@@ -630,12 +652,10 @@ public partial class CsvForm : Form
     }
 
 	/// <summary>
-	/// 绘制单元格时，添加批注提示
+	/// 绘制单元格时
 	/// </summary>
 	private void OnDataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
 	{
-		e.Paint(e.ClipBounds, e.PaintParts);
-
 		if (e.ColumnIndex < 0 || e.RowIndex < 0)
 		{
 			return;
@@ -646,20 +666,29 @@ public partial class CsvForm : Form
 		{
 			return;
 		}
-		OnDataGridView_CellPainting_Multiline(cell, e);
-		OnDataGridView_CellPainting_Note(cell, e);
-	}
+		bool needNote = DataGridViewCellPaintingNeedNote(cell);
+		bool needMultiline = DataGridViewCellPaintingNeedMultiline(cell);
+		if (needNote || needMultiline)
+		{
+			e.Paint(e.ClipBounds, e.PaintParts);
+			e.Handled = true;
+		}
 
+		if (needNote)
+		{
+			OnDataGridView_CellPainting_Note(cell, e);
+		}
+		if (needMultiline)
+		{
+			OnDataGridView_CellPainting_Multiline(cell, e);
+		}
+	}
+	
 	/// <summary>
 	/// 绘制单元格时, 显示批注标记
 	/// </summary>
 	private void OnDataGridView_CellPainting_Note(DataGridViewCell cell, DataGridViewCellPaintingEventArgs e)
 	{
-		if (string.IsNullOrEmpty(cell.ToolTipText))
-		{
-			return;
-		}
-
 		using (Brush gridBrush = new SolidBrush(Color.Red))
 		{
 			Point[] polygonPoints = new Point[3];
@@ -667,7 +696,6 @@ public partial class CsvForm : Form
 			polygonPoints[1] = new Point(e.CellBounds.Right - 1, e.CellBounds.Bottom - 1 - GlobalData.CSV_NOTE_POLYGON_SIZE);
 			polygonPoints[2] = new Point(e.CellBounds.Right - 1 - GlobalData.CSV_NOTE_POLYGON_SIZE, e.CellBounds.Bottom - 1);
 			e.Graphics.FillPolygon(gridBrush, polygonPoints);
-			e.Handled = true;
 		}
 	}
 
@@ -676,11 +704,6 @@ public partial class CsvForm : Form
 	/// </summary>
 	private void OnDataGridView_CellPainting_Multiline(DataGridViewCell cell, DataGridViewCellPaintingEventArgs e)
 	{
-		if (!cell.Value.ToString().Contains("\n"))
-		{
-			return;
-		}
-
 		using (Brush gridBrush = new SolidBrush(Color.Red))
 		{
 			Point[] polygonPoints = new Point[3];
@@ -688,7 +711,6 @@ public partial class CsvForm : Form
 			polygonPoints[1] = new Point(e.CellBounds.Right - 1, e.CellBounds.Bottom - 1 - GlobalData.CSV_NOTE_POLYGON_SIZE);
 			polygonPoints[2] = new Point(e.CellBounds.Right - 1 - GlobalData.CSV_NOTE_POLYGON_SIZE, e.CellBounds.Bottom - 1);
 			e.Graphics.FillPolygon(gridBrush, polygonPoints);
-			e.Handled = true;
 		}
 	}
 

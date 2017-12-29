@@ -159,6 +159,7 @@ public partial class MainForm : Form
     private void SetCsvForm(CsvForm csvForm)
     {
 		m_CsvForm = csvForm;
+		UpdateFormText();
 
 		// 所有Csv窗口都被关闭
 		if (m_CsvForm == null)

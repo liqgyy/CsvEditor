@@ -12,7 +12,21 @@ public partial class DataGridViewConsoleForm : Form
 	private List<int> m_MessageIndexList;
 	private int m_ListBoxSelectedIndex = -1;
 
-	public DataGridViewConsoleForm(List<Message> messageList)
+	public static void ShowForm(List<Message> messageList , string formText)
+	{
+		if (messageList == null || messageList.Count < 1)
+		{
+			return;
+		}
+		else
+		{
+			DataGridViewConsoleForm form = new DataGridViewConsoleForm(messageList);
+			form.Text = "控制台 - " + formText;
+			form.Show();
+		}
+	}
+
+	private DataGridViewConsoleForm(List<Message> messageList)
 	{
 		InitializeComponent();
 		UpdateListBoxSize();
