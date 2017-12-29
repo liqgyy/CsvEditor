@@ -14,6 +14,15 @@ public partial class DataGridViewConsoleForm : Form
 
 	private DataGridView m_DataGridView;
 
+	/// <summary>
+	/// TODO
+	/// 还没完成 在标题后面添加被省略的消息数量
+	/// 完成后在再界面加一个CheckBox
+	/// </summary>
+	private bool m_Collapse = false;
+	private string m_LastCaption = "";
+	private int m_CollapseCount = 0;
+
 	public static void ShowForm(List<Message> messageList, DataGridView dataGridView, string formText)
 	{
 		if (messageList == null || messageList.Count < 1)
@@ -48,6 +57,8 @@ public partial class DataGridViewConsoleForm : Form
 
 	private void UpdateListBox()
 	{
+		m_Collapse = m_CollapseCheckBox.Checked;
+
 		// 当前选中的消息的索引
 		int messageSelectedIndex = 0;
 		// 需要选中ListBox的索引
@@ -60,6 +71,9 @@ public partial class DataGridViewConsoleForm : Form
 		m_MessageListBox.Items.Clear();
 		m_MessageIndexList = new List<int>();
 
+		m_LastCaption = "";
+		m_CollapseCount = 0;
+
 		int infoCount = 0;
 		int warningCount = 0;
 		int errorCount = 0;
@@ -71,7 +85,8 @@ public partial class DataGridViewConsoleForm : Form
 		for (int msgIdx = 0; msgIdx< m_MessageList.Count; msgIdx++)
 		{
 			Message iterMessage = m_MessageList[msgIdx];
-			switch(iterMessage.Level)
+
+			switch (iterMessage.Level)
 			{
 				case Level.Info:
 					infoCount++;
@@ -101,6 +116,14 @@ public partial class DataGridViewConsoleForm : Form
 			}
 		}
 
+		// 最后一条添加Collapse
+		if (m_CollapseCount > 0)
+		{
+			string lastItem = (string)m_MessageListBox.Items[m_MessageListBox.Items.Count - 1];
+			lastItem = string.Format("{0}\tCollapse:{1}", lastItem, m_CollapseCount + 1);
+			m_MessageListBox.Items[m_MessageListBox.Items.Count - 1] = lastItem;
+		}
+
 		if (listBoxSelectIndex < m_MessageListBox.Items.Count)
 			m_MessageListBox.SelectedIndex = listBoxSelectIndex;
 
@@ -111,13 +134,36 @@ public partial class DataGridViewConsoleForm : Form
 
 	private void AddItemToListBox(Message message, int index)
 	{
-		string item = string.Format("{0} : 第({1})行({2})列\t{3}", 
-			LevelToString(message.Level),
-			message.Row + 1, 
-			ConvertUtility.NumberToLetter(message.Column + 1), 
-			message.Caption);
+		if (m_Collapse)
+		{
+			if (m_LastCaption == message.Caption)
+			{
+				m_CollapseCount++;
+				return;
+			}
+
+			if (m_CollapseCount > 0)
+			{
+				string lastItem = (string)m_MessageListBox.Items[m_MessageListBox.Items.Count - 1];
+				lastItem = string.Format("{0}\tCollapse:{1}", lastItem, m_CollapseCount + 1);
+				m_MessageListBox.Items[m_MessageListBox.Items.Count - 1] = lastItem;
+			}
+			m_LastCaption = message.Caption;
+			m_CollapseCount = 0;
+		}
+
+		string item = FormatMessgeCaption(message);
 		m_MessageListBox.Items.Add(item);
 		m_MessageIndexList.Add(index);
+	}
+
+	private string FormatMessgeCaption(Message message)
+	{
+		return string.Format("{0} : 第({1})行({2})列\t{3}",
+			LevelToString(message.Level),
+			message.Row + 1,
+			ConvertUtility.NumberToLetter(message.Column + 1),
+			message.Caption);
 	}
 
 	private string LevelToString(Level level)
@@ -180,8 +226,8 @@ public partial class DataGridViewConsoleForm : Form
 		{
 			return;
 		}
-		string selectedItem = (string)m_MessageListBox.SelectedItem;
-		string text = string.Format("{0}\n{1}", selectedItem.Replace("\t", "\n\n"), message.Text);
+		string caption = FormatMessgeCaption(message);
+		string text = string.Format("{0}\n{1}", caption.Replace("\t", "\n\n"), message.Text);
 		m_DetailTextBox.Text = text.Replace("\n", "\r\n");
 	}
 
