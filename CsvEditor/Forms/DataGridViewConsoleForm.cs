@@ -111,7 +111,7 @@ public partial class DataGridViewConsoleForm : Form
 
 	private void AddItemToListBox(Message message, int index)
 	{
-		string item = string.Format("{0}: 第({1})行({2})列\t{3}", 
+		string item = string.Format("{0} : 第({1})行({2})列\t{3}", 
 			LevelToString(message.Level),
 			message.Row + 1, 
 			ConvertUtility.NumberToLetter(message.Column + 1), 
@@ -124,15 +124,18 @@ public partial class DataGridViewConsoleForm : Form
 	{
 		if (level == Level.Info)
 		{
-			return "信息";
+			//return "信息";
+			return "I";
 		}
 		else if (level == Level.Warning)
 		{
-			return "警告";
+			//return "警告";
+			return "W";
 		}
 		else if (level == Level.Error)
 		{
-			return "错误";
+			//return "错误";
+			return "E";
 		}
 		return "未知";
 	}
@@ -177,8 +180,9 @@ public partial class DataGridViewConsoleForm : Form
 		{
 			return;
 		}
-
-		m_DetailTextBox.Text = message.Text.Replace("\n", "\r\n");
+		string selectedItem = (string)m_MessageListBox.SelectedItem;
+		string text = string.Format("{0}\n{1}", selectedItem.Replace("\t", "\n\n"), message.Text);
+		m_DetailTextBox.Text = text.Replace("\n", "\r\n");
 	}
 
 	private void OnMessageListBox_MouseDoubleClick(object sender, MouseEventArgs e)
