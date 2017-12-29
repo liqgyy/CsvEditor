@@ -14,6 +14,14 @@ public class LocalizationVerifier : BaseVerifier
 		for (int rowIdx = 0; rowIdx < dataGridView.Rows.Count; rowIdx++)
 		{
 			DataGridViewRow dataRow = dataGridView.Rows[rowIdx];
+
+			// 魔法数字：Key不需要检测。 参考列, 国内去敏感词列跟中文列重复太多不检测
+			int[][] repeats = VerifierUtility.VerifyRepeatCellInRow(dataRow, new int[] { 0, 1, 12, 14 });
+			if (repeats != null)
+			{
+				messageList.Add(VerifierUtility.CreateRepeatCellInRowMessage(DataGridViewConsoleForm.Level.Info, rowIdx, repeats));
+			}
+
 			for (int colIdx = 0; colIdx < dataGridView.Columns.Count; colIdx++)
 			{
 				string value = (string)dataRow.Cells[colIdx].Value;

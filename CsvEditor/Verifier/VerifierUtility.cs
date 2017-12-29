@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 public class VerifierUtility
@@ -52,6 +53,15 @@ public class VerifierUtility
 
 			ms_VerifyMessages[(int)VerifyType.TabOrLineBreak] = string.Format("包含非法字符(\"\\t\", \"\\r\\n\")\n请在保存前运行(移除所有制表符并转换所有换行符)工具");
 			ms_VerifyMessages[(int)VerifyType.HeadAndTailWhiteSpace] = string.Format("头尾有空格");
+			ms_VerifyMessages[(int)VerifyType.RepeatCellInRow] = string.Format("行内有内容重复的单元格");
+
+			for (int iMessage = 0; iMessage < ms_VerifyMessages.Length; iMessage++)
+			{
+				if (string.IsNullOrEmpty(ms_VerifyMessages[iMessage]))
+				{
+					MessageBox.Show(string.Format("是不是添加了新校验规则({0})后没填写校验提示消息", (VerifyType)iMessage), "提示");
+				}
+			}
 		}
 		return ms_VerifyMessages[(int)verifyType];
 	}
@@ -78,6 +88,7 @@ public class VerifierUtility
 	}
 	#endregion
 
+	#region HeadAndTailWhiteSpace
 	public static bool VerifyHeadAndTailWhiteSpace(string value)
 	{
 		return value.Trim() == value;
@@ -93,11 +104,51 @@ public class VerifierUtility
 		message.Text = string.Format("({0})", cellValue);
 		return message;
 	}
+	#endregion
+
+	#region TabOrLineBreak
+	public static int[][] VerifyRepeatCellInRow(DataGridViewRow row, int[] exclueds)
+	{
+		string[] strs = new string[row.Cells.Count];
+		for (int iCell = 0; iCell < strs.Length; iCell++)
+		{
+			strs[iCell] = (string)row.Cells[iCell].Value;
+		}
+		return StringUtility.CheckRepeat(strs, exclueds);
+	}
+
+	public static DataGridViewConsoleForm.Message CreateRepeatCellInRowMessage(DataGridViewConsoleForm.Level level, int rowIdx, int[][] repeats)
+	{
+		DataGridViewConsoleForm.Message message = new DataGridViewConsoleForm.Message();
+		message.Level = level;
+		message.Row = rowIdx;
+		message.Column = -1;
+		message.Caption = GetVerifyMessage(VerifyType.RepeatCellInRow);
+
+		StringBuilder textSb = new StringBuilder("重复的列");
+		for (int iRepeats = 0; iRepeats < repeats.Length; iRepeats++)
+		{
+			textSb.AppendLine();
+			int[] repeat = repeats[iRepeats];
+			for (int iRepeat = 0; iRepeat < repeat.Length; iRepeat++)
+			{
+				textSb.Append(ConvertUtility.NumberToLetter(repeat[iRepeat] + 1));
+				if (iRepeat < repeat.Length - 1)
+				{
+					textSb.Append(", ");
+				}
+			}
+		}
+		message.Text = textSb.ToString();
+		return message;
+	}
+	#endregion
 
 	public enum VerifyType
 	{
 		TabOrLineBreak = 0,
 		HeadAndTailWhiteSpace,
+		RepeatCellInRow,
 		End
 	}
 }
