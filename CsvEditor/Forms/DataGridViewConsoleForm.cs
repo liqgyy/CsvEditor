@@ -93,7 +93,11 @@ public partial class DataGridViewConsoleForm : Form
 
 	private void AddItemToListBox(Message message, int index)
 	{
-		string item = string.Format("{0}: 第({1})行({2})列\t{3}", LevelToString(message.Level), message.Row, message.Column, message.Caption);
+		string item = string.Format("{0}: 第({1})行({2})列\t{3}", 
+			LevelToString(message.Level),
+			message.Row + 1, 
+			ConvertUtility.NumberToLetter(message.Column + 1), 
+			message.Caption);
 		m_MessageListBox.Items.Add(item);
 		m_MessageIndexList.Add(index);
 	}
@@ -104,13 +108,13 @@ public partial class DataGridViewConsoleForm : Form
 		{
 			return "信息";
 		}
-		else if (level == Level.Info)
+		else if (level == Level.Warning)
 		{
-			return "信息";
+			return "警告";
 		}
-		else if (level == Level.Info)
+		else if (level == Level.Error)
 		{
-			return "信息";
+			return "错误";
 		}
 		return "未知";
 	}
@@ -168,7 +172,7 @@ public partial class DataGridViewConsoleForm : Form
 			return;
 		}
 
-		// TODO 选中message对应的Cell
+		MainForm.Instance.GetCsvForm().SelectDataGridViewCell(message.Row, message.Column);
 	}
 	#endregion //End UIEvent
 

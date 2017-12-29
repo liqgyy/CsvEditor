@@ -119,6 +119,37 @@ public partial class CsvForm : Form
 		consoleForm.Show();
 	}
 
+	/// <summary>
+	/// 选中单元格
+	/// TODO 跳转到单元格
+	/// </summary>
+	public void SelectDataGridViewCell(int row,int column)
+	{
+		// 超出范围
+		if (row >= m_DataGridView.RowCount || column >= m_DataGridView.ColumnCount)
+		{
+			return;
+		}
+
+		m_DataGridView.ClearSelection();
+		if (row >= 0 && column >= 0)
+		{
+			m_DataGridView.Rows[row].Cells[column].Selected = true;
+		}
+		else if (row < 0 && column >= 0)
+		{
+			m_DataGridView.Columns[column].Selected = true;
+		}
+		else if (row >= 0 && column < 0)
+		{
+			m_DataGridView.Rows[row].Selected = true;
+		}
+		else if (row < 0 && column < 0)
+		{
+			m_DataGridView.SelectAll();
+		}
+	}
+
 	#region Layout
 	public CsvLayout GetLayout()
 	{

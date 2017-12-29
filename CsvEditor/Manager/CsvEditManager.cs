@@ -420,7 +420,7 @@ public class CsvEditManager
 						string.Format("粘贴数据({0})行的第({1})行到表中第({2})行失败\n表一共有({3})行",
 						lines.Length,
 						lineIdx + 1,
-						currentRow,
+						currentRow + 1,
 						dataGridView.RowCount)));
 				}
 
@@ -434,8 +434,8 @@ public class CsvEditManager
 							string.Format("粘贴数据({0})列的第({1})列到表中第({2})列失败\n表一共有({3})列",
 								cells.Length,
 								cellIdx + 1,
-								currentCol + cellIdx,
-								dataGridView.ColumnCount)));
+								ConvertUtility.NumberToLetter(currentCol + cellIdx + 1),
+								ConvertUtility.NumberToLetter(dataGridView.ColumnCount))));
 					}
 					currentCell = dataGridView.Rows[currentRow].Cells[currentCol + cellIdx];
 					string cell = cells[cellIdx];
