@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-class LocalizationVerifier : BaseVerifier
+public class LocalizationVerifier : BaseVerifier
 {
+	public const string NAME = "Localization";
+
 	public override void Verify(DataGridView dataGridView, ref List<DataGridViewConsoleForm.Message> messageList, ref bool hasError, ref bool hasWarning)
 	{
 		for (int rowIdx = 0; rowIdx < dataGridView.Rows.Count; rowIdx++)

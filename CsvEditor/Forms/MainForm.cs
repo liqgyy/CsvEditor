@@ -248,17 +248,17 @@ public partial class MainForm : Form
 			m_ApplyVerifierLayoutToolStripMenuItem.Enabled = true;
 			m_ApplyVerifierLayoutToolStripMenuItem.DropDownItems.Clear();
 			m_ApplyVerifierLayoutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
-				CreateApplyVerifierLayoutToolSpritMenuItem("Default",VerifierUtility.GetVerifierDisplayName("Default"))});
+				CreateApplyVerifierLayoutToolSpritMenuItem(DefaultVerifier.NAME)});
 			m_ApplyVerifierLayoutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
-				CreateApplyVerifierLayoutToolSpritMenuItem("Localization",VerifierUtility.GetVerifierDisplayName("Localization"))});
+				CreateApplyVerifierLayoutToolSpritMenuItem(LocalizationVerifier.NAME)});
 		}
 	}
 
-	private ToolStripMenuItem CreateApplyVerifierLayoutToolSpritMenuItem(string name, string text)
+	private ToolStripMenuItem CreateApplyVerifierLayoutToolSpritMenuItem(string name)
 	{
 		ToolStripMenuItem newToolStripMenuItem = new ToolStripMenuItem();
 		newToolStripMenuItem.Name = name;
-		newToolStripMenuItem.Text = text;
+		newToolStripMenuItem.Text = VerifierUtility.GetVerifierDisplayName(name);
 		newToolStripMenuItem.Click += new EventHandler(OnApplyVerifierLayoutToolStripMenuItem_Click);
 		return newToolStripMenuItem;
 	}

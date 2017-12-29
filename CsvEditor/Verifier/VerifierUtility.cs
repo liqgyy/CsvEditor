@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 public class VerifierUtility
@@ -31,7 +29,9 @@ public class VerifierUtility
 	{
 		switch(verifier)
 		{
-			case "Localization":
+			case DefaultVerifier.NAME:
+				return new DefaultVerifier();
+			case LocalizationVerifier.NAME:
 				return new LocalizationVerifier();
 			default:
 				return new DefaultVerifier();

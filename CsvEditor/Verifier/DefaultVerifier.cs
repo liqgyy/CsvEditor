@@ -4,6 +4,8 @@ using System.Windows.Forms;
 
 class DefaultVerifier : BaseVerifier
 {
+	public const string NAME = "Default";
+
 	public override void Verify(DataGridView dataGridView, ref List<DataGridViewConsoleForm.Message> messageList, ref bool hasError, ref bool hasWarning)
 	{
 		for (int rowIdx = 0; rowIdx < dataGridView.Rows.Count; rowIdx++)
