@@ -104,11 +104,13 @@ public class RegistryUtility
 		}
 		catch (Exception ex)
 		{
+#if DEBUG
 			DebugUtility.ShowExceptionMessageBox(string.Format("获取注册表值失败\nRegistryHive : ({0})\nRegistryView : ({1})\nSubName : ({2})\nValueName : ({3})",
 				 hKey,
 				 view,
 				 subName,
 				 valueName), ex);
+#endif
 			return null;
 		}
 		finally

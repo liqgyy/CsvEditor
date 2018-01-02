@@ -44,18 +44,21 @@ public partial class SettingForm : Form
 		return false;
     }
 
-    /// <summary>
-    /// 显示是否关闭窗口的消息框
-    /// </summary>
-    /// <returns>Yes => 关闭窗口; No => 不关闭</returns>
-    public DialogResult ShowCloseFormMessageBox()
-    {
-        if (!SettingChanged())
-        {
-            return DialogResult.Yes;
-        }
-        return MessageBox.Show("设置未保存，是否关闭？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk);
-    }
+	/// <summary>
+	/// 显示是否关闭窗口的消息框
+	/// </summary>
+	/// <returns>Yes => 关闭窗口; No => 不关闭</returns>
+	public DialogResult ShowCloseFormMessageBox()
+	{
+		if (SettingChanged())
+		{
+			return MessageBox.Show("设置未保存，是否关闭？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk);
+		}
+		else
+		{
+			return DialogResult.Yes;
+		}
+	}
 
     #region UIEvent
     private void OnCloseButton_Click(object sender, EventArgs e)
@@ -70,7 +73,6 @@ public partial class SettingForm : Form
 			}
 		}
 		Close();
-		Dispose();
     }
 
     private void OnForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -80,9 +82,10 @@ public partial class SettingForm : Form
             e.Cancel = true;
 			return;
         }
+		Setting.Load();
 	}
 
-    private void OnSettingItemListBox_SelectedValueChanged(object sender, EventArgs e)
+	private void OnSettingItemListBox_SelectedValueChanged(object sender, EventArgs e)
     {
         int selectedIndex = ((ListBox)m_SettingItemListBox).SelectedIndex;
         for (int itemIdx = 0; itemIdx < m_SettingItems.Length; itemIdx++)
