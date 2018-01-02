@@ -10,7 +10,7 @@
 
 	public const string CSVLAYOUT_FILE_NAME = "Layout.bin";
 
-	public const string SPECIFIC_CSVLAYOUT_FILE_NAME = "SpecificLayout.bin";
+	public const string SPECIFIC_CSVLAYOUT_FILE_NAME = "ShareLayout.bin";
 	#endregion // End Setting
 
 	//public const int UNDO_MAX_COUNT = 5000;
