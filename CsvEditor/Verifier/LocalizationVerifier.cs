@@ -15,7 +15,7 @@ public class LocalizationVerifier : BaseVerifier
 		{
 			DataGridViewRow dataRow = dataGridView.Rows[rowIdx];
 
-			// 魔法数字：Key不需要检测。 参考列, 中文列的重复太多不检测
+			// 魔法数字：Key不需要检测。 注释列, 中文列的重复太多不检测
 			int[][] repeats = VerifierUtility.VerifyRepeatCellInRow(dataRow, new int[] { 0, 1, 7, 12, 14 });
 			if (repeats != null)
 			{
