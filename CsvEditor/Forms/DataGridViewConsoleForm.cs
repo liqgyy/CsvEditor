@@ -182,7 +182,7 @@ public partial class DataGridViewConsoleForm : Form
 		{
 			rowColumn = string.Format("({0},{1})", message.Row + 1, ConvertUtility.NumberToLetter(message.Column + 1));
 		}
-		return string.Format("{0,-4}{1,-8}\t{2}",
+		return string.Format("{0,-4}{1,-12}\t{2}",
 			LevelToString(message.Level),
 			rowColumn,			
 			message.Caption);
@@ -193,19 +193,19 @@ public partial class DataGridViewConsoleForm : Form
 		if (level == Level.Info)
 		{
 			return "信息";
-			//return "I";
 		}
 		else if (level == Level.Warning)
 		{
 			return "警告";
-			//return "W";
 		}
 		else if (level == Level.Error)
 		{
 			return "错误";
-			//return "E";
 		}
-		return "未知";
+		else
+		{
+			return "未知";
+		}
 	}
 
 	private Message GetMessageWithListBoxItemIndex(int selectedIndex)

@@ -20,6 +20,12 @@ class DefaultVerifier : BaseVerifier
 					hasError = true;
 					messageList.Add(VerifierUtility.CreateTabOrLineBreakMessage(DataGridViewConsoleForm.Level.Error, rowIdx, colIdx, value));
 				}
+
+				if (!VerifierUtility.VerifyHeadAndTailWhiteSpace(value))
+				{
+					hasWarning = true;
+					messageList.Add(VerifierUtility.CreateHeadAndTailWhiteSpaceMessage(DataGridViewConsoleForm.Level.Warning, rowIdx, colIdx, value));
+				}
 			}
 		}
 	}
