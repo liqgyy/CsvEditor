@@ -59,7 +59,7 @@ public partial class MergeLocalizationForm : Form
 						message.Level = DataGridViewConsoleForm.Level.Warning;
 						message.Column = 0;
 						message.Row = iRowInOriginalCSV;
-						message.Caption = "更改后Csv中Key的头尾有空格";
+						message.Caption = "Key的头尾有空格";
 						message.Text = string.Format("我帮你去除了空格\n去空格前的Key:({0})", key);
 						m_MessageList.Add(message);
 					}
@@ -139,7 +139,7 @@ public partial class MergeLocalizationForm : Form
 				message.Level = DataGridViewConsoleForm.Level.Warning;
 				message.Column = iCell;
 				message.Row = rowIdx;
-				message.Caption = "更改后Csv中该值是空";
+				message.Caption = "该值是空";
 				message.Text = string.Format("源值：\n({0})", oldCell.ToString());
 				m_MessageList.Add(message);
 			}

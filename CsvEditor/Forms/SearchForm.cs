@@ -233,10 +233,12 @@ public partial class SearchForm : Form
         ms_IsWildcard = m_WildcardCheckBox.Checked;
         ms_IsCase = m_CaseCheckBox.Checked;
         ms_SearchText = m_SearchTextBox.Text;
-        ms_ReplaceText = m_ReplaceTextBox.Text;
+		ms_SearchText.Replace("\r\n", "\n");
+		ms_ReplaceText = m_ReplaceTextBox.Text;
+		ms_ReplaceText.Replace("\r\n", "\n");
 
-        // TEMP 未实现不区分大小写的替换
-        m_ReplaceButton.Enabled = ms_IsCase;
+		// TEMP 未实现不区分大小写的替换
+		m_ReplaceButton.Enabled = ms_IsCase;
         m_ReplaceAllButton.Enabled = ms_IsCase;
     }
     #endregion // END UIEvent

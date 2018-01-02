@@ -66,7 +66,7 @@ public class VerifierUtility
 		return ms_VerifyMessages[(int)verifyType];
 	}
 
-	#region TabOrLineBreak
+	#region TabOrLineBreak(非法字符("\t", "\r\n"))
 	public static bool VerifyTabOrLineBreak(string value)
 	{
 		if (value.Contains('\t') || value.Contains("\r\n"))
@@ -88,7 +88,7 @@ public class VerifierUtility
 	}
 	#endregion
 
-	#region HeadAndTailWhiteSpace
+	#region HeadAndTailWhiteSpace(头尾空白字符)
 	public static bool VerifyHeadAndTailWhiteSpace(string value)
 	{
 		return value.Trim() == value;
@@ -106,7 +106,7 @@ public class VerifierUtility
 	}
 	#endregion
 
-	#region RepeatCellInRow
+	#region RepeatCellInRow(内容重复的单元格)
 	public static int[][] VerifyRepeatCellInRow(DataGridViewRow row, int[] exclueds)
 	{
 		string[] strs = new string[row.Cells.Count];
