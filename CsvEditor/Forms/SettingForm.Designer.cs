@@ -123,7 +123,7 @@
 			this.m_SettingItemListBox.Name = "m_SettingItemListBox";
 			this.m_SettingItemListBox.Size = new System.Drawing.Size(132, 340);
 			this.m_SettingItemListBox.TabIndex = 0;
-			this.m_SettingItemListBox.SelectedValueChanged += new System.EventHandler(this.OnSettingItemListBox_SelectedValueChanged);
+			this.m_SettingItemListBox.SelectedValueChanged += new System.EventHandler(this.OnSettingPanelListBox_SelectedValueChanged);
 			// 
 			// m_DiffComparePanal
 			// 

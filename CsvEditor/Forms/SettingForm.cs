@@ -11,20 +11,20 @@ using System.Windows.Forms;
 
 public partial class SettingForm : Form
 {
-    private SettingItem[] m_SettingItems;
+    private SettingPanelItem[] m_SettingItems;
 
     public SettingForm()
     {
         InitializeComponent();
 
-		m_SettingItems = new SettingItem[(int)SettingItemType.End];
-		m_SettingItems[(int)SettingItemType.DiffCompare] = new SettingForm_DiffCompare(this, "差异比较", m_DiffComparePanal);
+		m_SettingItems = new SettingPanelItem[(int)SettingPanelType.End];
+		m_SettingItems[(int)SettingPanelType.DiffCompare] = new SettingPanel_DiffCompare(this, "差异比较", m_DiffComparePanal);
 
 		m_SettingItemListBox.Items.Clear();
 		for (int itemIdx = 0; itemIdx < m_SettingItems.Length; itemIdx++)
 		{
-			SettingItem settingItem = m_SettingItems[itemIdx];
-			Trace.Assert(settingItem != null, "设置项(" + (SettingItemType)itemIdx + ")没有初始化");
+			SettingPanelItem settingItem = m_SettingItems[itemIdx];
+			Trace.Assert(settingItem != null, "设置项(" + (SettingPanelType)itemIdx + ")没有初始化");
 			m_SettingItemListBox.Items.Add(settingItem.Text);
 			settingItem.MainPanel.Visible = false;
 			settingItem.MainPanel.Dock = DockStyle.Fill;
@@ -90,12 +90,12 @@ public partial class SettingForm : Form
 		Setting.Load();
 	}
 
-	private void OnSettingItemListBox_SelectedValueChanged(object sender, EventArgs e)
+	private void OnSettingPanelListBox_SelectedValueChanged(object sender, EventArgs e)
     {
         int selectedIndex = ((ListBox)m_SettingItemListBox).SelectedIndex;
         for (int itemIdx = 0; itemIdx < m_SettingItems.Length; itemIdx++)
         {
-            SettingItem settingItem = m_SettingItems[itemIdx];
+            SettingPanelItem settingItem = m_SettingItems[itemIdx];
             if (selectedIndex == itemIdx)
             {
 				settingItem.MainPanel.Visible = true;
@@ -110,16 +110,16 @@ public partial class SettingForm : Form
     }
     #endregion // END UIEvent
 
-    private enum SettingItemType
+    private enum SettingPanelType
     {
 		Begin = -1,
 		DiffCompare,
         End
     }
 
-    public class SettingItem
+    public class SettingPanelItem
     {
-        public SettingItem(SettingForm settingForm, string text, Panel mainPanel)
+        public SettingPanelItem(SettingForm settingForm, string text, Panel mainPanel)
         {
             Form = settingForm;
             Text = text;
@@ -130,11 +130,10 @@ public partial class SettingForm : Form
         public Panel MainPanel;
 
         public bool SettingChanged = false;
-        protected bool m_Initialized = false;
+        private bool m_Initialized = false;
 
         public void Show()
         {
-            // 不在构造函数里Load是为了减少"卡死"的时间
             if (!m_Initialized)
             {
                 OnLoad();
@@ -158,9 +157,9 @@ public partial class SettingForm : Form
         protected virtual void OnClose() { }
     }
 
-	public class SettingForm_DiffCompare : SettingItem
+	public class SettingPanel_DiffCompare : SettingPanelItem
 	{
-		public SettingForm_DiffCompare(SettingForm settingForm, string text, Panel mainPanel) : base(settingForm, text, mainPanel) { }
+		public SettingPanel_DiffCompare(SettingForm settingForm, string text, Panel mainPanel) : base(settingForm, text, mainPanel) { }
 
 		protected override void OnLoad()
 		{
