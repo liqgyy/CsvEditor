@@ -112,12 +112,12 @@ public partial class MergeLocalizationForm : Form
 			string iterCell = row[iCell];
 			string oldCell = (string)dataRow[iCell];
 
-			oldSb.Append(oldCell);
-			newSb.Append(iterCell);
+			oldSb.Append(string.Format("\"{0}\"", oldCell));
+			newSb.Append(string.Format("\"{0}\"", iterCell));
 			if (iCell != row.Length - 1)
 			{
-				oldSb.Append("\t");
-				newSb.Append("\t");
+				oldSb.Append(",");
+				newSb.Append(",");
 			}
 
 			if (iterCell != oldCell)
