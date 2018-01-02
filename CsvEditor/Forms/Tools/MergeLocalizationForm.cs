@@ -139,7 +139,7 @@ public partial class MergeLocalizationForm : Form
 				message.Level = DataGridViewConsoleForm.Level.Warning;
 				message.Column = iCell;
 				message.Row = rowIdx;
-				message.Caption = "该值是空";
+				message.Caption = "值为空";
 				message.Text = string.Format("源值：\n({0})", oldCell.ToString());
 				m_MessageList.Add(message);
 			}
