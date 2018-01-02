@@ -85,7 +85,7 @@ public partial class MainForm : Form
 	{
 		m_CellEditPanel.Visible = false;
 		m_CellEditTipPanel.Visible = false;
-		m_CellEditTextBox.TextChanged -= OnCellEditTextBox_TextChanged;
+		m_CellEditTextBox.Validated -= OnCellEditTextBox_Validated;
 
 		if (SelCsvFormInitialized())
 		{
@@ -99,7 +99,7 @@ public partial class MainForm : Form
 				m_CellEditPanel.Visible = true;
 				object value = m_CsvForm.GetDataGridView().SelectedCells[0].Value;
 				m_CellEditTextBox.Text = ((string)value).Replace("\n", "\r\n");
-				m_CellEditTextBox.TextChanged += OnCellEditTextBox_TextChanged;
+				m_CellEditTextBox.Validated += OnCellEditTextBox_Validated;
 			}
 			else if (m_CsvForm.GetDataGridView().SelectedCells.Count > 1)
 			{
@@ -530,7 +530,7 @@ public partial class MainForm : Form
 		m_CsvForm.UpdateFormText();
 	}
 
-	private void OnCellEditTextBox_TextChanged(object sender, EventArgs e)
+	private void OnCellEditTextBox_Validated(object sender, EventArgs e)
 	{
 		string value = m_CellEditTextBox.Text;
 		value = value.Replace("\r\n", "\n");

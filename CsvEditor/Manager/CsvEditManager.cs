@@ -500,10 +500,11 @@ public class CsvEditManager
 
     public void DidAddRow(int row)
     {
-        m_UndoStack.Push(new DoAddRowEvent { Row = row });
-    }
+		DoAddRowEvent doAddRowEvent = new DoAddRowEvent { Row = row };
+		Did(doAddRowEvent);
+	}
 
-    public void DidCellValueChange(int column, int row, string oldValue, string newValue)
+	public void DidCellValueChange(int column, int row, string oldValue, string newValue)
     {
         CellValueChangeItem change = new CellValueChangeItem();
 		change.Column = column;
@@ -519,7 +520,7 @@ public class CsvEditManager
 		doCellsValueChangeEvent.ChangeList = new List<CellValueChangeItem>();
 		doCellsValueChangeEvent.ChangeList.Add(change);
 
-		m_UndoStack.Push(doCellsValueChangeEvent);
+		Did(doCellsValueChangeEvent);
 	}
 
 	public void DidCellsValueChange(List<CellValueChangeItem> changeList)
@@ -532,8 +533,8 @@ public class CsvEditManager
         {
             ChangeList = changeList
         };
-        m_UndoStack.Push(doCellsValueChangeEvent);
-    }
+		Did(doCellsValueChangeEvent);
+	}
 
 	public void DidManyThings(List<IUndoRedo> thingList)
 	{
@@ -545,7 +546,7 @@ public class CsvEditManager
 		{
 			ThingsList = thingList
 		};
-		m_UndoStack.Push(doManyThings);
+		Did(doManyThings);
 	}
 
 	public bool CanUndo()
@@ -558,43 +559,57 @@ public class CsvEditManager
 		return m_RedoStack.Count > 0;
     }
 
-    public void Undo()
-    {
-        if (!CanUndo())
-        {
-            return;
-        }
-        m_CsvForm.BeforeChangeCellValue();
-        IUndoRedo iur = m_UndoStack.Pop();
-        iur.Undo(m_CsvForm.GetDataGridView(), m_CsvForm.GetDataTable());
-        m_RedoStack.Push(iur);
-        DoSomething(this, new DoSomethingEventArgs(DoEventType.Undo, iur.GetDoType()));
-        m_CsvForm.AfterChangeCellValue();
+	public void Undo()
+	{
+		if (CanUndo())
+		{
+			m_CsvForm.BeforeChangeCellValue();
+			IUndoRedo iur = m_UndoStack.Pop();
+			iur.Undo(m_CsvForm.GetDataGridView(), m_CsvForm.GetDataTable());
+			m_RedoStack.Push(iur);
+			DoSomething(this, new DoSomethingEventArgs(DoEventType.Undo, iur.GetDoType()));
+			m_CsvForm.AfterChangeCellValue();
 
-		MainForm.Instance.UpdateCellEdit();
-    }
+			MainForm.Instance.UpdateCellEdit();
+		}
+	}
 
-    public void Redo()
-    {
-        if (!CanRedo())
-        {
-            return;
-        }
-        m_CsvForm.BeforeChangeCellValue();
-        IUndoRedo iur = m_RedoStack.Pop();
-        iur.Redo(m_CsvForm.GetDataGridView(), m_CsvForm.GetDataTable());
-        m_UndoStack.Push(iur);
-        DoSomething(this, new DoSomethingEventArgs(DoEventType.Redo, iur.GetDoType()));
-        m_CsvForm.AfterChangeCellValue();
+	public void Redo()
+	{
+		if (CanRedo())
+		{
+			m_CsvForm.BeforeChangeCellValue();
+			IUndoRedo iur = m_RedoStack.Pop();
+			iur.Redo(m_CsvForm.GetDataGridView(), m_CsvForm.GetDataTable());
+			m_UndoStack.Push(iur);
+			DoSomething(this, new DoSomethingEventArgs(DoEventType.Redo, iur.GetDoType()));
+			m_CsvForm.AfterChangeCellValue();
 
-		MainForm.Instance.UpdateCellEdit();
+			MainForm.Instance.UpdateCellEdit();
+		}
 	}
 
 	private void Did(IUndoRedo iur)
     {
         m_UndoStack.Push(iur);
-        m_RedoStack.Peek();
-        DoSomething(this, new DoSomethingEventArgs(DoEventType.Do, iur.GetDoType()));
+        m_RedoStack.Clear();
+        DoSomething(this, new DoSomethingEventArgs(DoEventType.Did, iur.GetDoType()));
+
+		// Stack超出上限
+		if (m_UndoStack.Count >= GlobalData.UNDO_MAX_COUNT)
+		{
+			Stack<IUndoRedo> undoCopyStack = new Stack<IUndoRedo>();
+			for(int undoIdx = 0; undoIdx < GlobalData.UNDO_SAVE_COUNT; undoIdx++)
+			{
+				undoCopyStack.Push(m_UndoStack.Pop());
+			}
+
+			m_UndoStack.Clear();
+			while(undoCopyStack.Count > 0)
+			{
+				m_UndoStack.Push(undoCopyStack.Pop());
+			}
+		}
     }
 
     public interface IUndoRedo
@@ -709,7 +724,7 @@ public class CsvEditManager
 
 	public enum DoEventType
     {
-        Do,
+        Did,
         Redo,
         Undo
     }

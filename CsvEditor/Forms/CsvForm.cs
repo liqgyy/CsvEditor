@@ -64,7 +64,7 @@ public partial class CsvForm : Form
 		DataChanged = true;
 		UpdateFormText();
 
-        m_CopyDataTable = m_DataTable.Copy();
+		m_CopyDataTable = m_DataTable.Copy();
         m_DataGridView.CellValueChanged += OnDataGridView_CellValueChanged;
     }
 
@@ -584,7 +584,7 @@ public partial class CsvForm : Form
 
 		m_DataGridView.ClearSelection();
         m_DataGridView.Rows[index].Selected = true;
-        m_CopyDataTable = m_DataTable.Copy();
+		m_CopyDataTable = m_DataTable.Copy();
         EditManager.DidAddRow(index);
 
         OnDataGridViewData_Change();
@@ -601,9 +601,12 @@ public partial class CsvForm : Form
 		{
 			return;
 		}
-        EditManager.DidCellValueChange(e.ColumnIndex, e.RowIndex, m_CopyDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString(), m_DataTable.Rows[e.RowIndex][e.ColumnIndex].ToString());
-        m_CopyDataTable = m_DataTable.Copy();
-        OnDataGridViewData_Change();
+		string oldValue = m_CopyDataTable.Rows[e.RowIndex][e.ColumnIndex].ToString();
+		string newValue = m_DataTable.Rows[e.RowIndex][e.ColumnIndex].ToString();
+		EditManager.DidCellValueChange(e.ColumnIndex, e.RowIndex, oldValue, newValue);
+
+		m_CopyDataTable.Rows[e.RowIndex][e.ColumnIndex] = newValue;
+		OnDataGridViewData_Change();
     }
 
 	/// <summary>
@@ -663,8 +666,8 @@ public partial class CsvForm : Form
 		{
 			Point[] polygonPoints = new Point[3];
 			polygonPoints[0] = new Point(e.CellBounds.Right - 1, e.CellBounds.Bottom - 1);
-			polygonPoints[1] = new Point(e.CellBounds.Right - 1, e.CellBounds.Bottom - 1 - GlobalData.CSV_NOTE_POLYGON_SIZE);
-			polygonPoints[2] = new Point(e.CellBounds.Right - 1 - GlobalData.CSV_NOTE_POLYGON_SIZE, e.CellBounds.Bottom - 1);
+			polygonPoints[1] = new Point(e.CellBounds.Right - 1, e.CellBounds.Bottom - 1 - GlobalData.CSV_MULTILINE_POLYGON_SIZE);
+			polygonPoints[2] = new Point(e.CellBounds.Right - 1 - GlobalData.CSV_MULTILINE_POLYGON_SIZE, e.CellBounds.Bottom - 1);
 			e.Graphics.FillPolygon(gridBrush, polygonPoints);
 		}
 	}
