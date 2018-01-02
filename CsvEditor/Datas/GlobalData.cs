@@ -13,8 +13,8 @@
 	public const string SPECIFIC_CSVLAYOUT_FILE_NAME = "SpecificLayout.bin";
 	#endregion // End Setting
 
-	public const int UNDO_MAX_COUNT = 5000;
-	public const int UNDO_SAVE_COUNT = 4000;
+	//public const int UNDO_MAX_COUNT = 5000;
+	//public const int UNDO_SAVE_COUNT = 4000;
 
 	public const int CSV_NOTE_POLYGON_SIZE = 6;
 	public const int CSV_MULTILINE_POLYGON_SIZE = 6;

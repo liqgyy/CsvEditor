@@ -5,6 +5,8 @@ using System.Windows.Forms;
 
 public partial class DataGridViewConsoleForm : Form
 {
+	private static DataGridViewConsoleForm ms_Instance;
+
 	private List<Message> m_MessageList;
 	/// <summary>
 	/// ListBox中的idx对应MessageList中的idx
@@ -14,6 +16,9 @@ public partial class DataGridViewConsoleForm : Form
 
 	private DataGridView m_DataGridView;
 
+	/// <summary>
+	/// 测试功能，暂时隐藏
+	/// </summary>
 	private bool m_Collapse = false;
 	private string m_LastCaption = "";
 	private int m_CollapseCount = 0;
@@ -26,9 +31,15 @@ public partial class DataGridViewConsoleForm : Form
 		}
 		else
 		{
-			DataGridViewConsoleForm form = new DataGridViewConsoleForm(messageList, dataGridView);
-			form.Text = "控制台 - " + formText;
-			form.Show();
+			if (ms_Instance != null)
+			{
+				ms_Instance.Close();
+				ms_Instance.Dispose();
+				ms_Instance = null;
+			}
+			ms_Instance = new DataGridViewConsoleForm(messageList, dataGridView);
+			ms_Instance.Text = "控制台 - " + formText;
+			ms_Instance.Show();
 		}
 	}
 
@@ -122,9 +133,9 @@ public partial class DataGridViewConsoleForm : Form
 		if (listBoxSelectIndex < m_MessageListBox.Items.Count)
 			m_MessageListBox.SelectedIndex = listBoxSelectIndex;
 
-		m_InfoCheckBox.Text = string.Format("{0} - {1}", LevelToString(Level.Info), infoCount);
-		m_WarningCheckBox.Text = string.Format("{0} - {1}", LevelToString(Level.Warning), warningCount);
-		m_ErrorCheckBox.Text = string.Format("{0} - {1}", LevelToString(Level.Error), errorCount);
+		m_InfoCheckBox.Text = string.Format("{0} {1}", LevelToString(Level.Info), infoCount);
+		m_WarningCheckBox.Text = string.Format("{0} {1}", LevelToString(Level.Warning), warningCount);
+		m_ErrorCheckBox.Text = string.Format("{0} {1}", LevelToString(Level.Error), errorCount);
 	}
 
 	private void AddItemToListBox(Message message, int index)
@@ -161,17 +172,17 @@ public partial class DataGridViewConsoleForm : Form
 		}
 		else if (message.Row < 0)
 		{
-			rowColumn = string.Format("第({0})列", ConvertUtility.NumberToLetter(message.Column + 1));
+			rowColumn = string.Format("({0})列", ConvertUtility.NumberToLetter(message.Column + 1));
 		}
 		else if (message.Column < 0)
 		{
-			rowColumn = string.Format("第({0})行", message.Row + 1);
+			rowColumn = string.Format("({0})行", message.Row + 1);
 		}
 		else
 		{
-			rowColumn = string.Format("第({0})行({1})列", message.Row + 1, ConvertUtility.NumberToLetter(message.Column + 1));
+			rowColumn = string.Format("({0},{1})", message.Row + 1, ConvertUtility.NumberToLetter(message.Column + 1));
 		}
-		return string.Format("{0} : {1,-16}\t{2}",
+		return string.Format("{0,-4}{1,-8}\t{2}",
 			LevelToString(message.Level),
 			rowColumn,			
 			message.Caption);
@@ -181,18 +192,18 @@ public partial class DataGridViewConsoleForm : Form
 	{
 		if (level == Level.Info)
 		{
-			//return "信息";
-			return "I";
+			return "信息";
+			//return "I";
 		}
 		else if (level == Level.Warning)
 		{
-			//return "警告";
-			return "W";
+			return "警告";
+			//return "W";
 		}
 		else if (level == Level.Error)
 		{
-			//return "错误";
-			return "E";
+			return "错误";
+			//return "E";
 		}
 		return "未知";
 	}

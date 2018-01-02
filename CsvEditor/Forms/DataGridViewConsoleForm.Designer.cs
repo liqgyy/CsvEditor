@@ -27,12 +27,12 @@
 	private void InitializeComponent()
 	{
 			this.m_SplitContainer = new System.Windows.Forms.SplitContainer();
+			this.m_CollapseCheckBox = new System.Windows.Forms.CheckBox();
 			this.m_MessageListBox = new System.Windows.Forms.ListBox();
 			this.m_InfoCheckBox = new System.Windows.Forms.CheckBox();
 			this.m_WarningCheckBox = new System.Windows.Forms.CheckBox();
 			this.m_ErrorCheckBox = new System.Windows.Forms.CheckBox();
 			this.m_DetailTextBox = new System.Windows.Forms.TextBox();
-			this.m_CollapseCheckBox = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.m_SplitContainer)).BeginInit();
 			this.m_SplitContainer.Panel1.SuspendLayout();
 			this.m_SplitContainer.Panel2.SuspendLayout();
@@ -61,6 +61,18 @@
 			this.m_SplitContainer.Size = new System.Drawing.Size(926, 585);
 			this.m_SplitContainer.SplitterDistance = 387;
 			this.m_SplitContainer.TabIndex = 0;
+			// 
+			// m_CollapseCheckBox
+			// 
+			this.m_CollapseCheckBox.AutoSize = true;
+			this.m_CollapseCheckBox.Location = new System.Drawing.Point(516, 11);
+			this.m_CollapseCheckBox.Name = "m_CollapseCheckBox";
+			this.m_CollapseCheckBox.Size = new System.Drawing.Size(72, 16);
+			this.m_CollapseCheckBox.TabIndex = 4;
+			this.m_CollapseCheckBox.Text = "Collapse";
+			this.m_CollapseCheckBox.UseVisualStyleBackColor = true;
+			this.m_CollapseCheckBox.Visible = false;
+			this.m_CollapseCheckBox.CheckedChanged += new System.EventHandler(this.OnCheckBox_CheckedChanged);
 			// 
 			// m_MessageListBox
 			// 
@@ -125,17 +137,6 @@
 			this.m_DetailTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.m_DetailTextBox.Size = new System.Drawing.Size(926, 194);
 			this.m_DetailTextBox.TabIndex = 0;
-			// 
-			// m_CollapseCheckBox
-			// 
-			this.m_CollapseCheckBox.AutoSize = true;
-			this.m_CollapseCheckBox.Location = new System.Drawing.Point(500, 11);
-			this.m_CollapseCheckBox.Name = "m_CollapseCheckBox";
-			this.m_CollapseCheckBox.Size = new System.Drawing.Size(72, 16);
-			this.m_CollapseCheckBox.TabIndex = 4;
-			this.m_CollapseCheckBox.Text = "Collapse";
-			this.m_CollapseCheckBox.UseVisualStyleBackColor = true;
-			this.m_CollapseCheckBox.CheckedChanged += new System.EventHandler(this.OnCheckBox_CheckedChanged);
 			// 
 			// DataGridViewConsoleForm
 			// 

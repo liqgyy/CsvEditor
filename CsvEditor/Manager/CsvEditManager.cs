@@ -204,6 +204,7 @@ public class CsvEditManager
 		if (dataGridView.IsCurrentCellInEditMode)
 		{
 			PasteCell(dataGridView, clipboardStr);
+			MainForm.Instance.UpdateCellEdit();
 		}
 		else if (MainForm.Instance.GetCellEditTextBox().Focused)
 		{
@@ -214,7 +215,6 @@ public class CsvEditManager
 			newValue = newValue.Insert(selectionStart, clipboardStr);
 			textBox.Text = newValue;
 			textBox.SelectionStart = selectionStart + clipboardStr.Length;
-
 		}
 		// 粘贴到DataGridView
 		else if (dataGridView.SelectedCells.Count > 0)
@@ -227,8 +227,8 @@ public class CsvEditManager
 			{
 				MessageBox.Show("选中多个单元格时不能粘贴", "提示", MessageBoxButtons.OK);
 			}
+			MainForm.Instance.UpdateCellEdit();
 		}
-		MainForm.Instance.UpdateCellEdit();
 	}
 
 	public bool CanCopy()
@@ -358,7 +358,6 @@ public class CsvEditManager
 			}
 			rowIndex = nextRowIndex;
 		}
-
 		Clipboard.SetDataObject(sbContent.ToString());
 	}
 
@@ -442,12 +441,9 @@ public class CsvEditManager
 					if (currentCell.Value == null || currentCell.Value.ToString() != cell)
 					{
 						// 如果cell是多行数据，去除两侧的引号
-						// TODO 对\t做特殊处理
 						if (cell.Contains("\n") && cell[0] == '"' && cell[cell.Length - 1] == '"')
 						{
 							cell = cell.Substring(1, cell.Length - 2);
-							// 参考：https://social.msdn.microsoft.com/Forums/vstudio/en-US/47df5e57-44bf-4199-98ed-8d015b931282/how-to-replace-n-with-rn?forum=csharpgeneral
-							cell = Regex.Replace(cell, "(?<!\r)\n", "\r\n");
 						}
 
 						CellValueChangeItem change = new CellValueChangeItem();
@@ -563,14 +559,21 @@ public class CsvEditManager
 	{
 		if (CanUndo())
 		{
-			m_CsvForm.BeforeChangeCellValue();
-			IUndoRedo iur = m_UndoStack.Pop();
-			iur.Undo(m_CsvForm.GetDataGridView(), m_CsvForm.GetDataTable());
-			m_RedoStack.Push(iur);
-			DoSomething(this, new DoSomethingEventArgs(DoEventType.Undo, iur.GetDoType()));
-			m_CsvForm.AfterChangeCellValue();
+			try
+			{
+				m_CsvForm.BeforeChangeCellValue();
+				IUndoRedo iur = m_UndoStack.Pop();
+				iur.Undo(m_CsvForm.GetDataGridView(), m_CsvForm.GetDataTable());
+				m_RedoStack.Push(iur);
+				DoSomething(this, new DoSomethingEventArgs(DoEventType.Undo, iur.GetDoType()));
+				m_CsvForm.AfterChangeCellValue();
 
-			MainForm.Instance.UpdateCellEdit();
+				MainForm.Instance.UpdateCellEdit();
+			}
+			catch (System.Exception ex)
+			{
+				DebugUtility.ShowExceptionMessageBox("撤销失败", ex);
+			}
 		}
 	}
 
@@ -578,38 +581,52 @@ public class CsvEditManager
 	{
 		if (CanRedo())
 		{
-			m_CsvForm.BeforeChangeCellValue();
-			IUndoRedo iur = m_RedoStack.Pop();
-			iur.Redo(m_CsvForm.GetDataGridView(), m_CsvForm.GetDataTable());
-			m_UndoStack.Push(iur);
-			DoSomething(this, new DoSomethingEventArgs(DoEventType.Redo, iur.GetDoType()));
-			m_CsvForm.AfterChangeCellValue();
+			try
+			{
+				m_CsvForm.BeforeChangeCellValue();
+				IUndoRedo iur = m_RedoStack.Pop();
+				iur.Redo(m_CsvForm.GetDataGridView(), m_CsvForm.GetDataTable());
+				m_UndoStack.Push(iur);
+				DoSomething(this, new DoSomethingEventArgs(DoEventType.Redo, iur.GetDoType()));
+				m_CsvForm.AfterChangeCellValue();
 
-			MainForm.Instance.UpdateCellEdit();
+				MainForm.Instance.UpdateCellEdit();
+			}
+			catch (System.Exception ex)
+			{
+				DebugUtility.ShowExceptionMessageBox("重做失败", ex);
+			}
 		}
 	}
 
 	private void Did(IUndoRedo iur)
     {
-        m_UndoStack.Push(iur);
-        m_RedoStack.Clear();
+		try
+		{
+			m_UndoStack.Push(iur);
+			m_RedoStack.Clear();
+		}
+		catch (System.Exception ex)
+		{
+			DebugUtility.ShowExceptionMessageBox("添加撤销操作失败", ex);
+		}
         DoSomething(this, new DoSomethingEventArgs(DoEventType.Did, iur.GetDoType()));
 
-		// Stack超出上限
-		if (m_UndoStack.Count >= GlobalData.UNDO_MAX_COUNT)
-		{
-			Stack<IUndoRedo> undoCopyStack = new Stack<IUndoRedo>();
-			for(int undoIdx = 0; undoIdx < GlobalData.UNDO_SAVE_COUNT; undoIdx++)
-			{
-				undoCopyStack.Push(m_UndoStack.Pop());
-			}
+		// 暂时不处理 Stack超出上限
+		//if (m_UndoStack.Count >= GlobalData.UNDO_MAX_COUNT)
+		//{
+		//	Stack<IUndoRedo> undoCopyStack = new Stack<IUndoRedo>();
+		//	for(int undoIdx = 0; undoIdx < GlobalData.UNDO_SAVE_COUNT; undoIdx++)
+		//	{
+		//		undoCopyStack.Push(m_UndoStack.Pop());
+		//	}
 
-			m_UndoStack.Clear();
-			while(undoCopyStack.Count > 0)
-			{
-				m_UndoStack.Push(undoCopyStack.Pop());
-			}
-		}
+		//	m_UndoStack.Clear();
+		//	while(undoCopyStack.Count > 0)
+		//	{
+		//		m_UndoStack.Push(undoCopyStack.Pop());
+		//	}
+		//}
     }
 
     public interface IUndoRedo

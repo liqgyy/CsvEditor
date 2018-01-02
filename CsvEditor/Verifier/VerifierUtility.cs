@@ -53,7 +53,7 @@ public class VerifierUtility
 
 			ms_VerifyMessages[(int)VerifyType.TabOrLineBreak] = string.Format("包含非法字符(\"\\t\", \"\\r\\n\")\n请在保存前运行(移除所有制表符并转换所有换行符)工具");
 			ms_VerifyMessages[(int)VerifyType.HeadAndTailWhiteSpace] = string.Format("头尾有空白字符");
-			ms_VerifyMessages[(int)VerifyType.RepeatCellInRow] = string.Format("行内有内容重复的单元格");
+			ms_VerifyMessages[(int)VerifyType.RepeatCellInRow] = string.Format("有内容重复的单元格");
 
 			for (int iMessage = 0; iMessage < ms_VerifyMessages.Length; iMessage++)
 			{
