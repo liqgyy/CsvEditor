@@ -19,6 +19,8 @@ public class Setting
 
     private static string ms_SavePath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase + GlobalData.SETTING_FILE_NAME;
 
+	public bool FirstRun = false;
+
 	#region DiffCompare
 	public bool BeyondCompareAutoExePath;
 	public string BeyondCompareExePath;
@@ -32,6 +34,8 @@ public class Setting
 	/// </summary>
 	public Setting()
     {
+		FirstRun = true;
+
 		BeyondCompareAutoExePath = true;
 		BeyondCompareExePath = "";
 		CodeCompareAutoExePath = true;
@@ -63,14 +67,16 @@ public class Setting
         // 配置文件不存在
         if (!File.Exists(ms_SavePath))
         {
-            ms_Instance = new Setting();
+			ms_Instance = new Setting();
 			return;
-        }
+		}
 
         try
         {
             ms_Instance = (Setting)SerializeUtility.ReadFile(ms_SavePath);
-        }
+			ms_Instance.FirstRun = false;
+
+		}
         catch (Exception ex)
         {
             if (DebugUtility.ShowExceptionMessageBox("读取设置失败\n是否删除设置文件重新读取?\n" + ms_SavePath, ex, MessageBoxButtons.YesNo) == DialogResult.Yes)

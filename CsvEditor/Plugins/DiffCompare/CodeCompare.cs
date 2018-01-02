@@ -36,7 +36,7 @@ public class CodeCompare : BaseDiffCompare
 		if (string.IsNullOrEmpty(exePath))
 		{
 			exePath = "";
-			if (MessageBox.Show("代码比较工具初始化失败,可能未正确安装CodeCompare.\n是否打开官网下载工具?", "提示", MessageBoxButtons.YesNo) == DialogResult.Yes)
+			if (Setting.Instance.FirstRun && MessageBox.Show("代码比较工具初始化失败,可能未正确安装CodeCompare.\n是否打开官网下载工具?", "提示", MessageBoxButtons.YesNo) == DialogResult.Yes)
 			{
 				System.Diagnostics.Process.Start(CODE_COMPARE_URL);
 			}

@@ -33,10 +33,10 @@ public partial class MainForm : Form
         Instance = this;
         InitializeComponent();
 
-        Setting setting = Setting.Instance;
-
 		BeyondCompare.Instance.AutoExePathToSetting();
 		CodeCompare.Instance.AutoExePathToSetting();
+
+		Setting.Save();
 
 		m_CellEditPanel.Dock = DockStyle.Fill;
 		m_CellEditTipPanel.Dock = DockStyle.Fill;
