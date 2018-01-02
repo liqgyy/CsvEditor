@@ -14,11 +14,6 @@ public partial class DataGridViewConsoleForm : Form
 
 	private DataGridView m_DataGridView;
 
-	/// <summary>
-	/// TODO
-	/// 还没完成 在标题后面添加被省略的消息数量
-	/// 完成后在再界面加一个CheckBox
-	/// </summary>
 	private bool m_Collapse = false;
 	private string m_LastCaption = "";
 	private int m_CollapseCount = 0;
