@@ -630,14 +630,7 @@ public class CsvEditManager
 
         public void Redo(DataGridView dataGridView, DataTable dataTable)
         {
-            DataRow newRowData = dataTable.NewRow();
-			dataTable.Rows.InsertAt(newRowData, Row);
-
-			DataGridViewRow newRow = dataGridView.Rows[Row];
-			for (int colIdx = 0; colIdx < newRow.Cells.Count; colIdx++)
-			{
-				newRow.Cells[colIdx].Value = "";
-			}
+			DataGridViewUtility.InsertNewRow(dataGridView, dataTable, Row);
         }
 
         public void Undo(DataGridView dataGridView, DataTable dataTable)

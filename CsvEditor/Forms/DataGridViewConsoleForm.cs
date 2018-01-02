@@ -251,7 +251,7 @@ public partial class DataGridViewConsoleForm : Form
 			return;
 		}
 
-		DataGridViewUtility.SelectDataGridViewCell(m_DataGridView, message.Row, message.Column);
+		DataGridViewUtility.SelectCell(m_DataGridView, message.Row, message.Column);
 	}
 	#endregion //End UIEvent
 

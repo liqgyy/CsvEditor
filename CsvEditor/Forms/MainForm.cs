@@ -532,9 +532,12 @@ public partial class MainForm : Form
 
 	private void OnCellEditTextBox_Validated(object sender, EventArgs e)
 	{
-		string value = m_CellEditTextBox.Text;
-		value = value.Replace("\r\n", "\n");
-		m_CsvForm.GetDataGridView().SelectedCells[0].Value = value;
+		if (SelCsvFormInitialized())
+		{
+			string value = m_CellEditTextBox.Text;
+			value = value.Replace("\r\n", "\n");
+			m_CsvForm.GetDataGridView().SelectedCells[0].Value = value;
+		}
 	}
 
 	/// <summary>

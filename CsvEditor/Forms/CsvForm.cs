@@ -108,7 +108,7 @@ public partial class CsvForm : Form
 						message.Row = rowIdx;
 						message.Column = colIdx;
 						message.Caption = "移除制表符并转换换行符";
-						message.Text = string.Format("源：\n{0}\n转换后：\n{1}", iterValue, newValue);
+						message.Text = string.Format("源：\n({0})\n转换后：\n({1})", iterValue, newValue);
 						messageList.Add(message);
 
 						iterCell.Value = newValue;
@@ -575,14 +575,7 @@ public partial class CsvForm : Form
         }
 
         int index = m_DataGridView.SelectedRows[0].Index + offset;
-        DataRow newRowData = m_DataTable.NewRow();
-        m_DataTable.Rows.InsertAt(newRowData, index);
-
-		DataGridViewRow newRow = m_DataGridView.Rows[index];
-		for(int colIdx = 0; colIdx < newRow.Cells.Count; colIdx++)
-		{
-			newRow.Cells[colIdx].Value = "";
-		}
+		DataGridViewUtility.InsertNewRow(m_DataGridView, m_DataTable, index);
 
 		m_DataGridView.ClearSelection();
         m_DataGridView.Rows[index].Selected = true;
