@@ -17,6 +17,7 @@ public class DataGridViewUtility
 		dataGridView.ClearSelection();
 		if (row >= 0 && column >= 0)
 		{
+			dataGridView.CurrentCell = null;
 			dataGridView.CurrentCell = dataGridView.Rows[row].Cells[column];
 		}
 		else if (row < 0 && column >= 0)

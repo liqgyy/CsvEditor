@@ -264,6 +264,7 @@ public partial class DataGridViewConsoleForm : Form
 				return;
 			}
 
+			m_DataGridView.Focus();
 			DataGridViewUtility.SelectCell(m_DataGridView, message.Row, message.Column);
 		}
 	}
