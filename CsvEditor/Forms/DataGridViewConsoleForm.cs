@@ -176,9 +176,9 @@ public partial class DataGridViewConsoleForm : Form
 		{
 			rowColumn = string.Format("第({0})行({1})列", message.Row + 1, ConvertUtility.NumberToLetter(message.Column + 1));
 		}
-		return string.Format("{0} : {1}\t{2}",
+		return string.Format("{0} : {1,-16}\t{2}",
 			LevelToString(message.Level),
-			rowColumn,
+			rowColumn,			
 			message.Caption);
 	}
 
