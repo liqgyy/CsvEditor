@@ -186,16 +186,18 @@ public partial class CsvForm : Form
 	#endregion // End Layout
 
 	#region File
-	public void SaveFile()
-    {
-        if (SaveFile(SourcePath))
-        {
-            DataChanged = false;
+	public bool SaveFile()
+	{
+		bool saveSuccess = SaveFile(SourcePath);
+		if (saveSuccess)
+		{
+			DataChanged = false;
 		}
-        UpdateFormText();
-    }
+		UpdateFormText();
+		return saveSuccess;
+	}
 
-    public bool SaveFile(string path)
+	public bool SaveFile(string path)
     {
 		SaveLayout();
 
@@ -733,7 +735,7 @@ public partial class CsvForm : Form
 			switch (dialogResult)
 			{
 				case DialogResult.Yes:
-					SaveFile();
+					e.Cancel = !SaveFile();
 					break;
 				case DialogResult.No:
 					break;

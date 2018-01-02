@@ -159,10 +159,26 @@ public partial class DataGridViewConsoleForm : Form
 
 	private string FormatMessgeCaption(Message message)
 	{
-		return string.Format("{0} : 第({1})行({2})列\t{3}",
+		string rowColumn = "";
+		if(message.Row < 0 && message.Column < 0)
+		{
+			rowColumn = "整表";
+		}
+		else if (message.Row < 0)
+		{
+			rowColumn = string.Format("第({0})列", ConvertUtility.NumberToLetter(message.Column + 1));
+		}
+		else if (message.Column < 0)
+		{
+			rowColumn = string.Format("第({0})行", message.Row + 1);
+		}
+		else
+		{
+			rowColumn = string.Format("第({0})行({1})列", message.Row + 1, ConvertUtility.NumberToLetter(message.Column + 1));
+		}
+		return string.Format("{0} : {1}\t{2}",
 			LevelToString(message.Level),
-			message.Row + 1,
-			ConvertUtility.NumberToLetter(message.Column + 1),
+			rowColumn,
 			message.Caption);
 	}
 
