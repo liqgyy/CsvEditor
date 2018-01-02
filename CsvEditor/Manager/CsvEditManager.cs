@@ -280,6 +280,8 @@ public class CsvEditManager
 
 	private void CopyCells(DataGridView dataGridView, Point leftUp, Point rightDown)
 	{
+		List<DataGridViewConsoleForm.Message> messageList = new List<DataGridViewConsoleForm.Message>();
+
 		// 这里是参考DataGridView.GetClipboardContent()
 		DataObject dataObject = new DataObject();
 		string cellContent = null;
@@ -331,9 +333,22 @@ public class CsvEditManager
 
 				cellContent = (string)dataGridView.Rows.SharedRow(rowIndex).Cells[dataGridViewColumn.Index].Value;
 
+				// 验证单元格内容
 				if (!string.IsNullOrEmpty(cellContent))
 				{
 					cellContent.Replace("\t", "");
+
+					if (cellContent[0] == '\"')
+					{
+						DataGridViewConsoleForm.Message message = new DataGridViewConsoleForm.Message();
+						message.Level = DataGridViewConsoleForm.Level.Warning;
+						message.Row = rowIndex;
+						message.Column = dataGridViewColumn.Index;
+						message.Caption = "第一个字符是(\")";
+						message.Text = "不支持复制到Excel(可以复制，但是可能会串行错行,或两个单元格被合并为一个)";
+						messageList.Add(message);
+					}
+
 					if (cellContent.Contains("\n"))
 					{
 						cellContent = cellContent.Replace("\r\n", "\n");
@@ -358,7 +373,13 @@ public class CsvEditManager
 			}
 			rowIndex = nextRowIndex;
 		}
+#if DEBUG
+		string content = sbContent.ToString();
+		Clipboard.SetDataObject(content);
+#else
 		Clipboard.SetDataObject(sbContent.ToString());
+#endif
+		DataGridViewConsoleForm.ShowForm(messageList, dataGridView, "复制");
 	}
 
 	private void PasteCell(DataGridView dataGridView, string clipboardStr)
@@ -745,5 +766,5 @@ public class CsvEditManager
         CellsValueChange,
 		ManyThings
     }
-    #endregion // End Undo\Redo
+	#endregion // End Undo\Redo
 }
