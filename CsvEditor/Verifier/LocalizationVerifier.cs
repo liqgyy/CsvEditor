@@ -35,7 +35,14 @@ public class LocalizationVerifier : BaseVerifier
 				if (!VerifierUtility.VerifyHeadAndTailWhiteSpace(value))
 				{
 					hasWarning = true;
-					messageList.Add(VerifierUtility.CreateHeadAndTailWhiteSpaceMessage(DataGridViewConsoleForm.Level.Warning, rowIdx, colIdx, value));
+					DataGridViewConsoleForm.Level level = DataGridViewConsoleForm.Level.Warning;
+					// 本地化表第一列是Key，Key前后包含空格是Error
+					if (colIdx == 0)
+					{
+						hasError = true;
+						level = DataGridViewConsoleForm.Level.Error;
+					}
+					messageList.Add(VerifierUtility.CreateHeadAndTailWhiteSpaceMessage(level, rowIdx, colIdx, value));
 				}
 			}
 		}
