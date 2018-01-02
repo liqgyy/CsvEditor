@@ -82,6 +82,11 @@ public partial class SettingForm : Form
             e.Cancel = true;
 			return;
         }
+
+		for (int itemIdx = 0; itemIdx < m_SettingItems.Length; itemIdx++)
+		{
+			m_SettingItems[itemIdx].Close();
+		}
 		Setting.Load();
 	}
 
