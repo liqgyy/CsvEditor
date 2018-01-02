@@ -26,18 +26,39 @@
 	/// </summary>
 	private void InitializeComponent()
 	{
+			System.Windows.Forms.ColumnHeader levelHeader;
+			System.Windows.Forms.ColumnHeader positionHeader;
+			System.Windows.Forms.ColumnHeader captionHeader;
 			this.m_SplitContainer = new System.Windows.Forms.SplitContainer();
+			this.m_MessageListView = new System.Windows.Forms.ListView();
 			this.m_CollapseCheckBox = new System.Windows.Forms.CheckBox();
-			this.m_MessageListBox = new System.Windows.Forms.ListBox();
 			this.m_InfoCheckBox = new System.Windows.Forms.CheckBox();
 			this.m_WarningCheckBox = new System.Windows.Forms.CheckBox();
 			this.m_ErrorCheckBox = new System.Windows.Forms.CheckBox();
 			this.m_DetailTextBox = new System.Windows.Forms.TextBox();
+			levelHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			positionHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			captionHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			((System.ComponentModel.ISupportInitialize)(this.m_SplitContainer)).BeginInit();
 			this.m_SplitContainer.Panel1.SuspendLayout();
 			this.m_SplitContainer.Panel2.SuspendLayout();
 			this.m_SplitContainer.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// levelHeader
+			// 
+			levelHeader.Text = "等级";
+			levelHeader.Width = 68;
+			// 
+			// positionHeader
+			// 
+			positionHeader.Text = "位置";
+			positionHeader.Width = 121;
+			// 
+			// captionHeader
+			// 
+			captionHeader.Text = "标题";
+			captionHeader.Width = 729;
 			// 
 			// m_SplitContainer
 			// 
@@ -48,8 +69,8 @@
 			// 
 			// m_SplitContainer.Panel1
 			// 
+			this.m_SplitContainer.Panel1.Controls.Add(this.m_MessageListView);
 			this.m_SplitContainer.Panel1.Controls.Add(this.m_CollapseCheckBox);
-			this.m_SplitContainer.Panel1.Controls.Add(this.m_MessageListBox);
 			this.m_SplitContainer.Panel1.Controls.Add(this.m_InfoCheckBox);
 			this.m_SplitContainer.Panel1.Controls.Add(this.m_WarningCheckBox);
 			this.m_SplitContainer.Panel1.Controls.Add(this.m_ErrorCheckBox);
@@ -62,10 +83,29 @@
 			this.m_SplitContainer.SplitterDistance = 387;
 			this.m_SplitContainer.TabIndex = 0;
 			// 
+			// m_MessageListView
+			// 
+			this.m_MessageListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            levelHeader,
+            positionHeader,
+            captionHeader});
+			this.m_MessageListView.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.m_MessageListView.FullRowSelect = true;
+			this.m_MessageListView.GridLines = true;
+			this.m_MessageListView.Location = new System.Drawing.Point(0, 34);
+			this.m_MessageListView.MultiSelect = false;
+			this.m_MessageListView.Name = "m_MessageListView";
+			this.m_MessageListView.Size = new System.Drawing.Size(926, 353);
+			this.m_MessageListView.TabIndex = 5;
+			this.m_MessageListView.UseCompatibleStateImageBehavior = false;
+			this.m_MessageListView.View = System.Windows.Forms.View.Details;
+			this.m_MessageListView.SelectedIndexChanged += new System.EventHandler(this.OnMessageListView_SelectedIndexChanged);
+			this.m_MessageListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.OnMessageListView_MouseDoubleClick);
+			// 
 			// m_CollapseCheckBox
 			// 
 			this.m_CollapseCheckBox.AutoSize = true;
-			this.m_CollapseCheckBox.Location = new System.Drawing.Point(516, 11);
+			this.m_CollapseCheckBox.Location = new System.Drawing.Point(516, 12);
 			this.m_CollapseCheckBox.Name = "m_CollapseCheckBox";
 			this.m_CollapseCheckBox.Size = new System.Drawing.Size(72, 16);
 			this.m_CollapseCheckBox.TabIndex = 4;
@@ -74,22 +114,8 @@
 			this.m_CollapseCheckBox.Visible = false;
 			this.m_CollapseCheckBox.CheckedChanged += new System.EventHandler(this.OnCheckBox_CheckedChanged);
 			// 
-			// m_MessageListBox
-			// 
-			this.m_MessageListBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.m_MessageListBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.m_MessageListBox.FormattingEnabled = true;
-			this.m_MessageListBox.ItemHeight = 12;
-			this.m_MessageListBox.Location = new System.Drawing.Point(0, 37);
-			this.m_MessageListBox.Name = "m_MessageListBox";
-			this.m_MessageListBox.Size = new System.Drawing.Size(926, 350);
-			this.m_MessageListBox.TabIndex = 3;
-			this.m_MessageListBox.SelectedIndexChanged += new System.EventHandler(this.OnMessageListBox_SelectedIndexChanged);
-			this.m_MessageListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.OnMessageListBox_MouseDoubleClick);
-			// 
 			// m_InfoCheckBox
 			// 
-			this.m_InfoCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_InfoCheckBox.AutoSize = true;
 			this.m_InfoCheckBox.Location = new System.Drawing.Point(616, 12);
 			this.m_InfoCheckBox.Name = "m_InfoCheckBox";
@@ -101,7 +127,6 @@
 			// 
 			// m_WarningCheckBox
 			// 
-			this.m_WarningCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_WarningCheckBox.AutoSize = true;
 			this.m_WarningCheckBox.Checked = true;
 			this.m_WarningCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -115,7 +140,6 @@
 			// 
 			// m_ErrorCheckBox
 			// 
-			this.m_ErrorCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_ErrorCheckBox.AutoSize = true;
 			this.m_ErrorCheckBox.Checked = true;
 			this.m_ErrorCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -144,6 +168,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(926, 585);
 			this.Controls.Add(this.m_SplitContainer);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "DataGridViewConsoleForm";
 			this.Text = "控制台";
 			this.m_SplitContainer.Panel1.ResumeLayout(false);
@@ -159,10 +184,10 @@
 	#endregion
 
 	private System.Windows.Forms.TextBox m_DetailTextBox;
-	private System.Windows.Forms.ListBox m_MessageListBox;
 	private System.Windows.Forms.CheckBox m_InfoCheckBox;
 	private System.Windows.Forms.CheckBox m_WarningCheckBox;
 	private System.Windows.Forms.CheckBox m_ErrorCheckBox;
 	private System.Windows.Forms.SplitContainer m_SplitContainer;
 	private System.Windows.Forms.CheckBox m_CollapseCheckBox;
+	private System.Windows.Forms.ListView m_MessageListView;
 }

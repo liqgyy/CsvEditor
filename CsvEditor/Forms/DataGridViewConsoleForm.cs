@@ -56,9 +56,9 @@ public partial class DataGridViewConsoleForm : Form
 
 	private void UpdateListBoxSize()
 	{
-		Size listBoxSize = m_MessageListBox.Size;
+		Size listBoxSize = m_MessageListView.Size;
 		listBoxSize.Height = m_SplitContainer.Panel1.ClientSize.Height - 36;
-		m_MessageListBox.Size = listBoxSize;
+		m_MessageListView.Size = listBoxSize;
 	}
 
 	private void UpdateListBox()
@@ -74,7 +74,7 @@ public partial class DataGridViewConsoleForm : Form
 			messageSelectedIndex = m_MessageIndexList[m_ListBoxSelectedIndex];
 		}
 
-		m_MessageListBox.Items.Clear();
+		m_MessageListView.Items.Clear();
 		m_MessageIndexList = new List<int>();
 
 		m_LastCaption = "";
@@ -118,20 +118,16 @@ public partial class DataGridViewConsoleForm : Form
 			}
 			if (messageSelectedIndex == msgIdx)
 			{
-				listBoxSelectIndex = m_MessageListBox.Items.Count - 1;
+				listBoxSelectIndex = m_MessageListView.Items.Count - 1;
 			}
 		}
 
-		// 最后一条添加Collapse
-		if (m_CollapseCount > 0)
-		{
-			string lastItem = (string)m_MessageListBox.Items[m_MessageListBox.Items.Count - 1];
-			lastItem = string.Format("{0}\tCollapse:{1}", lastItem, m_CollapseCount + 1);
-			m_MessageListBox.Items[m_MessageListBox.Items.Count - 1] = lastItem;
-		}
+		AddCollapseToLastItem();
 
-		if (listBoxSelectIndex < m_MessageListBox.Items.Count)
-			m_MessageListBox.SelectedIndex = listBoxSelectIndex;
+		if (listBoxSelectIndex < m_MessageListView.Items.Count)
+		{
+			m_MessageListView.Items[listBoxSelectIndex].Selected = true;
+		}
 
 		m_InfoCheckBox.Text = string.Format("{0} {1}", LevelToString(Level.Info), infoCount);
 		m_WarningCheckBox.Text = string.Format("{0} {1}", LevelToString(Level.Warning), warningCount);
@@ -147,26 +143,23 @@ public partial class DataGridViewConsoleForm : Form
 				m_CollapseCount++;
 				return;
 			}
-
-			if (m_CollapseCount > 0)
-			{
-				string lastItem = (string)m_MessageListBox.Items[m_MessageListBox.Items.Count - 1];
-				lastItem = string.Format("{0}\tCollapse:{1}", lastItem, m_CollapseCount + 1);
-				m_MessageListBox.Items[m_MessageListBox.Items.Count - 1] = lastItem;
-			}
+			AddCollapseToLastItem();
 			m_LastCaption = message.Caption;
 			m_CollapseCount = 0;
 		}
 
-		string item = FormatMessgeCaption(message);
-		m_MessageListBox.Items.Add(item);
+		string item = FormatMessageCaption(message);
+		ListViewItem newItem = new ListViewItem(LevelToString(message.Level));
+		newItem.SubItems.Add(FormatMessagePosition(message));
+		newItem.SubItems.Add(message.Caption);
+		m_MessageListView.Items.Add(newItem);
 		m_MessageIndexList.Add(index);
 	}
 
-	private string FormatMessgeCaption(Message message)
+	private string FormatMessagePosition(Message message)
 	{
 		string rowColumn = "";
-		if(message.Row < 0 && message.Column < 0)
+		if (message.Row < 0 && message.Column < 0)
 		{
 			rowColumn = "整表";
 		}
@@ -182,6 +175,12 @@ public partial class DataGridViewConsoleForm : Form
 		{
 			rowColumn = string.Format("({0},{1})", message.Row + 1, ConvertUtility.NumberToLetter(message.Column + 1));
 		}
+		return rowColumn;
+	}
+
+	private string FormatMessageCaption(Message message)
+	{
+		string rowColumn = FormatMessagePosition(message);
 		return string.Format("{0,-4}{1,-12}\t{2}",
 			LevelToString(message.Level),
 			rowColumn,			
@@ -227,6 +226,17 @@ public partial class DataGridViewConsoleForm : Form
 		return newMessage; 
 	}
 
+	private void AddCollapseToLastItem()
+	{
+		if (m_CollapseCount > 0)
+		{
+			ListViewItem lastItem = m_MessageListView.Items[m_MessageListView.Items.Count - 1];
+			string lastItemValue = lastItem.SubItems[2].Text;
+			lastItemValue = string.Format("{0}\tCollapse:{1}", lastItemValue, m_CollapseCount + 1);
+			lastItem.SubItems[2].Text = lastItemValue;
+		}
+	}
+
 	#region UIEvent
 	private void OnSplitContainer_Panel1_ClientSizeChanged(object sender, EventArgs e)
 	{
@@ -238,31 +248,37 @@ public partial class DataGridViewConsoleForm : Form
 		UpdateListBox();
 	}
 
-	private void OnMessageListBox_SelectedIndexChanged(object sender, EventArgs e)
+	private void OnMessageListView_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		m_DetailTextBox.Text = "";
-		m_ListBoxSelectedIndex = m_MessageListBox.SelectedIndex;
-
-		Message message = GetMessageWithListBoxItemIndex(m_ListBoxSelectedIndex);
-		if (message.Level == Level.None)
+		if (m_MessageListView.SelectedItems.Count > 0)
 		{
-			return;
+			m_DetailTextBox.Text = "";
+			m_ListBoxSelectedIndex = m_MessageListView.SelectedItems[0].Index;
+
+			Message message = GetMessageWithListBoxItemIndex(m_ListBoxSelectedIndex);
+			if (message.Level == Level.None)
+			{
+				return;
+			}
+			string caption = FormatMessageCaption(message);
+			string text = string.Format("{0}\n{1}", caption.Replace("\t", "\n\n"), message.Text);
+			m_DetailTextBox.Text = text.Replace("\n", "\r\n");
 		}
-		string caption = FormatMessgeCaption(message);
-		string text = string.Format("{0}\n{1}", caption.Replace("\t", "\n\n"), message.Text);
-		m_DetailTextBox.Text = text.Replace("\n", "\r\n");
 	}
 
-	private void OnMessageListBox_MouseDoubleClick(object sender, MouseEventArgs e)
+	private void OnMessageListView_MouseDoubleClick(object sender, MouseEventArgs e)
 	{
-		int itemIndex = m_MessageListBox.IndexFromPoint(e.Location);
-		Message message = GetMessageWithListBoxItemIndex(itemIndex);
-		if (message.Level == Level.None)
+		if (m_MessageListView.SelectedItems.Count > 0)
 		{
-			return;
-		}
+			int itemIndex = m_MessageListView.SelectedItems[0].Index;
+			Message message = GetMessageWithListBoxItemIndex(itemIndex);
+			if (message.Level == Level.None)
+			{
+				return;
+			}
 
-		DataGridViewUtility.SelectCell(m_DataGridView, message.Row, message.Column);
+			DataGridViewUtility.SelectCell(m_DataGridView, message.Row, message.Column);
+		}
 	}
 	#endregion //End UIEvent
 
@@ -285,4 +301,6 @@ public partial class DataGridViewConsoleForm : Form
 		Warning,
 		Error
 	}
+
+	
 }
