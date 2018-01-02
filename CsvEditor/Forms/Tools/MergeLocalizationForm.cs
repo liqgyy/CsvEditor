@@ -59,7 +59,7 @@ public partial class MergeLocalizationForm : Form
 						message.Level = DataGridViewConsoleForm.Level.Warning;
 						message.Column = 0;
 						message.Row = iRowInOriginalCSV;
-						message.Caption = "Key的头尾有空格";
+						message.Caption = "Key的头尾有空白字符";
 						message.Text = string.Format("我帮你去除了空格\n去空格前的Key:({0})", key);
 						m_MessageList.Add(message);
 					}
