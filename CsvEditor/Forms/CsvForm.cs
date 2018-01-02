@@ -206,7 +206,7 @@ public partial class CsvForm : Form
 		DataGridViewConsoleForm.ShowForm(messageList, m_DataGridView, "保存文件");
 
 		bool canSave = false;
-		if (verifyLevel == DataGridViewConsoleForm.Level.None || verifyLevel == DataGridViewConsoleForm.Level.Info)
+		if (verifyLevel == DataGridViewConsoleForm.Level.Info)
 		{
 			canSave = true;
 		}

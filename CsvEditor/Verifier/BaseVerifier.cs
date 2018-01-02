@@ -3,6 +3,12 @@ using System.Windows.Forms;
 
 public abstract class BaseVerifier
 {
+	/// <summary>
+	/// 校验DataGridView中的数据
+	/// </summary>
+	/// <param name="dataGridView"></param>
+	/// <param name="messageList">要输出到控制台的信息（包含但不限于错误、警告）</param>
+	/// <returns>数据错误等级</returns>
 	public DataGridViewConsoleForm.Level Verify(DataGridView dataGridView, out List<DataGridViewConsoleForm.Message> messageList)
 	{
 		messageList = new List<DataGridViewConsoleForm.Message>();
@@ -21,7 +27,7 @@ public abstract class BaseVerifier
 		}
 		else
 		{
-			return DataGridViewConsoleForm.Level.None;
+			return DataGridViewConsoleForm.Level.Info;
 		}
 	}
 

@@ -52,12 +52,12 @@
 			// 
 			// positionHeader
 			// 
-			positionHeader.Text = "位置";
+			positionHeader.Text = "位置（行,列）";
 			positionHeader.Width = 121;
 			// 
 			// captionHeader
 			// 
-			captionHeader.Text = "标题";
+			captionHeader.Text = "说明";
 			captionHeader.Width = 729;
 			// 
 			// m_SplitContainer
